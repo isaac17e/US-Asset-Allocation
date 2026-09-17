@@ -20,7 +20,8 @@ import plotly.graph_objects as go
 import requests
 from plotly.subplots import make_subplots
 from scipy import stats
-from scipy.optimize import linprog, minimize
+from scipy.interpolate import CubicSpline
+from scipy.optimize import brentq, linprog, minimize
 
 try:
     import cvxpy as cp
@@ -97,6 +98,7 @@ OPTIONS_MAX_DAYS: int = 90
 OPTIONS_TARGET_DAYS: int = 60
 MIN_OTM_STRIKES_PER_SIDE: int = 4
 MAX_OPTION_PAGES: int = 8
+BKM_SPLINE_POINTS: int = 200
 
 COVARIANCE_MODE: Literal["correlation", "beta"] = "correlation"
 CORRELATION_LOOKBACK_DAYS: int = 252
@@ -116,6 +118,7 @@ QUBO_BITS_PER_ASSET: int = 5
 SA_ITERATIONS: int = 80_000
 SA_BUDGET_PENALTY: float = 25.0
 SA_FACTOR_PENALTY: float = 25.0
+SA_FACTOR_PENALTY_MAX_MULT: float = 50.0
 SA_RANDOM_SEED: int = 42
 
 
@@ -876,6 +879,47 @@ class BKMEstimator:
         return float(np.sum(0.5 * (y[1:] + y[:-1]) * np.diff(x)))
 
     @staticmethod
+    def _bs_price(spot: float, strike: float, rate: float, maturity: float, vol: float, side: str) -> float:
+        if vol <= 0.0 or maturity <= 0.0:
+            return max(0.0, (spot - strike) if side == "call" else (strike - spot))
+        d1 = (math.log(spot / strike) + (rate + 0.5 * vol**2) * maturity) / (vol * math.sqrt(maturity))
+        d2 = d1 - vol * math.sqrt(maturity)
+        if side == "call":
+            return spot * stats.norm.cdf(d1) - strike * math.exp(-rate * maturity) * stats.norm.cdf(d2)
+        return strike * math.exp(-rate * maturity) * stats.norm.cdf(-d2) - spot * stats.norm.cdf(-d1)
+
+    @classmethod
+    def _implied_vol(cls, price: float, spot: float, strike: float, rate: float, maturity: float, side: str) -> float:
+        intrinsic = max(0.0, (spot - strike) if side == "call" else (strike - spot))
+        if not math.isfinite(price) or price <= intrinsic + 1e-8:
+            return float("nan")
+        try:
+            return brentq(lambda v: cls._bs_price(spot, strike, rate, maturity, v, side) - price, 1e-4, 5.0, xtol=1e-6)
+        except ValueError:
+            return float("nan")
+
+    @classmethod
+    def _resample_via_iv_spline(
+        cls, spot: float, maturity: float, rate: float, strikes: np.ndarray, prices: np.ndarray, side: str
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        order = np.argsort(strikes)
+        strikes, prices = strikes[order], prices[order]
+        ivs = np.array([cls._implied_vol(p, spot, k, rate, maturity, side) for k, p in zip(strikes, prices)])
+        valid = np.isfinite(ivs) & (ivs > 1e-4)
+        if valid.sum() < 4:
+            return strikes, prices
+        log_moneyness, unique_idx = np.unique(np.log(strikes[valid] / spot), return_index=True)
+        ivs_valid = ivs[valid][unique_idx]
+        if len(log_moneyness) < 4:
+            return strikes, prices
+        spline = CubicSpline(log_moneyness, ivs_valid, bc_type="natural")
+        fine_x = np.linspace(log_moneyness[0], log_moneyness[-1], BKM_SPLINE_POINTS)
+        fine_iv = np.clip(spline(fine_x), 1e-4, 5.0)
+        fine_strikes = spot * np.exp(fine_x)
+        fine_prices = np.array([cls._bs_price(spot, k, rate, maturity, v, side) for k, v in zip(fine_strikes, fine_iv)])
+        return fine_strikes, fine_prices
+
+    @staticmethod
     def _anchor_at_spot(strikes: np.ndarray, prices: np.ndarray, spot: float, side: str) -> Tuple[np.ndarray, np.ndarray]:
         order = np.argsort(strikes)
         strikes, prices = strikes[order], prices[order]
@@ -901,8 +945,14 @@ class BKMEstimator:
     ) -> Optional[Dict[str, float]]:
         if spot <= 0 or maturity_years <= 0:
             return None
-        kc, c = cls._anchor_at_spot(np.asarray(call_strikes, dtype=float), np.asarray(call_prices, dtype=float), spot, side="call")
-        kp, p = cls._anchor_at_spot(np.asarray(put_strikes, dtype=float), np.asarray(put_prices, dtype=float), spot, side="put")
+        kc_fine, c_fine = cls._resample_via_iv_spline(
+            spot, maturity_years, rate, np.asarray(call_strikes, dtype=float), np.asarray(call_prices, dtype=float), "call"
+        )
+        kp_fine, p_fine = cls._resample_via_iv_spline(
+            spot, maturity_years, rate, np.asarray(put_strikes, dtype=float), np.asarray(put_prices, dtype=float), "put"
+        )
+        kc, c = cls._anchor_at_spot(kc_fine, c_fine, spot, side="call")
+        kp, p = cls._anchor_at_spot(kp_fine, p_fine, spot, side="put")
         log_c = np.log(kc / spot)
         log_p = np.log(spot / kp)
         v = cls._trapezoid(2.0 * (1.0 - log_c) / kc**2 * c, kc) + cls._trapezoid(2.0 * (1.0 + log_p) / kp**2 * p, kp)
@@ -1213,24 +1263,27 @@ class PortfolioOptimizer:
         asset_of_var = np.repeat(np.arange(n_assets), bits)
         weight_of_var = np.tile(scale * 2.0 ** np.arange(bits), n_assets)
 
-        def factor_penalty(exposure: np.ndarray) -> float:
-            return SA_FACTOR_PENALTY * float(np.sum(np.maximum(0.0, self.targets - exposure) ** 2))
+        def violation(exposure: np.ndarray) -> float:
+            return float(np.sum(np.maximum(0.0, self.targets - exposure) ** 2))
+
+        strict_coefficient = SA_FACTOR_PENALTY * SA_FACTOR_PENALTY_MAX_MULT
 
         start_levels = np.clip(np.rint(self.warm_start / scale), 0, levels).astype(int)
         state = ((start_levels[:, None] >> np.arange(bits)) & 1).reshape(-1).astype(float)
         field = qubo @ state
         exposure = self.B.T @ (encoder @ state)
-        current_penalty = factor_penalty(exposure)
-        energy = float(state @ qubo @ state) + current_penalty
-        best_state, best_energy = state.copy(), energy
+        quadratic_energy = float(state @ qubo @ state)
+        current_violation = violation(exposure)
+        best_state = state.copy()
+        best_strict_energy = quadratic_energy + strict_coefficient * current_violation
         rng = np.random.default_rng(SA_RANDOM_SEED)
 
         def flip_delta(j: int) -> Tuple[float, np.ndarray, float]:
             dx = 1.0 - 2.0 * state[j]
             delta_q = dx * (diagonal[j] + 2.0 * (field[j] - diagonal[j] * state[j]))
             new_exposure = exposure + self.B[asset_of_var[j]] * weight_of_var[j] * dx
-            new_penalty = factor_penalty(new_exposure)
-            return delta_q + new_penalty - current_penalty, new_exposure, new_penalty
+            new_violation = violation(new_exposure)
+            return delta_q, new_exposure, new_violation
 
         sample = [abs(flip_delta(int(j))[0]) for j in rng.integers(n_vars, size=min(500, 2 * n_vars))]
         t_start = max(float(np.mean(sample)), 1e-8)
@@ -1240,17 +1293,23 @@ class PortfolioOptimizer:
         accepted = 0
         for step in range(SA_ITERATIONS):
             temperature = t_start * (t_end / t_start) ** (step / max(SA_ITERATIONS - 1, 1))
+            # La penalización de factibilidad se endurece junto con el enfriamiento (de SA_FACTOR_PENALTY
+            # hasta el tope strict_coefficient), en vez de quedar fija: así la SA explora libremente al
+            # inicio y termina forzando casi estrictamente B^T w >= target al final del recocido.
+            penalty_coefficient = min(SA_FACTOR_PENALTY * (t_start / temperature), strict_coefficient)
             j = int(flips[step])
-            delta, new_exposure, new_penalty = flip_delta(j)
+            delta_q, new_exposure, new_violation = flip_delta(j)
+            delta = delta_q + penalty_coefficient * (new_violation - current_violation)
             if delta <= 0.0 or uniforms[step] < math.exp(-delta / temperature):
                 dx = 1.0 - 2.0 * state[j]
                 state[j] += dx
                 field += qubo[:, j] * dx
-                exposure, current_penalty = new_exposure, new_penalty
-                energy += delta
+                exposure, current_violation = new_exposure, new_violation
+                quadratic_energy += delta_q
                 accepted += 1
-                if energy < best_energy:
-                    best_energy, best_state = energy, state.copy()
+                strict_energy = quadratic_energy + strict_coefficient * current_violation
+                if strict_energy < best_strict_energy:
+                    best_strict_energy, best_state = strict_energy, state.copy()
         weights = _project_capped_simplex(encoder @ best_state, self.max_weight)
         return weights, f"SA {SA_ITERATIONS} iter · aceptación {accepted / SA_ITERATIONS:.1%} · {n_vars} qubits"
 
