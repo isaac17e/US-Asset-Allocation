@@ -57,6 +57,7 @@ RUN_SOLVER_COMPARISON: bool = True
 
 BENCHMARK_TICKER: str = "SPY"
 RISK_FREE_RATE: float = 0.040
+DIVIDEND_YIELD: float = 0.015
 EQUITY_RISK_PREMIUM: float = 0.050
 HISTORICAL_MU_BLEND: float = 0.25
 PRICE_HISTORY_YEARS: int = 3
@@ -99,6 +100,7 @@ OPTIONS_TARGET_DAYS: int = 60
 MIN_OTM_STRIKES_PER_SIDE: int = 4
 MAX_OPTION_PAGES: int = 8
 BKM_SPLINE_POINTS: int = 200
+MIN_TOTAL_VOL: float = 1e-3
 
 COVARIANCE_MODE: Literal["correlation", "beta"] = "correlation"
 CORRELATION_LOOKBACK_DAYS: int = 252
@@ -879,32 +881,104 @@ class BKMEstimator:
         return float(np.sum(0.5 * (y[1:] + y[:-1]) * np.diff(x)))
 
     @staticmethod
-    def _bs_price(spot: float, strike: float, rate: float, maturity: float, vol: float, side: str) -> float:
+    def _bs_price(
+        spot: float, strike: float, rate: float, carry: float, maturity: float, vol: float, side: str
+    ) -> float:
         if vol <= 0.0 or maturity <= 0.0:
             return max(0.0, (spot - strike) if side == "call" else (strike - spot))
-        d1 = (math.log(spot / strike) + (rate + 0.5 * vol**2) * maturity) / (vol * math.sqrt(maturity))
-        d2 = d1 - vol * math.sqrt(maturity)
+        scaled_vol = vol * math.sqrt(maturity)
+        d1 = (math.log(spot / strike) + (carry + 0.5 * vol**2) * maturity) / scaled_vol
+        d2 = d1 - scaled_vol
+        carry_factor = math.exp((carry - rate) * maturity)
+        discount = math.exp(-rate * maturity)
         if side == "call":
-            return spot * stats.norm.cdf(d1) - strike * math.exp(-rate * maturity) * stats.norm.cdf(d2)
-        return strike * math.exp(-rate * maturity) * stats.norm.cdf(-d2) - spot * stats.norm.cdf(-d1)
+            return spot * carry_factor * stats.norm.cdf(d1) - strike * discount * stats.norm.cdf(d2)
+        return strike * discount * stats.norm.cdf(-d2) - spot * carry_factor * stats.norm.cdf(-d1)
+
+    @staticmethod
+    def _bs93_phi(
+        spot: float, maturity: float, gamma: float, boundary: float, trigger: float,
+        rate: float, carry: float, vol: float, log_offset: float = 0.0,
+    ) -> float:
+        variance = vol**2
+        scaled_vol = vol * math.sqrt(maturity)
+        lam = (-rate + gamma * carry + 0.5 * gamma * (gamma - 1.0) * variance) * maturity
+        kappa = 2.0 * carry / variance + (2.0 * gamma - 1.0)
+        d = -(math.log(spot / boundary) + (carry + (gamma - 0.5) * variance) * maturity) / scaled_vol
+        d_reflected = d - 2.0 * math.log(trigger / spot) / scaled_vol
+        # Todo se arma en logaritmos y log_offset absorbe el alpha del llamador: a vol baja beta crece
+        # como 1/vol^2 y los factores sueltos (spot**beta, (trigger/spot)**kappa) desbordan por
+        # separado aunque el producto siga siendo finito.
+        log_scale = lam + gamma * math.log(spot) + log_offset
+        reflected = math.exp(log_scale + kappa * math.log(trigger / spot) + stats.norm.logcdf(d_reflected))
+        return math.exp(log_scale) * stats.norm.cdf(d) - reflected
 
     @classmethod
-    def _implied_vol(cls, price: float, spot: float, strike: float, rate: float, maturity: float, side: str) -> float:
+    def _american_call(
+        cls, spot: float, strike: float, rate: float, carry: float, maturity: float, vol: float
+    ) -> float:
+        european = cls._bs_price(spot, strike, rate, carry, maturity, vol, "call")
+        if carry >= rate:
+            return european
+        if vol * math.sqrt(maturity) < MIN_TOTAL_VOL:  # régimen casi determinista: la frontera degenera
+            return max(spot - strike, european)
+        variance = vol**2
+        beta = (0.5 - carry / variance) + math.sqrt((carry / variance - 0.5) ** 2 + 2.0 * rate / variance)
+        boundary_inf = beta / (beta - 1.0) * strike
+        boundary_now = max(strike, rate / (rate - carry) * strike)
+        if boundary_inf <= boundary_now:
+            return european
+        h = -(carry * maturity + 2.0 * vol * math.sqrt(maturity)) * boundary_now / (boundary_inf - boundary_now)
+        if h >= 0.0:
+            return max(spot - strike, european)
+        trigger = boundary_now + (boundary_inf - boundary_now) * (1.0 - math.exp(h))
+        if spot >= trigger:
+            return spot - strike
+        premium, log_alpha = trigger - strike, -beta * math.log(trigger)
+        return (
+            premium * math.exp(beta * math.log(spot / trigger))
+            - premium * cls._bs93_phi(spot, maturity, beta, trigger, trigger, rate, carry, vol, log_alpha)
+            + cls._bs93_phi(spot, maturity, 1.0, trigger, trigger, rate, carry, vol)
+            - cls._bs93_phi(spot, maturity, 1.0, strike, trigger, rate, carry, vol)
+            - strike * cls._bs93_phi(spot, maturity, 0.0, trigger, trigger, rate, carry, vol)
+            + strike * cls._bs93_phi(spot, maturity, 0.0, strike, trigger, rate, carry, vol)
+        )
+
+    @classmethod
+    def _american_price(
+        cls, spot: float, strike: float, rate: float, carry: float, maturity: float, vol: float, side: str
+    ) -> float:
+        if vol <= 0.0 or maturity <= 0.0:
+            return max(0.0, (spot - strike) if side == "call" else (strike - spot))
+        if side == "call":
+            return cls._american_call(spot, strike, rate, carry, maturity, vol)
+        return cls._american_call(strike, spot, rate - carry, -carry, maturity, vol)
+
+    @classmethod
+    def _implied_vol(
+        cls, price: float, spot: float, strike: float, rate: float, carry: float, maturity: float, side: str
+    ) -> float:
         intrinsic = max(0.0, (spot - strike) if side == "call" else (strike - spot))
         if not math.isfinite(price) or price <= intrinsic + 1e-8:
             return float("nan")
         try:
-            return brentq(lambda v: cls._bs_price(spot, strike, rate, maturity, v, side) - price, 1e-4, 5.0, xtol=1e-6)
+            return brentq(
+                lambda v: cls._american_price(spot, strike, rate, carry, maturity, v, side) - price,
+                1e-4,
+                5.0,
+                xtol=1e-6,
+            )
         except ValueError:
             return float("nan")
 
     @classmethod
     def _resample_via_iv_spline(
-        cls, spot: float, maturity: float, rate: float, strikes: np.ndarray, prices: np.ndarray, side: str
+        cls, spot: float, maturity: float, rate: float, carry: float,
+        strikes: np.ndarray, prices: np.ndarray, side: str,
     ) -> Tuple[np.ndarray, np.ndarray]:
         order = np.argsort(strikes)
         strikes, prices = strikes[order], prices[order]
-        ivs = np.array([cls._implied_vol(p, spot, k, rate, maturity, side) for k, p in zip(strikes, prices)])
+        ivs = np.array([cls._implied_vol(p, spot, k, rate, carry, maturity, side) for k, p in zip(strikes, prices)])
         valid = np.isfinite(ivs) & (ivs > 1e-4)
         if valid.sum() < 4:
             return strikes, prices
@@ -916,7 +990,11 @@ class BKMEstimator:
         fine_x = np.linspace(log_moneyness[0], log_moneyness[-1], BKM_SPLINE_POINTS)
         fine_iv = np.clip(spline(fine_x), 1e-4, 5.0)
         fine_strikes = spot * np.exp(fine_x)
-        fine_prices = np.array([cls._bs_price(spot, k, rate, maturity, v, side) for k, v in zip(fine_strikes, fine_iv)])
+        # La IV se invierte con el pricer americano pero la grilla se re-precia con el europeo: eso
+        # descuenta la prima de ejercicio anticipado, que la replicación de BKM no admite en sus inputs.
+        fine_prices = np.array(
+            [cls._bs_price(spot, k, rate, carry, maturity, v, side) for k, v in zip(fine_strikes, fine_iv)]
+        )
         return fine_strikes, fine_prices
 
     @staticmethod
@@ -942,14 +1020,18 @@ class BKMEstimator:
         call_prices: np.ndarray,
         put_strikes: np.ndarray,
         put_prices: np.ndarray,
+        div_yield: float = DIVIDEND_YIELD,
     ) -> Optional[Dict[str, float]]:
         if spot <= 0 or maturity_years <= 0:
             return None
+        carry = rate - div_yield
         kc_fine, c_fine = cls._resample_via_iv_spline(
-            spot, maturity_years, rate, np.asarray(call_strikes, dtype=float), np.asarray(call_prices, dtype=float), "call"
+            spot, maturity_years, rate, carry,
+            np.asarray(call_strikes, dtype=float), np.asarray(call_prices, dtype=float), "call",
         )
         kp_fine, p_fine = cls._resample_via_iv_spline(
-            spot, maturity_years, rate, np.asarray(put_strikes, dtype=float), np.asarray(put_prices, dtype=float), "put"
+            spot, maturity_years, rate, carry,
+            np.asarray(put_strikes, dtype=float), np.asarray(put_prices, dtype=float), "put",
         )
         kc, c = cls._anchor_at_spot(kc_fine, c_fine, spot, side="call")
         kp, p = cls._anchor_at_spot(kp_fine, p_fine, spot, side="put")
@@ -975,10 +1057,14 @@ class BKMEstimator:
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class ImpliedMomentsEngine:
-    def __init__(self, polygon: Optional[PolygonClient], prices: pd.DataFrame, rate: float) -> None:
+    def __init__(
+        self, polygon: Optional[PolygonClient], prices: pd.DataFrame, rate: float,
+        div_yield: float = DIVIDEND_YIELD,
+    ) -> None:
         self.polygon = polygon
         self.prices = prices
         self.rate = rate
+        self.div_yield = div_yield
         self.logger = logging.getLogger("BKM")
         self._polygon_enabled = polygon is not None
         if polygon is None:
@@ -1021,7 +1107,9 @@ class ImpliedMomentsEngine:
             if len(calls) < MIN_OTM_STRIKES_PER_SIDE or len(puts) < MIN_OTM_STRIKES_PER_SIDE:
                 continue
             result = BKMEstimator.moments(
-                spot, days / 365.0, self.rate, calls.index.to_numpy(), calls.to_numpy(), puts.index.to_numpy(), puts.to_numpy()
+                spot, days / 365.0, self.rate,
+                calls.index.to_numpy(), calls.to_numpy(), puts.index.to_numpy(), puts.to_numpy(),
+                self.div_yield,
             )
             if result:
                 estimates.append({"days": float(days), **result})
