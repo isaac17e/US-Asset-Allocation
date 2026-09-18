@@ -57,7 +57,8 @@ RUN_SOLVER_COMPARISON: bool = True
 
 BENCHMARK_TICKER: str = "SPY"
 RISK_FREE_RATE: float = 0.040
-DIVIDEND_YIELD: float = 0.015
+DIVIDEND_YIELD_FALLBACK: float = 0.015
+MAX_DIVIDEND_YIELD: float = 0.25
 EQUITY_RISK_PREMIUM: float = 0.050
 HISTORICAL_MU_BLEND: float = 0.25
 PRICE_HISTORY_YEARS: int = 3
@@ -1020,7 +1021,7 @@ class BKMEstimator:
         call_prices: np.ndarray,
         put_strikes: np.ndarray,
         put_prices: np.ndarray,
-        div_yield: float = DIVIDEND_YIELD,
+        div_yield: float = DIVIDEND_YIELD_FALLBACK,
     ) -> Optional[Dict[str, float]]:
         if spot <= 0 or maturity_years <= 0:
             return None
@@ -1058,14 +1059,18 @@ class BKMEstimator:
 
 class ImpliedMomentsEngine:
     def __init__(
-        self, polygon: Optional[PolygonClient], prices: pd.DataFrame, rate: float,
-        div_yield: float = DIVIDEND_YIELD,
+        self, polygon: Optional[PolygonClient], fmp: Optional[FMPClient], prices: pd.DataFrame,
+        rate: float, div_yield_fallback: float = DIVIDEND_YIELD_FALLBACK,
     ) -> None:
         self.polygon = polygon
+        self.fmp = fmp
         self.prices = prices
         self.rate = rate
-        self.div_yield = div_yield
+        self.div_yield_fallback = div_yield_fallback
         self.logger = logging.getLogger("BKM")
+        self._div_yield_cache: Dict[str, float] = {}
+        self._div_yield_fallbacks: List[str] = []
+        self._fmp_yield_enabled = fmp is not None
         self._polygon_enabled = polygon is not None
         if polygon is None:
             self.logger.warning("POLYGON_API_KEY no configurada: se usarán momentos históricos como fallback.")
@@ -1087,7 +1092,61 @@ class ImpliedMomentsEngine:
             rows.append({"Ticker": ticker, **estimate})
             if index % 10 == 0:
                 self.logger.info("Momentos implícitos: %d/%d", index, len(tickers))
+        self._log_dividend_yield_coverage()
         return pd.DataFrame(rows).set_index("Ticker")
+
+    def _log_dividend_yield_coverage(self) -> None:
+        resolved = len(self._div_yield_cache) - len(self._div_yield_fallbacks)
+        if not self._div_yield_cache:
+            return
+        self.logger.info(
+            "Dividend yield: %d de %d resueltos vía FMP (el resto asume %.2f%%).",
+            resolved, len(self._div_yield_cache), self.div_yield_fallback * 100.0,
+        )
+        # Si FMP renombró los campos, todo cae al fallback en silencio y el carry queda mal para
+        # todo el universo: por eso se avisa fuerte en vez de dejarlo en debug.
+        if resolved == 0:
+            self.logger.warning(
+                "Ningún dividend yield se pudo leer de FMP; revisa los alias de campo en _dividend_yield."
+            )
+
+    @staticmethod
+    def _normalize_yield(raw: float) -> float:
+        # FMP mezcla fracción (0.0132) y porcentaje (1.32) según endpoint y versión. Ningún ETF
+        # rinde más de 25% en forma fraccionaria, así que por encima de ese corte es porcentaje.
+        if not math.isfinite(raw) or raw < 0.0:
+            return float("nan")
+        value = raw / 100.0 if raw > MAX_DIVIDEND_YIELD else raw
+        return value if value <= MAX_DIVIDEND_YIELD else float("nan")
+
+    def _dividend_yield(self, ticker: str) -> float:
+        if ticker in self._div_yield_cache:
+            return self._div_yield_cache[ticker]
+        resolved = float("nan")
+        if self._fmp_yield_enabled:
+            # El universo son ETFs, así que etf/info manda; ratios-ttm cubre los símbolos que FMP
+            # no clasifica como ETF. Los alias siguen el patrón del resto del archivo porque FMP
+            # cambia de nomenclatura entre versiones del endpoint.
+            for fetcher, keys in (
+                (self.fmp.etf_info, ("yield", "dividendYield", "dividendYieldTTM")),
+                (self.fmp.ratios_ttm, ("dividendYieldTTM", "dividendYielTTM", "dividendYield")),
+            ):
+                try:
+                    resolved = self._normalize_yield(_first_number(fetcher(ticker), keys))
+                except APIAuthorizationError as exc:
+                    self._fmp_yield_enabled = False
+                    self.logger.warning("Dividend yield por FMP deshabilitado (plan/credenciales): %s", exc)
+                    break
+                except APIError as exc:
+                    self.logger.debug("%s sin dividend yield para %s: %s", fetcher.__name__, ticker, exc)
+                    continue
+                if math.isfinite(resolved):
+                    break
+        if not math.isfinite(resolved):
+            resolved = self.div_yield_fallback
+            self._div_yield_fallbacks.append(ticker)
+        self._div_yield_cache[ticker] = resolved
+        return resolved
 
     def _implied_from_options(self, ticker: str) -> Optional[Dict[str, Any]]:
         today = date.today()
@@ -1097,6 +1156,7 @@ class ImpliedMomentsEngine:
         chain, spot = self._parse_chain(contracts, ticker)
         if chain.empty or not math.isfinite(spot):
             return None
+        div_yield = self._dividend_yield(ticker)
         estimates: List[Dict[str, float]] = []
         for expiry, group in chain.groupby("expiry"):
             days = (datetime.strptime(str(expiry), "%Y-%m-%d").date() - today).days
@@ -1109,7 +1169,7 @@ class ImpliedMomentsEngine:
             result = BKMEstimator.moments(
                 spot, days / 365.0, self.rate,
                 calls.index.to_numpy(), calls.to_numpy(), puts.index.to_numpy(), puts.to_numpy(),
-                self.div_yield,
+                div_yield,
             )
             if result:
                 estimates.append({"days": float(days), **result})
@@ -1694,7 +1754,7 @@ class PassiveETFAllocationPipeline:
         factor_matrix, raw_factors = FactorModelBuilder(self.fmp, prices[tickers]).build(universe)
 
         self.logger.info("FASE 2 · Momentos BKM, covarianza implícita y tilt de μ")
-        moments = ImpliedMomentsEngine(self.polygon, prices[tickers], RISK_FREE_RATE).compute(tickers)
+        moments = ImpliedMomentsEngine(self.polygon, self.fmp, prices[tickers], RISK_FREE_RATE).compute(tickers)
         covariance = ImpliedCovarianceBuilder(COVARIANCE_MODE, CORRELATION_LOOKBACK_DAYS, CORRELATION_SHRINKAGE, BENCHMARK_TICKER).build(moments, returns)
         mu_table = ExpectedReturnModel(BENCHMARK_TICKER).build(returns, moments)
 
