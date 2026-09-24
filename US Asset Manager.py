@@ -23,6 +23,8 @@ from scipy import stats
 from scipy.interpolate import CubicSpline
 from scipy.optimize import brentq, linprog, minimize
 
+import risk_estimators as rk
+
 try:
     import cvxpy as cp
     CVXPY_AVAILABLE: bool = True
@@ -105,12 +107,35 @@ MIN_TOTAL_VOL: float = 1e-3
 
 COVARIANCE_MODE: Literal["correlation", "beta"] = "correlation"
 CORRELATION_LOOKBACK_DAYS: int = 252
-CORRELATION_SHRINKAGE: float = 0.10
+CORRELATION_SHRINKAGE: float = 0.10  # solo se aplica si USE_LW_SHRINKAGE = False
 
-SKEW_THRESHOLD: float = -1.0
-SKEW_PENALTY: float = 0.010
-KURTOSIS_THRESHOLD: float = 6.0
-KURTOSIS_PENALTY: float = 0.002
+# ── Covarianza histórica: EWMA + shrinkage de Ledoit-Wolf ────────────────────
+# Antes la correlación salía de recent.corr() con pesos iguales y se encogía
+# hacia la IDENTIDAD con una intensidad fija (CORRELATION_SHRINKAGE). Encoger
+# hacia la identidad empuja las correlaciones a cero, lo que subestima el
+# riesgo sistemático; y una intensidad fija no responde al ratio nº activos /
+# nº observaciones. Ahora se pondera por EWMA y se encoge hacia correlación
+# constante con la intensidad óptima de Ledoit-Wolf (2003), estimada del dato.
+USE_LW_SHRINKAGE: bool = True
+COVARIANCE_HALFLIFE_DAYS: int = 120
+
+# ── Corrección Q → P (prima de riesgo de varianza) ───────────────────────────
+# La MFIV está bajo la medida neutral al riesgo: σ_Q² = σ_P² + VRP, con VRP > 0
+# en promedio. Usarla cruda en Σ sobrestima el riesgo físico. El ratio se
+# estima por activo contra su propia volatilidad realizada, acotado, y solo se
+# aplica a los tickers cuya MFIV vino de opciones (Fuente = "BKM (Polygon)");
+# los que cayeron al fallback histórico ya están bajo P.
+USE_Q_TO_P_VOL: bool = True
+VRP_RATIO_BOUNDS: Tuple[float, float] = (0.70, 1.00)
+VRP_FALLBACK_RATIO: float = 0.90
+
+# NOTA: el tilt de μ por riesgo de cola (SKEW_PENALTY / KURTOSIS_PENALTY sobre
+# MFIS y MFIK) fue ELIMINADO. Sus constantes y umbrales eran fijos y no
+# calibrados, y MFIS/MFIK son momentos bajo la medida Q: ya incorporan aversión
+# al riesgo de cola, no solo riesgo. Restaban un sesgo arbitrario justo al
+# insumo más sensible del optimizador — Chopra & Ziemba (1993) muestran que los
+# errores en μ pesan un orden de magnitud más que los de covarianza. MFIS y
+# MFIK se siguen reportando como diagnóstico en la tabla de momentos.
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
@@ -1236,28 +1261,86 @@ class ImpliedMomentsEngine:
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class ImpliedCovarianceBuilder:
-    def __init__(self, mode: str, lookback: int, shrinkage: float, benchmark: str) -> None:
+    def __init__(
+        self, mode: str, lookback: int, shrinkage: float, benchmark: str,
+        halflife: Optional[int] = None, use_lw: bool = True, use_q_to_p: bool = True,
+        vrp_bounds: Tuple[float, float] = (0.70, 1.00), vrp_fallback: float = 0.90,
+    ) -> None:
         self.mode = mode
         self.lookback = lookback
         self.shrinkage = shrinkage
         self.benchmark = benchmark
+        self.halflife = halflife
+        self.use_lw = use_lw
+        self.use_q_to_p = use_q_to_p
+        self.vrp_bounds = vrp_bounds
+        self.vrp_fallback = vrp_fallback
+        self.logger = logging.getLogger("COV")
+
+    def _physical_vol(self, moments: pd.DataFrame, returns: pd.DataFrame, tickers: Sequence[str]) -> np.ndarray:
+        """σ bajo la medida física. La MFIV de opciones lleva la prima de varianza."""
+        sigma_q = moments.loc[tickers, "MFIV"].to_numpy(dtype=float)
+        if not self.use_q_to_p:
+            self.logger.warning("USE_Q_TO_P_VOL = False: Σ se construye con volatilidad bajo medida Q.")
+            return sigma_q
+
+        fuente = [str(v) for v in moments.loc[tickers, "Fuente"].tolist()]
+        es_riesgo_neutral = np.array([f.startswith("BKM") for f in fuente], dtype=bool)
+        if not es_riesgo_neutral.any():
+            self.logger.info("Ningún ticker con MFIV de opciones: no hay corrección Q → P que aplicar.")
+            return sigma_q
+
+        hist = returns[list(tickers)].tail(self.lookback).std(ddof=1).to_numpy(dtype=float) * math.sqrt(252.0)
+        sigma_p = sigma_q.copy()
+        ajustado, ratio = rk.q_to_p_vol(
+            sigma_q[es_riesgo_neutral], hist[es_riesgo_neutral],
+            ratio_bounds=self.vrp_bounds, fallback_ratio=self.vrp_fallback,
+        )
+        sigma_p[es_riesgo_neutral] = ajustado
+        self.logger.info(
+            "Corrección Q → P en %d de %d tickers · ratio σ_P/σ_Q mediana %.3f · "
+            "vol media %.2f%% → %.2f%%",
+            int(es_riesgo_neutral.sum()), len(tickers), float(np.median(ratio)),
+            float(sigma_q[es_riesgo_neutral].mean()) * 100.0, float(ajustado.mean()) * 100.0,
+        )
+        return sigma_p
+
+    def _correlation(self, recent: pd.DataFrame, tickers: Sequence[str]) -> np.ndarray:
+        if self.use_lw and len(recent.dropna()) >= 60:
+            cov, info = rk.cov_ewma_shrunk(
+                recent[list(tickers)].dropna(), halflife=self.halflife, scale=1.0, shrink=True,
+            )
+            cov = np.asarray(cov, dtype=float)
+            desv = np.sqrt(np.clip(np.diag(cov), 1e-300, None))
+            correlation = cov / np.outer(desv, desv)
+            np.fill_diagonal(correlation, 1.0)
+            self.logger.info(
+                "Correlación EWMA + Ledoit-Wolf · %d obs · t_eff %.1f · δ estimado %.3f "
+                "(objetivo: correlación constante)",
+                info["n_obs"], info["t_eff"], info["delta"],
+            )
+            return correlation
+
+        correlation = recent.corr(min_periods=int(self.lookback * 0.6)).to_numpy(dtype=float)
+        correlation = np.nan_to_num(correlation, nan=0.0)
+        np.fill_diagonal(correlation, 1.0)
+        correlation = (1.0 - self.shrinkage) * correlation + self.shrinkage * np.eye(len(tickers))
+        self.logger.info("Correlación muestral con shrinkage fijo δ = %.2f hacia la identidad", self.shrinkage)
+        return correlation
 
     def build(self, moments: pd.DataFrame, returns: pd.DataFrame) -> pd.DataFrame:
         tickers = list(moments.index)
-        sigma = moments["MFIV"].to_numpy(dtype=float)
+        sigma = self._physical_vol(moments, returns, tickers)
         recent = returns[tickers].tail(self.lookback)
         if self.mode == "beta":
             if self.benchmark not in tickers:
                 raise ValueError(f"El modo 'beta' requiere que {self.benchmark} esté en el universo.")
             betas = _historical_betas(recent, recent[self.benchmark]).to_numpy(dtype=float)
-            market_vol = float(moments.loc[self.benchmark, "MFIV"])
+            market_vol = float(sigma[tickers.index(self.benchmark)])
             covariance = np.outer(betas, betas) * market_vol**2
             np.fill_diagonal(covariance, sigma**2)
         else:
-            correlation = recent.corr(min_periods=int(self.lookback * 0.6)).to_numpy(dtype=float)
-            correlation = np.nan_to_num(correlation, nan=0.0)
-            np.fill_diagonal(correlation, 1.0)
-            correlation = (1.0 - self.shrinkage) * correlation + self.shrinkage * np.eye(len(tickers))
+            correlation = self._correlation(recent, tickers)
             covariance = np.outer(sigma, sigma) * correlation
         return pd.DataFrame(_nearest_psd(covariance), index=tickers, columns=tickers)
 
@@ -1279,17 +1362,16 @@ class ExpectedReturnModel:
         mu_capm = RISK_FREE_RATE + betas * EQUITY_RISK_PREMIUM
         mu_hist = returns[tickers].mean() * 252.0
         mu_base = (1.0 - HISTORICAL_MU_BLEND) * mu_capm + HISTORICAL_MU_BLEND * mu_hist
-        skew_penalty = SKEW_PENALTY * (SKEW_THRESHOLD - moments["MFIS"]).clip(lower=0.0)
-        kurt_penalty = KURTOSIS_PENALTY * (moments["MFIK"] - KURTOSIS_THRESHOLD).clip(lower=0.0)
+        # El tilt por riesgo de cola se eliminó: ver la nota junto a los parámetros
+        # de covarianza. Mu_Ajustado se conserva como nombre de columna porque el
+        # optimizador y los reportes lo consumen, pero ya no lleva penalización.
         return pd.DataFrame(
             {
                 "Beta": betas,
                 "Mu_CAPM": mu_capm,
                 "Mu_Histórico": mu_hist,
                 "Mu_Base": mu_base,
-                "Penalización_Skew": skew_penalty,
-                "Penalización_Kurt": kurt_penalty,
-                "Mu_Ajustado": mu_base - skew_penalty - kurt_penalty,
+                "Mu_Ajustado": mu_base,
             },
             index=tickers,
         )
@@ -1755,7 +1837,11 @@ class PassiveETFAllocationPipeline:
 
         self.logger.info("FASE 2 · Momentos BKM, covarianza implícita y tilt de μ")
         moments = ImpliedMomentsEngine(self.polygon, self.fmp, prices[tickers], RISK_FREE_RATE).compute(tickers)
-        covariance = ImpliedCovarianceBuilder(COVARIANCE_MODE, CORRELATION_LOOKBACK_DAYS, CORRELATION_SHRINKAGE, BENCHMARK_TICKER).build(moments, returns)
+        covariance = ImpliedCovarianceBuilder(
+            COVARIANCE_MODE, CORRELATION_LOOKBACK_DAYS, CORRELATION_SHRINKAGE, BENCHMARK_TICKER,
+            halflife=COVARIANCE_HALFLIFE_DAYS, use_lw=USE_LW_SHRINKAGE,
+            use_q_to_p=USE_Q_TO_P_VOL, vrp_bounds=VRP_RATIO_BOUNDS, vrp_fallback=VRP_FALLBACK_RATIO,
+        ).build(moments, returns)
         mu_table = ExpectedReturnModel(BENCHMARK_TICKER).build(returns, moments)
 
         self.logger.info("FASE 3 · Optimización cuadrática con restricciones factoriales")
