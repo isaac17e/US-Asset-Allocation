@@ -94,7 +94,7 @@ VOLATILITY_LOOKBACK_DAYS: int = 252
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
-# PARÁMETROS EDITABLES · OPCIONES (BKM), COVARIANZA Y TILT DE RETORNOS
+# PARÁMETROS EDITABLES · OPCIONES (BKM) Y COVARIANZA
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 OPTIONS_MIN_DAYS: int = 30
@@ -103,6 +103,7 @@ OPTIONS_TARGET_DAYS: int = 60
 MIN_OTM_STRIKES_PER_SIDE: int = 4
 MAX_OPTION_PAGES: int = 8
 BKM_SPLINE_POINTS: int = 200
+BKM_MFIK_MAX: float = 20.0  # techo de sanidad de MFIK; por encima, o si K < 1 + S², MFIS/MFIK se anulan
 MIN_TOTAL_VOL: float = 1e-3
 
 COVARIANCE_MODE: Literal["correlation", "beta"] = "correlation"
@@ -1197,6 +1198,12 @@ class ImpliedMomentsEngine:
                 div_yield,
             )
             if result:
+                # Un par fuera de K >= 1 + S² o sobre el techo delata una integración mala: se anulan
+                # asimetría y curtosis de ese vencimiento (sin recortar) y se conserva la varianza.
+                if not rk.higher_moments_admissible(result["skewness"], result["kurtosis"], BKM_MFIK_MAX):
+                    self.logger.info("%s %s: MFIS/MFIK inadmisibles (%.2f, %.2f), se anulan",
+                                     ticker, expiry, result["skewness"], result["kurtosis"])
+                    result = {**result, "skewness": float("nan"), "kurtosis": float("nan")}
                 estimates.append({"days": float(days), **result})
         if not estimates:
             return None
@@ -1206,8 +1213,8 @@ class ImpliedMomentsEngine:
             return None
         return {
             "MFIV": mfiv,
-            "MFIS": _clip(blended["skewness"], -10.0, 10.0),
-            "MFIK": _clip(blended["kurtosis"], 1.0, 50.0),
+            "MFIS": blended["skewness"],
+            "MFIK": blended["kurtosis"],
             "Fuente": "BKM (Polygon)",
             "Vencimientos": len(estimates),
         }
@@ -1346,7 +1353,7 @@ class ImpliedCovarianceBuilder:
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
-# FASE 2 · VECTOR DE RETORNOS ESPERADOS CON TILT POR RIESGO DE COLA
+# FASE 2 · VECTOR DE RETORNOS ESPERADOS (CAPM + HISTÓRICO)
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class ExpectedReturnModel:
@@ -1362,16 +1369,12 @@ class ExpectedReturnModel:
         mu_capm = RISK_FREE_RATE + betas * EQUITY_RISK_PREMIUM
         mu_hist = returns[tickers].mean() * 252.0
         mu_base = (1.0 - HISTORICAL_MU_BLEND) * mu_capm + HISTORICAL_MU_BLEND * mu_hist
-        # El tilt por riesgo de cola se eliminó: ver la nota junto a los parámetros
-        # de covarianza. Mu_Ajustado se conserva como nombre de columna porque el
-        # optimizador y los reportes lo consumen, pero ya no lleva penalización.
         return pd.DataFrame(
             {
                 "Beta": betas,
                 "Mu_CAPM": mu_capm,
                 "Mu_Histórico": mu_hist,
                 "Mu_Base": mu_base,
-                "Mu_Ajustado": mu_base,
             },
             index=tickers,
         )
@@ -1598,7 +1601,7 @@ class ConsoleReporter:
             {
                 "Categoría": universe.loc[active, "Categoría"],
                 "Peso w*": result.weights[active],
-                "μ ajustado": mu_table.loc[active, "Mu_Ajustado"],
+                "μ": mu_table.loc[active, "Mu_Base"],
                 "MFIV": moments.loc[active, "MFIV"],
                 "MFIS": moments.loc[active, "MFIS"],
                 "MFIK": moments.loc[active, "MFIK"],
@@ -1664,7 +1667,7 @@ class DashboardBuilder:
             subplot_titles=(
                 "Asset Allocation (w*)",
                 "Exposición Factorial: Target vs. Real (Bᵀw*)",
-                "Riesgo vs. Retorno · MFIV (BKM) vs. μ ajustado",
+                "Riesgo vs. Retorno · MFIV (BKM) vs. μ",
                 "Peso vs. Contribución al Riesgo",
             ),
             vertical_spacing=0.12,
@@ -1742,7 +1745,7 @@ class DashboardBuilder:
         figure.add_trace(
             go.Scatter(
                 x=moments["MFIV"],
-                y=mu_table.loc[moments.index, "Mu_Ajustado"],
+                y=mu_table.loc[moments.index, "Mu_Base"],
                 mode="markers+text",
                 text=moments.index.tolist(),
                 textposition="top center",
@@ -1757,7 +1760,7 @@ class DashboardBuilder:
                     line=dict(width=0.6, color="#333333"),
                 ),
                 hovertemplate=(
-                    "<b>%{text}</b><br>MFIV: %{x:.2%}<br>μ ajustado: %{y:.2%}<br>MFIS: %{marker.color:.2f}"
+                    "<b>%{text}</b><br>MFIV: %{x:.2%}<br>μ: %{y:.2%}<br>MFIS: %{marker.color:.2f}"
                     "<br>MFIK: %{customdata[1]:.2f}<br>Peso: %{customdata[0]:.2%}<br>Fuente: %{customdata[2]}<extra></extra>"
                 ),
                 name="ETFs del universo",
@@ -1778,7 +1781,7 @@ class DashboardBuilder:
             col=1,
         )
         figure.update_xaxes(title_text="Volatilidad implícita anualizada (MFIV)", tickformat=".0%", row=2, col=1)
-        figure.update_yaxes(title_text="Retorno esperado ajustado (μ)", tickformat=".1%", row=2, col=1)
+        figure.update_yaxes(title_text="Retorno esperado (μ)", tickformat=".1%", row=2, col=1)
 
     @staticmethod
     def _risk_budget_bars(figure: go.Figure, active: pd.Series, risk: pd.Series) -> None:
@@ -1835,7 +1838,7 @@ class PassiveETFAllocationPipeline:
         self.logger.info("FASE 1 · Matriz factorial B (FMP + técnicos)")
         factor_matrix, raw_factors = FactorModelBuilder(self.fmp, prices[tickers]).build(universe)
 
-        self.logger.info("FASE 2 · Momentos BKM, covarianza implícita y tilt de μ")
+        self.logger.info("FASE 2 · Momentos BKM, covarianza implícita y μ")
         moments = ImpliedMomentsEngine(self.polygon, self.fmp, prices[tickers], RISK_FREE_RATE).compute(tickers)
         covariance = ImpliedCovarianceBuilder(
             COVARIANCE_MODE, CORRELATION_LOOKBACK_DAYS, CORRELATION_SHRINKAGE, BENCHMARK_TICKER,
@@ -1845,7 +1848,7 @@ class PassiveETFAllocationPipeline:
         mu_table = ExpectedReturnModel(BENCHMARK_TICKER).build(returns, moments)
 
         self.logger.info("FASE 3 · Optimización cuadrática con restricciones factoriales")
-        optimizer = PortfolioOptimizer(mu_table["Mu_Ajustado"], covariance, factor_matrix, self.profile)
+        optimizer = PortfolioOptimizer(mu_table["Mu_Base"], covariance, factor_matrix, self.profile)
         result = optimizer.solve(SOLVER)
         comparison = self._compare_solvers(optimizer, result) if RUN_SOLVER_COMPARISON else pd.DataFrame()
 
@@ -1899,7 +1902,7 @@ class PassiveETFAllocationPipeline:
         self.reporter.table("FASE 1 · MÉTRICAS CRUDAS (fundamentales agregados y técnicos)", raw_factors)
         self.reporter.table("FASE 1 · MATRIZ DE CARGAS FACTORIALES B (0-1)", factor_matrix, floatfmt=".3f")
         self.reporter.table("FASE 2 · MOMENTOS IMPLÍCITOS BKM (MFIV / MFIS / MFIK)", moments)
-        self.reporter.table("FASE 2 · VECTOR μ Y TILT POR RIESGO DE COLA", mu_table)
+        self.reporter.table("FASE 2 · VECTOR μ (CAPM + HISTÓRICO)", mu_table)
         self.reporter.table("FASE 3 · PESOS ÓPTIMOS w* (activos)", self.reporter.allocation_table(result, universe_frame, moments, mu_table, risk))
         self.reporter.table("FASE 3 · EXPOSICIÓN FACTORIAL: DESEADA vs. LOGRADA", self.reporter.factor_table(result, optimizer.requested_targets, optimizer.targets))
         self.reporter.table("FASE 3 · MÉTRICAS DEL PORTAFOLIO", self.reporter.metrics_table(result, self.profile))
