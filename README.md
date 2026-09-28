@@ -1,136 +1,138 @@
 # US Asset Allocation
 
-Herramientas en Python para construir portafolios de inversión sobre el mercado estadounidense con datos de mercado en vivo. El repositorio tiene dos pipelines independientes y un módulo de estimadores de riesgo compartido:
+Python tools for building investment portfolios in the US market from live market data. The repository contains two independent pipelines and a shared risk-estimation module:
 
-| Archivo | Qué hace |
+| File | What it does |
 |---|---|
-| [`US Asset Manager.py`](US%20Asset%20Manager.py) | Asignación de activos con **ETFs**: arma el universo, estima factores, momentos implícitos de opciones y covarianza, y optimiza los pesos según un perfil de inversión. |
-| [`Corp_FR_Optimization.py`](Corp_FR_Optimization.py) | Selección de un portafolio de **renta fija corporativa Investment Grade (USD)**: filtra emisores por solvencia, flujo de caja y rating, los rankea y calcula el rendimiento mínimo exigido por plazo. |
-| [`risk_estimators.py`](risk_estimators.py) | Librería de estimadores de riesgo (covarianza EWMA + Ledoit-Wolf, corrección Q→P, momentos de portafolio, Cornish-Fisher). La usa `US Asset Manager.py`. |
+| [`US Asset Manager.py`](US%20Asset%20Manager.py) | **ETF** asset allocation: builds the universe, estimates factor exposures, option-implied moments and covariance, and optimizes weights for an investment profile. |
+| [`Corp_FR_Optimization.py`](Corp_FR_Optimization.py) | **Investment Grade corporate fixed income (USD)** portfolio selection: screens issuers on solvency, cash flow and rating, ranks them, and computes the minimum required yield by tenor. |
+| [`risk_estimators.py`](risk_estimators.py) | Risk estimator library (EWMA + Ledoit-Wolf covariance, Q→P correction, portfolio moments, Cornish-Fisher). Used by `US Asset Manager.py`. |
 
-Cada script se ejecuta de principio a fin, imprime tablas en consola y genera un reporte HTML interactivo con Plotly.
+Each script runs end to end, prints tables to the console and produces an interactive Plotly HTML report.
+
+> Code comments, console output and the HTML reports are in Spanish.
 
 ---
 
-## 1. `US Asset Manager.py` — Asignación pasiva con ETFs
+## 1. `US Asset Manager.py` — Passive ETF allocation
 
-Pipeline orquestado por la clase `PassiveETFAllocationPipeline`, organizado en fases:
+A pipeline orchestrated by the `PassiveETFAllocationPipeline` class, organized in phases:
 
-### Fase 0 · Universo híbrido
-- **Lista maestra** de ~50 ETFs (`MASTER_ETF_LIST`): índices core de EE. UU., factores/estilos, sectores, megatendencias, internacionales, commodities, renta fija y real estate.
-- **Candidatos dinámicos** desde el screener de FMP (NYSE, NASDAQ, AMEX), filtrados por volumen en dólares (≥ USD 1 M diarios) y excluyendo ETFs apalancados o inversos.
-- Descarga de precios ajustados (3 años) y **eliminación de réplicas**: un ETF dinámico se descarta si su correlación con uno ya incluido es ≥ 0.985.
+### Phase 0 · Hybrid universe
+- **Master list** of ~50 ETFs (`MASTER_ETF_LIST`): US core indices, factor/style, sectors, megatrends, international, commodities, fixed income and real estate.
+- **Dynamic candidates** from the FMP screener (NYSE, NASDAQ, AMEX), filtered by dollar volume (≥ USD 1M per day), excluding leveraged and inverse ETFs.
+- Downloads adjusted prices (3 years) and **removes replicas**: a dynamic ETF is dropped if its correlation with one already included is ≥ 0.985.
 
-### Fase 1 · Matriz de cargas factoriales **B**
-Para cada ETF se calcula un score entre 0 y 1 en cinco factores:
+### Phase 1 · Factor loading matrix **B**
+Each ETF gets a score between 0 and 1 on five factors:
 
-| Factor | Cómo se mide |
+| Factor | How it is measured |
 |---|---|
-| Value | Earnings yield y book yield de los 10 principales holdings |
-| Growth | Crecimiento de ingresos y de EPS de los holdings |
-| Momentum | Retorno 12-1 meses |
-| Quality | ROE y ROIC de los holdings |
-| LowVol | Volatilidad realizada de 252 días (invertida) |
+| Value | Earnings yield and book yield of the top 10 holdings |
+| Growth | Revenue and EPS growth of the holdings |
+| Momentum | 12-1 month return |
+| Quality | ROE and ROIC of the holdings |
+| LowVol | 252-day realized volatility (inverted) |
 
-Los fundamentales se agregan ponderando por el peso de cada holding y se convierten en percentiles dentro del universo. Si falta un dato, el factor queda neutral (0.5).
+Fundamentals are aggregated by holding weight and converted into percentiles within the universe. Missing data leaves the factor neutral (0.5).
 
-### Fase 2 · Momentos, covarianza y retorno esperado
-- **Momentos implícitos (BKM)**: con la cadena de opciones de Polygon (vencimientos de 30 a 90 días) se estiman la volatilidad, la asimetría y la curtosis implícitas libres de modelo (MFIV, MFIS, MFIK) con Bakshi, Kapadia y Madan (2003). La volatilidad implícita de cada strike se obtiene invirtiendo el modelo americano de Bjerksund-Stensland, se interpola con un spline y los resultados se llevan a un horizonte de 60 días. El dividend yield se lee por ticker desde FMP. Si no hay opciones disponibles, se usan momentos históricos.
-- **Covarianza**: Σ = D·R·D, donde
-  - **D** son las volatilidades implícitas ajustadas de medida Q (riesgo neutral) a medida P (física) para descontar la prima de riesgo de varianza;
-  - **R** es la correlación histórica EWMA (vida media de 120 días) con shrinkage de Ledoit-Wolf hacia correlación constante.
-  - También existe un modo `beta` (modelo de un factor contra SPY).
-- **Retorno esperado μ**: 75 % CAPM (rf 4 % + β · prima de 5 %) y 25 % media histórica.
+### Phase 2 · Moments, covariance and expected return
+- **Implied moments (BKM)**: from the Polygon option chain (30 to 90 day expiries), the model-free implied volatility, skewness and kurtosis (MFIV, MFIS, MFIK) are estimated with Bakshi, Kapadia & Madan (2003). Each strike's implied volatility is obtained by inverting the Bjerksund-Stensland American option model, smoothed with a spline, and the results are interpolated to a 60-day horizon. Dividend yields are read per ticker from FMP. If no options are available, historical moments are used instead.
+- **Covariance**: Σ = D·R·D, where
+  - **D** holds the implied volatilities adjusted from the Q (risk-neutral) measure to the P (physical) measure to remove the variance risk premium;
+  - **R** is the historical EWMA correlation (120-day half-life) with Ledoit-Wolf shrinkage toward constant correlation.
+  - A `beta` mode (single-factor model against SPY) is also available.
+- **Expected return μ**: 75% CAPM (4% risk-free rate + β · 5% equity premium) and 25% historical mean.
 
-### Fase 3 · Optimización
-Maximiza la utilidad media-varianza
+### Phase 3 · Optimization
+Maximizes mean-variance utility
 
 ```
 max  μᵀw − ½·λ·wᵀΣw
-s.a. Σw = 1,   0 ≤ w ≤ w_max,   Bᵀw ≥ targets factoriales
+s.t. Σw = 1,   0 ≤ w ≤ w_max,   Bᵀw ≥ factor targets
 ```
 
-Los parámetros dependen del perfil elegido:
+Parameters depend on the selected profile:
 
-| Perfil | λ | w_max | Targets mínimos |
+| Profile | λ | w_max | Minimum targets |
 |---|---|---|---|
-| Conservador | 8 | 15 % | Value 0.45 · Quality 0.55 · LowVol 0.70 |
-| Crecimiento | 4 | 20 % | Growth 0.60 · Momentum 0.45 · Quality 0.55 |
-| Momentum/Agresivo | 2 | 25 % | Growth 0.55 · Momentum 0.70 |
+| Conservador (Conservative) | 8 | 15% | Value 0.45 · Quality 0.55 · LowVol 0.70 |
+| Crecimiento (Growth) | 4 | 20% | Growth 0.60 · Momentum 0.45 · Quality 0.55 |
+| Momentum/Agresivo (Aggressive) | 2 | 25% | Growth 0.55 · Momentum 0.70 |
 
-Antes de optimizar, un programa lineal verifica que los targets sean alcanzables y, si no lo son, los relaja lo mínimo necesario. Hay tres solvers disponibles, y opcionalmente se comparan entre sí:
-- `cvxpy`: programación cuadrática (por defecto);
+Before optimizing, a linear program checks that the targets are attainable and, if they are not, relaxes them by the minimum amount needed. Three solvers are available and can optionally be compared against each other:
+- `cvxpy`: quadratic programming (default);
 - `scipy`: SLSQP;
-- `qubo_sa`: formulación QUBO con 5 bits por activo, resuelta con *simulated annealing*.
+- `qubo_sa`: QUBO formulation with 5 bits per asset, solved with *simulated annealing*.
 
-### Fases 4 y 5 · Salidas
-- En consola: composición del universo, ETFs descartados, factores, momentos, μ, pesos óptimos, exposición factorial deseada vs. lograda, métricas (retorno, volatilidad, Sharpe, N efectivo) y la comparación de solvers.
-- `portfolio_dashboard.html`: gráfico de asignación, radar de factores, dispersión riesgo-retorno y comparación de peso vs. contribución al riesgo.
-
----
-
-## 2. `Corp_FR_Optimization.py` — Portafolio de bonos corporativos IG
-
-Pipeline de screening de emisores en seis fases (`run_pipeline`):
-
-1. **Curva libre de riesgo**: nodos CMT del Tesoro (1M a 30Y) desde FRED, interpolados con PCHIP.
-2. **Screening y solvencia**: empresas de EE. UU. con market cap ≥ USD 10 bn, excluyendo servicios financieros. Se exige Deuda/EBITDA ≤ 3.0x y EBITDA/Intereses ≥ 2.5x.
-3. **Free cash flow**: FCF estrictamente creciente **o** CAGR a 3 años > 3 % (configurable como `AND`).
-4. **Rating**: solo grado de inversión (AAA a BBB-). Se usa el rating de FMP como aproximación, y `MANUAL_RATING_OVERRIDES` permite reemplazarlo por calificaciones reales de agencia.
-5. **Composite Credit Score**: `0.40·Z(Cobertura) + 0.30·Z(−Deuda/EBITDA) + 0.30·Z(CAGR FCF)`, con Z-scores winsorizados a ±3. Se seleccionan los 15 mejores.
-6. **Ponderación y Yield Target**:
-   - dos esquemas de pesos: Equal Weight y Credit-Score Weight (con tope de 15 % por emisor), sobre un nocional de USD 10 M;
-   - **rendimiento mínimo exigido** para plazos de 3, 5 y 10 años: `Rf(t) + spread por rating + prima por plazo + ajuste por score`.
-
-**Salidas**: embudo de screening, ranking, pesos, tabla de yield targets, un checklist para buscar las emisiones concretas en **Refinitiv Workspace** (criterio de compra: YTW ≥ Target y OAS ≥ spread mínimo) y el reporte `reporte_portafolio_renta_fija.html`.
+### Phases 4 and 5 · Outputs
+- Console: universe composition, dropped ETFs, factors, moments, μ, optimal weights, target vs. achieved factor exposure, metrics (return, volatility, Sharpe, effective N) and the solver comparison.
+- `portfolio_dashboard.html`: allocation chart, factor radar, risk-return scatter and weight vs. risk contribution.
 
 ---
 
-## 3. `risk_estimators.py` — Estimadores de riesgo
+## 2. `Corp_FR_Optimization.py` — IG corporate bond portfolio
 
-Módulo sin dependencias de red. Es una copia del módulo homónimo del repositorio AM-PM y debe mantenerse sincronizado con él.
+A six-phase issuer screening pipeline (`run_pipeline`):
 
-1. **Covarianza**: EWMA, tamaño de muestra efectivo de Kish y shrinkage de Ledoit-Wolf (2003) hacia correlación constante (`cov_ewma_shrunk`), además de la proyección a la matriz semidefinida positiva más cercana.
-2. **Corrección Q → P**: de la volatilidad implícita (prima de riesgo de varianza) y de la correlación implícita (prima de riesgo de correlación).
-3. **Momentos de portafolio**: asimetría y curtosis del portafolio calculadas sobre un panel de escenarios en O(J·n), sin construir los tensores de co-momentos, junto con sus gradientes analíticos.
-4. **Cornish-Fisher**: control de admisibilidad (K ≥ 1 + S²) e inversión momentos → parámetros según Maillard (2012), para obtener VaR/CVaR monótonos y consistentes.
-5. **SVIX / Martin-Wagner**: retorno esperado a partir de varianzas implícitas. *Experimental y desactivado*: la fórmula aún no se ha verificado contra el paper.
+1. **Risk-free curve**: Treasury CMT nodes (1M to 30Y) from FRED, interpolated with PCHIP.
+2. **Screening and solvency**: US companies with market cap ≥ USD 10bn, excluding financial services. Requires Debt/EBITDA ≤ 3.0x and EBITDA/Interest ≥ 2.5x.
+3. **Free cash flow**: strictly increasing FCF **or** 3-year CAGR > 3% (configurable as `AND`).
+4. **Rating**: investment grade only (AAA to BBB-). FMP's rating is used as a proxy, and `MANUAL_RATING_OVERRIDES` lets you replace it with actual agency ratings.
+5. **Composite Credit Score**: `0.40·Z(Coverage) + 0.30·Z(−Debt/EBITDA) + 0.30·Z(FCF CAGR)`, with Z-scores winsorized at ±3. The top 15 issuers are selected.
+6. **Weighting and Yield Target**:
+   - two weighting schemes: Equal Weight and Credit-Score Weight (15% cap per issuer), on a USD 10M notional;
+   - **minimum required yield** for 3, 5 and 10 year tenors: `Rf(t) + rating spread + tenor premium + score adjustment`.
+
+**Outputs**: screening funnel, ranking, weights, yield target table, a checklist for finding the actual bond issues in **Refinitiv Workspace** (buy rule: YTW ≥ Target and OAS ≥ minimum spread) and the `reporte_portafolio_renta_fija.html` report.
 
 ---
 
-## Requisitos
+## 3. `risk_estimators.py` — Risk estimators
 
-Python 3.10 o superior y:
+A module with no network dependencies. It is a copy of the module of the same name in the AM-PM repository and must be kept in sync with it.
+
+1. **Covariance**: EWMA, Kish effective sample size and Ledoit-Wolf (2003) shrinkage toward constant correlation (`cov_ewma_shrunk`), plus projection onto the nearest positive semidefinite matrix.
+2. **Q → P correction**: for implied volatility (variance risk premium) and implied correlation (correlation risk premium).
+3. **Portfolio moments**: portfolio skewness and kurtosis computed over a scenario panel in O(J·n), without building the co-moment tensors, along with their analytical gradients.
+4. **Cornish-Fisher**: admissibility check (K ≥ 1 + S²) and moment → parameter inversion following Maillard (2012), giving monotonic and consistent VaR/CVaR.
+5. **SVIX / Martin-Wagner**: expected return from implied variances. *Experimental and disabled*: the formula has not yet been verified against the paper.
+
+---
+
+## Requirements
+
+Python 3.10 or later and:
 
 ```bash
 pip install numpy pandas scipy requests plotly cvxpy tabulate fredapi
 ```
 
-`cvxpy`, `tabulate` y `fredapi` son opcionales: si faltan, los scripts usan SciPy, `pandas.to_string` y la API REST de FRED, respectivamente.
+`cvxpy`, `tabulate` and `fredapi` are optional: without them the scripts fall back to SciPy, `pandas.to_string` and the FRED REST API, respectively.
 
 ### API keys
 
-| Variable | Servicio | Usada por |
+| Variable | Service | Used by |
 |---|---|---|
-| `FMP_API_KEY` | [Financial Modeling Prep](https://financialmodelingprep.com) | Ambos scripts (obligatoria) |
-| `POLYGON_API_KEY` | [Polygon.io](https://polygon.io): snapshot de opciones | `US Asset Manager.py` (opcional; sin ella se usan momentos históricos) |
-| `FRED_API_KEY` | [FRED](https://fred.stlouisfed.org/docs/api/api_key.html) | `Corp_FR_Optimization.py` (obligatoria) |
+| `FMP_API_KEY` | [Financial Modeling Prep](https://financialmodelingprep.com) | Both scripts (required) |
+| `POLYGON_API_KEY` | [Polygon.io](https://polygon.io): options snapshot | `US Asset Manager.py` (optional; without it, historical moments are used) |
+| `FRED_API_KEY` | [FRED](https://fred.stlouisfed.org/docs/api/api_key.html) | `Corp_FR_Optimization.py` (required) |
 
-Algunos endpoints de FMP (holdings de ETFs, estados financieros, ratings) dependen del plan contratado. Si un endpoint no está disponible, el script lo desactiva y continúa con valores neutrales o de respaldo.
+Some FMP endpoints (ETF holdings, financial statements, ratings) depend on your subscription plan. If an endpoint is unavailable, the script disables it and continues with neutral or fallback values.
 
-## Uso
+## Usage
 
 ```bash
 export FMP_API_KEY="..."
 export POLYGON_API_KEY="..."
 export FRED_API_KEY="..."
 
-python "US Asset Manager.py"        # genera portfolio_dashboard.html
-python Corp_FR_Optimization.py      # genera reporte_portafolio_renta_fija.html
+python "US Asset Manager.py"        # produces portfolio_dashboard.html
+python Corp_FR_Optimization.py      # produces reporte_portafolio_renta_fija.html
 ```
 
-Todos los parámetros (perfil de inversión, solver, umbrales de screening, pesos del score, spreads por rating, etc.) están en el bloque de configuración al inicio de cada archivo.
+All parameters (investment profile, solver, screening thresholds, score weights, rating spreads, etc.) live in the configuration block at the top of each file.
 
-## Aviso
+## Disclaimer
 
-Este código tiene fines académicos y de investigación. No constituye asesoría de inversión. En particular, los ratings de FMP son un proxy cuantitativo y no reemplazan las calificaciones de S&P, Moody's o Fitch.
+This code is for academic and research purposes only and does not constitute investment advice. In particular, FMP ratings are a quantitative proxy and do not replace ratings from S&P, Moody's or Fitch.
