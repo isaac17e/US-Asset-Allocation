@@ -14,6 +14,12 @@ from __future__ import annotations
 # =============================================================================
 import os
 
+try:  # las claves se leen de .env (junto a este script); si no hay dotenv, de os.environ
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+except ImportError:
+    pass
+
 # ---------------------------------------------------------------- APIs -------
 FMP_API_KEY = os.getenv("FMP_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_FMP")
 FRED_API_KEY = os.getenv("FRED_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_FRED")
