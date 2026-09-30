@@ -21,8 +21,8 @@ except ImportError:
     pass
 
 # ---------------------------------------------------------------- APIs -------
-FMP_API_KEY = os.getenv("FMP_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_FMP")
-FRED_API_KEY = os.getenv("FRED_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_FRED")
+FMP_API_KEY = os.getenv("FMP_API_KEY", "")
+FRED_API_KEY = os.getenv("FRED_API_KEY", "")
 
 FMP_BASE_URL = "https://financialmodelingprep.com/stable"
 FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
@@ -991,9 +991,9 @@ Plotly.newPlot('c_overlay', [{{
 # =============================================================================
 def _check_keys() -> None:
     missing = [n for n, k in (("FMP_API_KEY", FMP_API_KEY), ("FRED_API_KEY", FRED_API_KEY))
-               if not k or k.startswith("PEGA_AQUI")]
+               if not k.strip()]
     if missing:
-        log.error("Faltan API keys: %s. Edítalas en el bloque de configuración o en variables de entorno.",
+        log.error("Faltan API keys: %s. Agrégalas al archivo .env (o como variables de entorno).",
                   ", ".join(missing))
         sys.exit(1)
     if abs(sum(SCORE_WEIGHTS.values()) - 1.0) > 1e-9:

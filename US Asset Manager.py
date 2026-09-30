@@ -49,8 +49,8 @@ try:  # las claves se leen de .env (junto a este script); si no hay dotenv, de o
 except ImportError:
     pass
 
-FMP_API_KEY: str = os.getenv("FMP_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_FMP")
-POLYGON_API_KEY: str = os.getenv("POLYGON_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_POLYGON")
+FMP_API_KEY: str = os.getenv("FMP_API_KEY", "")
+POLYGON_API_KEY: str = os.getenv("POLYGON_API_KEY", "")
 FMP_BASE_URL: str = "https://financialmodelingprep.com/stable"
 POLYGON_BASE_URL: str = "https://api.polygon.io"
 
@@ -117,32 +117,13 @@ CORRELATION_LOOKBACK_DAYS: int = 252
 CORRELATION_SHRINKAGE: float = 0.10  # solo se aplica si USE_LW_SHRINKAGE = False
 
 # ── Covarianza histórica: EWMA + shrinkage de Ledoit-Wolf ────────────────────
-# Antes la correlación salía de recent.corr() con pesos iguales y se encogía
-# hacia la IDENTIDAD con una intensidad fija (CORRELATION_SHRINKAGE). Encoger
-# hacia la identidad empuja las correlaciones a cero, lo que subestima el
-# riesgo sistemático; y una intensidad fija no responde al ratio nº activos /
-# nº observaciones. Ahora se pondera por EWMA y se encoge hacia correlación
-# constante con la intensidad óptima de Ledoit-Wolf (2003), estimada del dato.
 USE_LW_SHRINKAGE: bool = True
 COVARIANCE_HALFLIFE_DAYS: int = 120
 
 # ── Corrección Q → P (prima de riesgo de varianza) ───────────────────────────
-# La MFIV está bajo la medida neutral al riesgo: σ_Q² = σ_P² + VRP, con VRP > 0
-# en promedio. Usarla cruda en Σ sobrestima el riesgo físico. El ratio se
-# estima por activo contra su propia volatilidad realizada, acotado, y solo se
-# aplica a los tickers cuya MFIV vino de opciones (Fuente = "BKM (Polygon)");
-# los que cayeron al fallback histórico ya están bajo P.
 USE_Q_TO_P_VOL: bool = True
 VRP_RATIO_BOUNDS: Tuple[float, float] = (0.70, 1.00)
 VRP_FALLBACK_RATIO: float = 0.90
-
-# NOTA: el tilt de μ por riesgo de cola (SKEW_PENALTY / KURTOSIS_PENALTY sobre
-# MFIS y MFIK) fue ELIMINADO. Sus constantes y umbrales eran fijos y no
-# calibrados, y MFIS/MFIK son momentos bajo la medida Q: ya incorporan aversión
-# al riesgo de cola, no solo riesgo. Restaban un sesgo arbitrario justo al
-# insumo más sensible del optimizador — Chopra & Ziemba (1993) muestran que los
-# errores en μ pesan un orden de magnitud más que los de covarianza. MFIS y
-# MFIK se siguen reportando como diagnóstico en la tabla de momentos.
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
@@ -275,7 +256,7 @@ def _clip(value: float, lower: float, upper: float) -> float:
 
 
 def _is_configured_key(key: str) -> bool:
-    return bool(key) and not key.startswith("PEGA_AQUI")
+    return bool(key.strip())
 
 
 def _percentile_score(series: pd.Series) -> pd.Series:
@@ -1930,7 +1911,7 @@ def configure_logging(level: str) -> None:
 
 def validate_configuration() -> None:
     if not _is_configured_key(FMP_API_KEY):
-        raise ValueError("Configura FMP_API_KEY (variable de entorno o bloque de parámetros editables).")
+        raise ValueError("Configura FMP_API_KEY en el archivo .env (o como variable de entorno).")
     if INVESTMENT_PROFILE not in PROFILES:
         raise ValueError(f"INVESTMENT_PROFILE inválido: {INVESTMENT_PROFILE}")
     if not 0 < OPTIONS_MIN_DAYS <= OPTIONS_TARGET_DAYS <= OPTIONS_MAX_DAYS:

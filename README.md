@@ -123,7 +123,10 @@ Some FMP endpoints (ETF holdings, financial statements, ratings) depend on your 
 ## Usage
 
 ```bash
-cp .env.example .env    # then edit .env with your keys (it is git-ignored)
+# create a .env file next to the scripts with your keys (it is git-ignored):
+#   FMP_API_KEY=...
+#   FRED_API_KEY=...
+#   POLYGON_API_KEY=...   (optional)
 pip install python-dotenv
 
 python "US Asset Manager.py"        # produces portfolio_dashboard.html
