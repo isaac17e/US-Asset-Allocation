@@ -105,7 +105,7 @@ A module with no network dependencies. It is a copy of the module of the same na
 Python 3.10 or later and:
 
 ```bash
-pip install numpy pandas scipy requests plotly cvxpy tabulate fredapi
+pip install numpy pandas scipy requests plotly python-dotenv cvxpy tabulate fredapi
 ```
 
 `cvxpy`, `tabulate` and `fredapi` are optional: without them the scripts fall back to SciPy, `pandas.to_string` and the FRED REST API, respectively.
@@ -123,9 +123,8 @@ Some FMP endpoints (ETF holdings, financial statements, ratings) depend on your 
 ## Usage
 
 ```bash
-export FMP_API_KEY="..."
-export POLYGON_API_KEY="..."
-export FRED_API_KEY="..."
+cp .env.example .env    # then edit .env with your keys (it is git-ignored)
+pip install python-dotenv
 
 python "US Asset Manager.py"        # produces portfolio_dashboard.html
 python Corp_FR_Optimization.py      # produces reporte_portafolio_renta_fija.html

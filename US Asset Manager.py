@@ -43,6 +43,12 @@ except ImportError:
 # PARÁMETROS EDITABLES · CREDENCIALES Y ENDPOINTS
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
+try:  # las claves se leen de .env (junto a este script); si no hay dotenv, de os.environ
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+except ImportError:
+    pass
+
 FMP_API_KEY: str = os.getenv("FMP_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_FMP")
 POLYGON_API_KEY: str = os.getenv("POLYGON_API_KEY", "PEGA_AQUI_TU_API_KEY_DE_POLYGON")
 FMP_BASE_URL: str = "https://financialmodelingprep.com/stable"
