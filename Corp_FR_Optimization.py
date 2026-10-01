@@ -32,7 +32,6 @@ FMP_EP_SCREENER = "company-screener"
 FMP_EP_INCOME = "income-statement"
 FMP_EP_BALANCE = "balance-sheet-statement"
 FMP_EP_CASHFLOW = "cash-flow-statement"
-FMP_EP_RATING = "ratings-snapshot"
 
 # ----------------------------------------------- Red / límites de peticiones -
 REQUEST_TIMEOUT_SEC = 20          # timeout por petición HTTP
@@ -66,13 +65,28 @@ SCREENER_COUNTRY = "US"                  # None para no filtrar por país
 SCREENER_LIMIT = 1000                    # máx. resultados por llamada
 MAX_CANDIDATES = 300                     # tope de emisores a analizar (costo API)
 EXCLUDE_SECTORS = ["Financial Services"]  # EBITDA/deuda no aplican a bancos/aseg.
+# El screener también devuelve notas, preferentes y deuda listada en bolsa con
+# los estados financieros de la matriz. Se excluyen por nombre.
+NON_COMMON_NAME_PATTERN = (
+    r"\d+(?:\.\d+)?\s*%|\bseries\b|\bnotes?\b|\bnts\b|\bjr\b|\bjrsub\b|debenture|"
+    r"collateral|preferred|\bpfd\b|depositary|subordinated|perpetual"
+)
+NON_COMMON_SYMBOL_PATTERN = r"-P[A-Z]?$"  # preferentes: CTA-PA, CTA-PB…
 
 FUNDAMENTALS_PERIOD = "annual"   # período de los estados financieros
 DEBT_DEFINITION = "total"        # "total" (Total Debt) o "net" (Net Debt)
 MAX_DEBT_TO_EBITDA = 3.0         # x
+# Deuda bruta mínima: deja solo emisores con bonos en circulación (empresas sin
+# deuda maximizan cobertura y apalancamiento pero no hay qué comprarles).
+MIN_TOTAL_DEBT_USD = 2_000_000_000
 MIN_INTEREST_COVERAGE = 2.5      # x  (EBITDA / Interest Expense)
 COVERAGE_CAP = 100.0             # tope de cobertura (evita outliers/infinitos)
-ZERO_INTEREST_POLICY = "cap"     # gasto de intereses = 0: "cap" o "exclude"
+# Gasto de intereses = 0 o ausente con deuda material (p. ej. constructoras que
+# capitalizan intereses): "impute" usa deuda × IMPUTED_INTEREST_RATE,
+# "cap" asigna COVERAGE_CAP y "exclude" descarta al emisor.
+ZERO_INTEREST_POLICY = "impute"
+IMPUTED_INTEREST_RATE = 0.055    # costo de deuda supuesto para la imputación
+ZERO_INTEREST_DEBT_TOL = 0.25    # deuda <= tol × EBITDA se considera inmaterial (-> cap)
 
 # ----------------------------------------------------------- Filtro de FCF ---
 FCF_HISTORY_YEARS = 5            # años de Cash Flow Statement a descargar (3-5)
@@ -84,18 +98,36 @@ FCF_FILTER_LOGIC = "OR"          # "OR": creciente O CAGR>min | "AND": ambos
 INVESTMENT_GRADE_RATINGS = {
     "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
 }
-# El rating de FMP usa una escala propia (S, A, B, C, D). Si True, las notas
-# "S+/S/S-" (tope de la escala FMP) se tratan como bucket AAA en el proxy.
-TREAT_FMP_S_AS_AAA = True
-# Calificaciones de agencia reales (prioridad sobre FMP). Ej.: {"AAPL": "AA+"}
+# Sin acceso a ratings de agencia se usa un rating SINTÉTICO: el peor (más
+# conservador) entre el rating por cobertura y el rating por apalancamiento.
+# (El campo "rating" de FMP es un puntaje de valuación de acciones, no crédito.)
+#
+# Cobertura EBIT / Intereses -> rating. Tabla de Damodaran para empresas no
+# financieras de gran capitalización (> USD 5 bn). Pares (umbral mínimo, rating).
+SYNTHETIC_COVERAGE_TABLE = [
+    (8.50, "AAA"), (6.50, "AA"), (5.50, "A+"), (4.25, "A"), (3.00, "A-"),
+    (2.50, "BBB"), (2.25, "BB+"), (2.00, "BB"), (1.75, "B+"), (1.50, "B"),
+    (1.25, "B-"), (0.80, "CCC"), (0.65, "CC"), (0.20, "C"), (float("-inf"), "D"),
+]
+# Deuda / EBITDA -> rating. Pares (umbral máximo, rating). Supuesto propio,
+# calibrado de forma aproximada a los rangos de S&P para riesgo de negocio
+# "fuerte"; ajústalo a tu criterio.
+SYNTHETIC_LEVERAGE_TABLE = [
+    (0.50, "AAA"), (1.00, "AA"), (1.50, "A+"), (2.00, "A"), (2.50, "A-"),
+    (3.00, "BBB+"), (3.50, "BBB"), (4.00, "BBB-"), (5.00, "BB"), (float("inf"), "B"),
+]
+# Techo del rating sintético: en EE.UU. casi ningún corporativo es AAA.
+SYNTHETIC_MAX_RATING = "AA"
+# Calificaciones de agencia reales (prioridad sobre el sintético). Ej.: {"AAPL": "AA+"}
 MANUAL_RATING_OVERRIDES: dict[str, str] = {}
-# Si True y no hay rating disponible, el emisor se excluye (conservador).
-EXCLUDE_IF_NO_RATING = True
 
 # ------------------------------------------------ Scoring / Ranking ----------
-SCORE_WEIGHTS = {"coverage": 0.40, "debt": 0.30, "fcf": 0.30}
+SCORE_WEIGHTS = {"coverage": 0.30, "debt": 0.25, "fcf": 0.25, "rating": 0.20}
 ZSCORE_CLIP = 3.0                # winsoriza Z-scores a ±3 desviaciones
-LOG_TRANSFORM_COVERAGE = False   # True: usa ln(cobertura) (reduce asimetría)
+# Winsoriza las métricas crudas (cuantiles) ANTES del Z-score: evita que un
+# CAGR de FCF de 190% por año base deprimido domine la media y la desviación.
+WINSORIZE_QUANTILES = (0.05, 0.95)  # None para desactivar
+LOG_TRANSFORM_COVERAGE = True    # True: usa ln(cobertura) (reduce asimetría)
 NAN_CAGR_FILL = "min"            # CAGR no definido (FCF base <= 0): "min" o "zero"
 TOP_N = 15
 
@@ -200,6 +232,27 @@ def _json_safe(obj: Any) -> Any:
     if isinstance(obj, (pd.Timestamp, datetime, date)):
         return obj.isoformat()
     return obj
+
+
+RATING_SCALE = [
+    "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
+    "BB+", "BB", "BB-", "B+", "B", "B-", "CCC", "CC", "C", "D",
+]
+
+
+def _rating_rank(rating: str) -> int:
+    """Posición en la escala (0 = AAA). Mayor = peor."""
+    return RATING_SCALE.index(rating)
+
+
+def synthetic_rating(ebit_coverage: float, debt_to_ebitda: float) -> Optional[str]:
+    """Peor entre el rating por cobertura EBIT/Int y el rating por Deuda/EBITDA."""
+    if math.isnan(ebit_coverage) or math.isnan(debt_to_ebitda):
+        return None
+    by_cov = next(r for floor, r in SYNTHETIC_COVERAGE_TABLE if ebit_coverage >= floor)
+    by_lev = next(r for cap, r in SYNTHETIC_LEVERAGE_TABLE if debt_to_ebitda <= cap)
+    worst = max(_rating_rank(by_cov), _rating_rank(by_lev), _rating_rank(SYNTHETIC_MAX_RATING))
+    return RATING_SCALE[worst]
 
 
 def rating_bucket(rating: Optional[str]) -> Optional[str]:
@@ -454,11 +507,30 @@ def stage_screener(fmp: FMPClient) -> pd.DataFrame:
     if EXCLUDE_SECTORS and "sector" in df:
         df = df[~df["sector"].isin(EXCLUDE_SECTORS)]
 
+    names = df["companyName"].fillna("").astype(str)
+    non_common = (names.str.contains(NON_COMMON_NAME_PATTERN, case=False, regex=True)
+                  | df["symbol"].astype(str).str.contains(NON_COMMON_SYMBOL_PATTERN, regex=True))
+    if non_common.any():
+        log.info("Screener: %d emisiones no comunes excluidas (notas/preferentes): %s",
+                 int(non_common.sum()), ", ".join(df.loc[non_common, "symbol"].astype(str)))
+    df = df[~non_common]
+
     keep = [c for c in ("symbol", "companyName", "marketCap", "sector", "industry",
-                        "exchangeShortName", "country") if c in df.columns]
-    df = (df[keep].dropna(subset=["symbol"]).drop_duplicates("symbol")
-          .sort_values("marketCap", ascending=False).head(MAX_CANDIDATES)
-          .reset_index(drop=True))
+                        "exchangeShortName", "country", "avgVolume") if c in df.columns]
+    df = df[keep].dropna(subset=["symbol"]).drop_duplicates("symbol")
+    # Varias listas del mismo emisor (FOXA/FOX, SO/SOMN, MKC/MKC-V…): se conserva la de mayor
+    # volumen promedio, que es la acción común; las demás son clases o híbridos poco líquidos.
+    if "avgVolume" in df:
+        df = df.sort_values("avgVolume", ascending=False, key=lambda v: pd.to_numeric(v, errors="coerce"))
+    issuer_key = (df["companyName"].fillna("").astype(str).str.lower()
+                  .str.replace(r"\bclass [a-z]\b|\(the\)|\bthe\b|[^a-z0-9 ]", " ", regex=True)
+                  .str.split().str.join(" "))
+    dup = issuer_key.duplicated(keep="first")
+    if dup.any():
+        log.info("Screener: %d clases de acciones duplicadas excluidas: %s",
+                 int(dup.sum()), ", ".join(df.loc[dup, "symbol"].astype(str)))
+    df = (df[~dup].drop(columns="avgVolume", errors="ignore")
+          .sort_values("marketCap", ascending=False).head(MAX_CANDIDATES).reset_index(drop=True))
     return df
 
 
@@ -482,10 +554,15 @@ def stage_solvency(fmp: FMPClient, universe: pd.DataFrame) -> pd.DataFrame:
         if not inc or not bal:
             continue
 
+        # EBIT = operatingIncome: el campo "ebit" de FMP a veces viene en 0 (p. ej. MU)
+        ebit = _to_float(inc.get("operatingIncome"))
+        if math.isnan(ebit) or ebit == 0:
+            ebit = _to_float(inc.get("ebit"))
         ebitda = _to_float(inc.get("ebitda"))
         if math.isnan(ebitda):  # respaldo: EBIT + D&A
-            ebitda = _to_float(inc.get("operatingIncome")) + _to_float(inc.get("depreciationAndAmortization"))
+            ebitda = ebit + _to_float(inc.get("depreciationAndAmortization"))
         interest = abs(_to_float(inc.get("interestExpense")))
+        gross_debt = _to_float(bal.get("totalDebt"))
         debt = _to_float(bal.get("netDebt" if DEBT_DEFINITION == "net" else "totalDebt"))
         if math.isnan(debt) and DEBT_DEFINITION == "net":
             debt = _to_float(bal.get("totalDebt")) - _to_float(bal.get("cashAndCashEquivalents"))
@@ -493,19 +570,27 @@ def stage_solvency(fmp: FMPClient, universe: pd.DataFrame) -> pd.DataFrame:
         if math.isnan(ebitda) or ebitda <= 0 or math.isnan(debt):
             continue  # EBITDA negativo/nulo: apalancamiento no interpretable
 
+        interest_imputed = False
         if math.isnan(interest) or interest == 0:
+            material_debt = debt > ZERO_INTEREST_DEBT_TOL * ebitda
             if ZERO_INTEREST_POLICY == "exclude":
                 continue
-            coverage = COVERAGE_CAP
+            if ZERO_INTEREST_POLICY == "impute" and material_debt:
+                interest, interest_imputed = debt * IMPUTED_INTEREST_RATE, True
+        if math.isnan(interest) or interest == 0:
+            coverage, ebit_coverage = COVERAGE_CAP, COVERAGE_CAP
         else:
             coverage = min(ebitda / interest, COVERAGE_CAP)
+            ebit_coverage = min(ebit / interest, COVERAGE_CAP) if not math.isnan(ebit) else float("nan")
         debt_ebitda = max(debt, 0.0) / ebitda
 
         out.append({
             **row._asdict(),
             "fiscalDate": inc.get("date"),
-            "ebitda": ebitda, "interestExpense": interest, "debt": debt,
+            "ebit": ebit, "ebitda": ebitda, "interestExpense": interest,
+            "interestImputed": interest_imputed, "debt": debt, "grossDebt": gross_debt,
             "debtToEbitda": debt_ebitda, "interestCoverage": coverage,
+            "ebitCoverage": ebit_coverage,
         })
 
     df = pd.DataFrame(out)
@@ -564,34 +649,30 @@ def stage_fcf(fmp: FMPClient, df: pd.DataFrame) -> pd.DataFrame:
 # =============================================================================
 # FASE 4 — CALIFICACIÓN CREDITICIA (GRADO DE INVERSIÓN)
 # =============================================================================
-def _normalize_rating(raw: Optional[str], source: str) -> Optional[str]:
-    if not raw:
-        return None
-    r = str(raw).strip().upper()
-    if source == "FMP" and TREAT_FMP_S_AS_AAA and r in {"S+", "S", "S-"}:
-        return "AAA"
-    return r
+def stage_rating(df: pd.DataFrame) -> pd.DataFrame:
+    """Asigna rating (override manual > sintético).
 
-
-def stage_rating(fmp: FMPClient, df: pd.DataFrame) -> pd.DataFrame:
-    """Asigna rating (override manual > FMP proxy) y conserva solo IG."""
+    Con los umbrales de solvencia actuales todo emisor ya es >= BBB-, así que no es
+    una etapa del embudo; solo descarta (con aviso) si un override manual o umbrales
+    más laxos dejan entrar a un emisor high yield.
+    """
     ratings, sources = [], []
     for row in df.itertuples(index=False):
-        sym = row.symbol
-        if sym in MANUAL_RATING_OVERRIDES:
-            ratings.append(_normalize_rating(MANUAL_RATING_OVERRIDES[sym], "MANUAL"))
+        if row.symbol in MANUAL_RATING_OVERRIDES:
+            ratings.append(str(MANUAL_RATING_OVERRIDES[row.symbol]).strip().upper())
             sources.append("Agencia (manual)")
-            continue
-        rec = _latest(fmp.get_records(FMP_EP_RATING, symbol=sym)) or {}
-        ratings.append(_normalize_rating(rec.get("rating"), "FMP"))
-        sources.append("FMP proxy")
+        else:
+            ratings.append(synthetic_rating(row.ebitCoverage, row.debtToEbitda))
+            sources.append("Sintético")
 
     df = df.copy()
     df["rating"] = ratings
     df["ratingSource"] = sources
-    if EXCLUDE_IF_NO_RATING:
-        df = df[df["rating"].notna()]
-    df = df[df["rating"].isin(INVESTMENT_GRADE_RATINGS)].copy()
+    non_ig = ~df["rating"].isin(INVESTMENT_GRADE_RATINGS)
+    if non_ig.any():
+        log.warning("Excluidos por rating < BBB-: %s",
+                    ", ".join(f"{s} ({r})" for s, r in zip(df.loc[non_ig, "symbol"], df.loc[non_ig, "rating"])))
+    df = df[~non_ig].copy()
     df["ratingBucket"] = df["rating"].map(rating_bucket)
     return df.reset_index(drop=True)
 
@@ -600,8 +681,11 @@ def stage_rating(fmp: FMPClient, df: pd.DataFrame) -> pd.DataFrame:
 # FASE 5 — Z-SCORES Y COMPOSITE CREDIT SCORE
 # =============================================================================
 def zscore(s: pd.Series) -> pd.Series:
-    """Estandariza (media 0, desv. 1) y winsoriza a ±ZSCORE_CLIP."""
+    """Winsoriza la métrica cruda por cuantiles, estandariza y recorta a ±ZSCORE_CLIP."""
     s = pd.to_numeric(s, errors="coerce")
+    if WINSORIZE_QUANTILES is not None and s.notna().sum() >= 3:
+        lo, hi = s.quantile(WINSORIZE_QUANTILES[0]), s.quantile(WINSORIZE_QUANTILES[1])
+        s = s.clip(lo, hi)
     mu, sd = s.mean(), s.std(ddof=1)
     if pd.isna(sd) or sd == 0:
         return pd.Series(0.0, index=s.index)
@@ -609,7 +693,7 @@ def zscore(s: pd.Series) -> pd.Series:
 
 
 def stage_scoring(df: pd.DataFrame) -> pd.DataFrame:
-    """Composite = 0.40·Z_Cov + 0.30·Z_Debt(invertido) + 0.30·Z_FCF; ranking."""
+    """Composite = Σ peso·Z (cobertura, deuda invertida, CAGR FCF, rating); ranking."""
     df = df.copy()
     cov = np.log(df["interestCoverage"]) if LOG_TRANSFORM_COVERAGE else df["interestCoverage"]
 
@@ -623,10 +707,13 @@ def stage_scoring(df: pd.DataFrame) -> pd.DataFrame:
     df["Z_Coverage"] = zscore(cov)
     df["Z_Debt"] = -1.0 * zscore(df["debtToEbitda"])
     df["Z_FCF"] = zscore(df["fcfCAGR_used"])
+    # Rating por escalones (AAA = 0, AA+ = 1, …), invertido: mejor rating -> Z mayor
+    df["Z_Rating"] = -1.0 * zscore(df["rating"].map(_rating_rank).astype(float))
     w = SCORE_WEIGHTS
     df["CompositeScore"] = (w["coverage"] * df["Z_Coverage"]
                             + w["debt"] * df["Z_Debt"]
-                            + w["fcf"] * df["Z_FCF"])
+                            + w["fcf"] * df["Z_FCF"]
+                            + w["rating"] * df["Z_Rating"])
     df = df.sort_values("CompositeScore", ascending=False).reset_index(drop=True)
     df.insert(0, "Rank", np.arange(1, len(df) + 1))
     return df
@@ -743,17 +830,22 @@ def print_ranking(top: pd.DataFrame) -> None:
         "Emisor": top["companyName"].astype(str).str.slice(0, 28),
         "Sector": top.get("sector", pd.Series("", index=top.index)).astype(str).str.slice(0, 20),
         "Rating": top["rating"],
-        "Cob.(x)": top["interestCoverage"].round(1),
+        "Cob.(x)": top["interestCoverage"].round(1).astype(str) + top["interestImputed"].map({True: "*", False: ""}),
+        "EBIT/Int": top["ebitCoverage"].round(1),
         "D/EBITDA": top["debtToEbitda"].round(2),
         "CAGR FCF": top["fcfCAGR"].map(_fmt_pct),
         "FCF↑": top["fcfIncreasing"].map({True: "Sí", False: "No"}),
         "Z_Cov": top["Z_Coverage"].round(2), "Z_Debt": top["Z_Debt"].round(2),
-        "Z_FCF": top["Z_FCF"].round(2), "Score": top["CompositeScore"].round(3),
+        "Z_FCF": top["Z_FCF"].round(2), "Z_Rtg": top["Z_Rating"].round(2),
+        "Score": top["CompositeScore"].round(3),
     })
     print(view.to_string(index=False))
-    if (top["ratingSource"] == "FMP proxy").any():
-        print("\n⚠  Rating = proxy cuantitativo de FMP, no calificación de agencia. "
-              "Valida en Refinitiv (S&P/Moody's/Fitch).")
+    if top["interestImputed"].any():
+        print(f"\n*  Gasto de intereses reportado = 0 con deuda material: se imputó "
+              f"deuda × {IMPUTED_INTEREST_RATE:.1%}.")
+    if (top["ratingSource"] == "Sintético").any():
+        print("\n⚠  Rating SINTÉTICO = peor entre cobertura EBIT/Int (Damodaran) y Deuda/EBITDA, "
+              f"con techo {SYNTHETIC_MAX_RATING}. No es calificación de agencia: valida en Refinitiv.")
 
 
 def print_weights(top: pd.DataFrame, summary: pd.DataFrame) -> None:
@@ -819,7 +911,7 @@ def print_refinitiv_instructions(top: pd.DataFrame, overlay: pd.DataFrame) -> No
     • Spreads: OAS vs curva del Tesoro, G-Spread, Z-Spread.
     • Riesgo: Modified Duration (y Effective Duration si es callable), Convexity.
     • Tamaño/liquidez: Amount Outstanding, fecha de emisión, número de dealers.
-    • Rating de agencias: S&P, Moody's y Fitch (reemplaza el proxy de FMP en
+    • Rating de agencias: S&P, Moody's y Fitch (reemplaza el rating sintético en
       MANUAL_RATING_OVERRIDES y vuelve a correr el pipeline).
 
  3) CRITERIO DE COMPRA POR BONO:
@@ -859,10 +951,11 @@ def build_html_report(curve: RiskFreeCurve, funnel: list[tuple[str, int]],
             "bench_x": BENCHMARK_TENORS, "bench_y": [curve.rate_pct(t) for t in BENCHMARK_TENORS],
         },
         "funnel": {"stage": [f[0] for f in funnel], "n": [f[1] for f in funnel]},
+        "w": SCORE_WEIGHTS,
         "top": {
             "sym": syms, "name": top["companyName"].astype(str).tolist(),
             "rating": top["rating"].tolist(), "score": top["CompositeScore"],
-            "zc": top["Z_Coverage"], "zd": top["Z_Debt"], "zf": top["Z_FCF"],
+            "zc": top["Z_Coverage"], "zd": top["Z_Debt"], "zf": top["Z_FCF"], "zr": top["Z_Rating"],
             "cov": top["interestCoverage"], "lev": top["debtToEbitda"],
             "mcap": top["marketCap"] / 1e9,
             "we": top["W_Equal"] * 100, "ws": top["W_Score"] * 100,
@@ -927,7 +1020,7 @@ table.tbl th:first-child, table.tbl td:first-child {{ text-align:left; }}
   <section class="card"><h2>Pesos: Equal vs. Credit-Score</h2><div id="c_weights" class="plot"></div></section>
   <section class="card wide"><h2>Yield Target mínimo por emisor y tenor (%)</h2><div id="c_overlay" class="plot" style="height:320px"></div></section>
   <section class="card wide"><h2>Emisores seleccionados</h2><div class="tblwrap">{tbl_html}</div>
-    <p class="note">Si la fuente es "FMP proxy", el rating es un puntaje cuantitativo de FMP, no de agencia.</p></section>
+    <p class="note">Si la fuente es "Sintético", el rating es el peor entre cobertura EBIT/Intereses (tabla Damodaran) y Deuda/EBITDA, con techo {html.escape(SYNTHETIC_MAX_RATING)}; no es de agencia.</p></section>
   <section class="card wide"><h2>Métricas del portafolio</h2><div class="tblwrap">{summ_html}</div></section>
 </main>
 <script>
@@ -953,9 +1046,10 @@ Plotly.newPlot('c_funnel', [{{type:'funnel', y:D.funnel.stage, x:D.funnel.n, tex
   base({{margin:{{l:220,r:20,t:10,b:30}}}}), cfg);
 
 Plotly.newPlot('c_score', [
-  {{x:D.top.sym, y:D.top.zc.map(v=>v*0.40), type:'bar', name:'0.40·Z Cobertura'}},
-  {{x:D.top.sym, y:D.top.zd.map(v=>v*0.30), type:'bar', name:'0.30·Z Deuda (inv.)'}},
-  {{x:D.top.sym, y:D.top.zf.map(v=>v*0.30), type:'bar', name:'0.30·Z FCF'}},
+  {{x:D.top.sym, y:D.top.zc.map(v=>v*D.w.coverage), type:'bar', name:D.w.coverage.toFixed(2)+'·Z Cobertura'}},
+  {{x:D.top.sym, y:D.top.zd.map(v=>v*D.w.debt), type:'bar', name:D.w.debt.toFixed(2)+'·Z Deuda (inv.)'}},
+  {{x:D.top.sym, y:D.top.zf.map(v=>v*D.w.fcf), type:'bar', name:D.w.fcf.toFixed(2)+'·Z FCF'}},
+  {{x:D.top.sym, y:D.top.zr.map(v=>v*D.w.rating), type:'bar', name:D.w.rating.toFixed(2)+'·Z Rating'}},
   {{x:D.top.sym, y:D.top.score, mode:'markers', name:'Composite', marker:{{size:11, symbol:'line-ew-open', line:{{width:3}}}},
     text:D.top.name, hovertemplate:'%{{text}}<br>Score %{{y:.3f}}<extra></extra>'}}
 ], base({{barmode:'relative', yaxis:{{title:'Contribución (Z)', gridcolor:grid}}}}), cfg);
@@ -1028,16 +1122,19 @@ def run_pipeline() -> None:
     funnel.append((f"D/EBITDA ≤ {MAX_DEBT_TO_EBITDA}x y Cobertura ≥ {MIN_INTEREST_COVERAGE}x", len(solvent)))
     _abort_if_empty(solvent, "solvencia", funnel)
 
+    solvent = solvent[solvent["grossDebt"] >= MIN_TOTAL_DEBT_USD].reset_index(drop=True)
+    funnel.append((f"Deuda total ≥ USD {MIN_TOTAL_DEBT_USD / 1e9:g} bn (emisor de bonos)", len(solvent)))
+    _abort_if_empty(solvent, "deuda mínima", funnel)
+
     # --- Fase 3: tendencia del FCF -------------------------------------------
     log.info("Fase 3: tendencia del FCF para %d emisores…", len(solvent))
     growth = stage_fcf(fmp, solvent)
     funnel.append((f"FCF creciente {FCF_FILTER_LOGIC} CAGR > {MIN_FCF_CAGR:.0%}", len(growth)))
     _abort_if_empty(growth, "FCF", funnel)
 
-    # --- Fase 4: grado de inversión ------------------------------------------
-    log.info("Fase 4: filtro de rating para %d emisores…", len(growth))
-    ig = stage_rating(fmp, growth)
-    funnel.append(("Grado de inversión (AAA–BBB-)", len(ig)))
+    # --- Fase 4: rating sintético ---------------------------------------------
+    log.info("Fase 4: rating sintético para %d emisores…", len(growth))
+    ig = stage_rating(growth)
     _abort_if_empty(ig, "rating", funnel)
 
     # --- Fase 5: scoring y Top N ---------------------------------------------

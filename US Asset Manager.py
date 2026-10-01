@@ -98,6 +98,15 @@ MOMENTUM_LOOKBACK_DAYS: int = 252
 MOMENTUM_SKIP_DAYS: int = 21
 VOLATILITY_LOOKBACK_DAYS: int = 252
 
+# Fuente de Value/Growth/Quality. "holdings": fundamentales de las posiciones
+# (requiere etf/holdings en el plan FMP). "returns": regresión de estilo sobre
+# retornos, r_i = a + b_m·mercado + b_v·(value − growth) + b_q·(quality − mercado).
+# "auto": holdings si el plan lo permite; si no, returns.
+STYLE_FACTOR_SOURCE: Literal["auto", "holdings", "returns"] = "auto"
+STYLE_PROXIES: Dict[str, str] = {"market": "SPY", "value": "VTV", "growth": "VUG", "quality": "QUAL"}
+STYLE_REGRESSION_DAYS: int = 504
+STYLE_MIN_OBSERVATIONS: int = 120
+
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 # PARÁMETROS EDITABLES · OPCIONES (BKM) Y COVARIANZA
@@ -108,6 +117,9 @@ OPTIONS_MAX_DAYS: int = 90
 OPTIONS_TARGET_DAYS: int = 60
 MIN_OTM_STRIKES_PER_SIDE: int = 4
 MAX_OPTION_PAGES: int = 8
+# Sin acceso a quotes (bid/ask) el precio es day.close, el último trade del contrato, que en
+# opciones OTM poco negociadas puede tener meses y contaminar la IV de las alas.
+OPTIONS_MAX_PRICE_AGE_DAYS: int = 5
 BKM_SPLINE_POINTS: int = 200
 BKM_MFIK_MAX: float = 20.0  # techo de sanidad de MFIK; por encima, o si K < 1 + S², MFIS/MFIK se anulan
 MIN_TOTAL_VOL: float = 1e-3
@@ -405,7 +417,7 @@ class BaseHTTPClient:
             status = response.status_code
             if status == 429 or status >= 500:
                 last_error = APIError(f"HTTP {status}")
-                self.logger.debug("%s %s: HTTP %s, reintento %d", self.provider, endpoint, status, attempt)
+                self.logger.warning("%s %s: HTTP %s, reintento %d/%d", self.provider, endpoint, status, attempt, self.max_retries)
                 self._backoff(attempt, response.headers.get("Retry-After"))
                 continue
             if status in (401, 402, 403):
@@ -484,6 +496,9 @@ class FMPClient(BaseHTTPClient):
 
     def key_metrics_ttm(self, symbol: str) -> Dict[str, Any]:
         return self._single_record("key-metrics-ttm", {"symbol": symbol})
+
+    def dividends(self, symbol: str) -> List[Dict[str, Any]]:
+        return self._as_records(self._get("dividends", {"symbol": symbol}))
 
     def financial_growth(self, symbol: str) -> Dict[str, Any]:
         return self._single_record("financial-growth", {"symbol": symbol, "period": "annual", "limit": 1})
@@ -750,6 +765,7 @@ class RedundancyFilter:
 class FactorModelBuilder:
     FUNDAMENTAL_COLUMNS: Tuple[str, ...] = ("EarningsYield", "BookYield", "ROE", "ROIC", "RevenueGrowth", "EPSGrowth")
     TECHNICAL_COLUMNS: Tuple[str, ...] = ("Momentum_12_1", "Volatilidad_252d")
+    STYLE_COLUMNS: Tuple[str, ...] = ("Beta_Value", "Beta_Quality")
 
     def __init__(self, fmp: FMPClient, prices: pd.DataFrame) -> None:
         self.fmp = fmp
@@ -760,22 +776,59 @@ class FactorModelBuilder:
 
     def build(self, universe: Sequence[ETFDescriptor]) -> Tuple[pd.DataFrame, pd.DataFrame]:
         tickers = [etf.ticker for etf in universe]
-        raw = pd.DataFrame(np.nan, index=tickers, columns=list(self.FUNDAMENTAL_COLUMNS + self.TECHNICAL_COLUMNS), dtype=float)
+        style_tickers = [etf.ticker for etf in universe if etf.asset_class in ("Equity", "Real Estate")]
+        use_holdings = STYLE_FACTOR_SOURCE in ("auto", "holdings")
+        columns = list(self.FUNDAMENTAL_COLUMNS + self.TECHNICAL_COLUMNS + self.STYLE_COLUMNS)
+        raw = pd.DataFrame(np.nan, index=tickers, columns=columns, dtype=float)
         for index, etf in enumerate(universe, start=1):
-            if etf.asset_class in ("Equity", "Real Estate"):
+            if use_holdings and etf.ticker in style_tickers:
                 for column, value in self._aggregate_fundamentals(etf.ticker).items():
                     raw.loc[etf.ticker, column] = value
             raw.loc[etf.ticker, "Momentum_12_1"] = self._momentum(etf.ticker)
             raw.loc[etf.ticker, "Volatilidad_252d"] = self._volatility(etf.ticker)
             if index % 10 == 0:
                 self.logger.info("Factores procesados: %d/%d", index, len(universe))
+        holdings_ok = "etf_holdings" not in self._disabled_endpoints
+        if STYLE_FACTOR_SOURCE == "returns" or (STYLE_FACTOR_SOURCE == "auto" and not holdings_ok):
+            betas = self._style_betas(style_tickers)
+            if not betas.empty:
+                raw.loc[betas.index, list(self.STYLE_COLUMNS)] = betas[list(self.STYLE_COLUMNS)].to_numpy()
+                self.logger.info("Value/Growth/Quality por regresión de estilo sobre retornos (%d ETFs, proxies %s).",
+                                 len(betas), ", ".join(f"{k}={v}" for k, v in STYLE_PROXIES.items()))
         raw = raw.replace([np.inf, -np.inf], np.nan)
         return self._assemble_matrix(raw), raw
+
+    def _style_betas(self, tickers: Sequence[str]) -> pd.DataFrame:
+        missing = [proxy for proxy in STYLE_PROXIES.values() if proxy not in self.prices.columns]
+        if missing:
+            self.logger.warning("Sin precios para los proxies de estilo %s: Value/Growth/Quality quedan neutrales.", missing)
+            return pd.DataFrame()
+        returns = self.prices.pct_change(fill_method=None).tail(STYLE_REGRESSION_DAYS)
+        proxy = STYLE_PROXIES
+        regressors = pd.DataFrame({
+            "market": returns[proxy["market"]],
+            "value": returns[proxy["value"]] - returns[proxy["growth"]],
+            "quality": returns[proxy["quality"]] - returns[proxy["market"]],
+        })
+        betas: Dict[str, Dict[str, float]] = {}
+        for ticker in tickers:
+            data = pd.concat([returns[ticker].rename("y"), regressors], axis=1).dropna()
+            if len(data) < STYLE_MIN_OBSERVATIONS:
+                continue
+            design = np.column_stack([np.ones(len(data)), data[["market", "value", "quality"]].to_numpy()])
+            coef, *_ = np.linalg.lstsq(design, data["y"].to_numpy(), rcond=None)
+            betas[ticker] = {"Beta_Value": float(coef[2]), "Beta_Quality": float(coef[3])}
+        return pd.DataFrame.from_dict(betas, orient="index")
 
     def _assemble_matrix(self, raw: pd.DataFrame) -> pd.DataFrame:
         value = _combine_scores([_percentile_score(raw["EarningsYield"]), _percentile_score(raw["BookYield"])])
         quality = _combine_scores([_percentile_score(raw["ROE"]), _percentile_score(raw["ROIC"])])
-        if raw[["RevenueGrowth", "EPSGrowth"]].notna().any().any():
+        if raw["Beta_Value"].notna().any():
+            # Por retornos Value y Growth son los dos extremos del mismo eje (value − growth).
+            value = _percentile_score(raw["Beta_Value"])
+            growth = _percentile_score(-raw["Beta_Value"])
+            quality = _percentile_score(raw["Beta_Quality"])
+        elif raw[["RevenueGrowth", "EPSGrowth"]].notna().any().any():
             growth = _combine_scores([_percentile_score(raw["RevenueGrowth"]), _percentile_score(raw["EPSGrowth"])])
         else:
             self.logger.warning("Sin datos de crecimiento: Growth se aproxima como 1 - Value.")
@@ -799,7 +852,8 @@ class FactorModelBuilder:
             holdings = self.fmp.etf_holdings(ticker)
         except APIAuthorizationError as exc:
             self._disabled_endpoints.add("etf_holdings")
-            self.logger.warning("Holdings de ETFs no disponibles en el plan FMP (Value/Quality/Growth neutrales): %s", exc)
+            fallback = "se usa regresión de estilo sobre retornos" if STYLE_FACTOR_SOURCE == "auto" else "Value/Quality/Growth neutrales"
+            self.logger.warning("Holdings de ETFs no disponibles en el plan FMP (%s): %s", fallback, exc)
             return {}
         except APIError as exc:
             self.logger.debug("Holdings no disponibles para %s: %s", ticker, exc)
@@ -1137,29 +1191,34 @@ class ImpliedMomentsEngine:
             return self._div_yield_cache[ticker]
         resolved = float("nan")
         if self._fmp_yield_enabled:
-            # El universo son ETFs, así que etf/info manda; ratios-ttm cubre los símbolos que FMP
-            # no clasifica como ETF. Los alias siguen el patrón del resto del archivo porque FMP
-            # cambia de nomenclatura entre versiones del endpoint.
-            for fetcher, keys in (
-                (self.fmp.etf_info, ("yield", "dividendYield", "dividendYieldTTM")),
-                (self.fmp.ratios_ttm, ("dividendYieldTTM", "dividendYielTTM", "dividendYield")),
-            ):
-                try:
-                    resolved = self._normalize_yield(_first_number(fetcher(ticker), keys))
-                except APIAuthorizationError as exc:
-                    self._fmp_yield_enabled = False
-                    self.logger.warning("Dividend yield por FMP deshabilitado (plan/credenciales): %s", exc)
-                    break
-                except APIError as exc:
-                    self.logger.debug("%s sin dividend yield para %s: %s", fetcher.__name__, ticker, exc)
-                    continue
-                if math.isfinite(resolved):
-                    break
+            # etf/info no trae yield y ratios-ttm viene vacío para ETFs: el yield se arma con los
+            # dividendos pagados en los últimos 12 meses sobre el último precio.
+            try:
+                resolved = self._normalize_yield(self._trailing_dividends(ticker) / float(self.prices[ticker].dropna().iloc[-1]))
+            except APIAuthorizationError as exc:
+                self._fmp_yield_enabled = False
+                self.logger.warning("Dividend yield por FMP deshabilitado (plan/credenciales): %s", exc)
+            except APIError as exc:
+                self.logger.debug("dividends sin datos para %s: %s", ticker, exc)
         if not math.isfinite(resolved):
             resolved = self.div_yield_fallback
             self._div_yield_fallbacks.append(ticker)
         self._div_yield_cache[ticker] = resolved
         return resolved
+
+    def _trailing_dividends(self, ticker: str) -> float:
+        """Suma de dividendos con fecha ex en los últimos 365 días (0.0 si no pagó)."""
+        cutoff = date.today() - timedelta(days=365)
+        total = 0.0
+        for record in self.fmp.dividends(ticker):
+            try:
+                ex_date = datetime.strptime(str(record.get("date", ""))[:10], "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            amount = _first_number(record, ("adjDividend", "dividend"))
+            if ex_date > cutoff and math.isfinite(amount) and amount > 0:
+                total += amount
+        return total
 
     def _implied_from_options(self, ticker: str) -> Optional[Dict[str, Any]]:
         today = date.today()
@@ -1209,6 +1268,7 @@ class ImpliedMomentsEngine:
     def _parse_chain(self, contracts: Sequence[Mapping[str, Any]], ticker: str) -> Tuple[pd.DataFrame, float]:
         records: List[Dict[str, Any]] = []
         spots: List[float] = []
+        oldest_ns = (time.time() - OPTIONS_MAX_PRICE_AGE_DAYS * 86400) * 1e9
         for contract in contracts:
             details = contract.get("details") or {}
             quote = contract.get("last_quote") or {}
@@ -1219,7 +1279,11 @@ class ImpliedMomentsEngine:
                 continue
             bid, ask, mid = _to_float(quote.get("bid")), _to_float(quote.get("ask")), _to_float(quote.get("midpoint"))
             if not (math.isfinite(mid) and mid > 0):
-                mid = 0.5 * (bid + ask) if math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask else _to_float((contract.get("day") or {}).get("close"))
+                mid = 0.5 * (bid + ask) if math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask else float("nan")
+            if not (math.isfinite(mid) and mid > 0):
+                day = contract.get("day") or {}
+                if _to_float(day.get("last_updated")) >= oldest_ns:
+                    mid = _to_float(day.get("close"))
             if not (math.isfinite(mid) and mid > 0):
                 continue
             spots.append(_to_float((contract.get("underlying_asset") or {}).get("price")))
@@ -1823,7 +1887,7 @@ class PassiveETFAllocationPipeline:
         )
 
         self.logger.info("FASE 1 · Matriz factorial B (FMP + técnicos)")
-        factor_matrix, raw_factors = FactorModelBuilder(self.fmp, prices[tickers]).build(universe)
+        factor_matrix, raw_factors = FactorModelBuilder(self.fmp, prices).build(universe)
 
         self.logger.info("FASE 2 · Momentos BKM, covarianza implícita y μ")
         moments = ImpliedMomentsEngine(self.polygon, self.fmp, prices[tickers], RISK_FREE_RATE).compute(tickers)

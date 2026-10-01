@@ -36,8 +36,16 @@ Each ETF gets a score between 0 and 1 on five factors:
 
 Fundamentals are aggregated by holding weight and converted into percentiles within the universe. Missing data leaves the factor neutral (0.5).
 
+ETF holdings require an FMP plan that includes `etf/holdings`. Without it (`STYLE_FACTOR_SOURCE = "auto"` or `"returns"`), Value, Growth and Quality come from a returns-based style regression over the last 2 years:
+
+```
+r_i = α + β_m·SPY + β_v·(VTV − VUG) + β_q·(QUAL − SPY)
+```
+
+Value is the percentile of β_v, Growth the percentile of −β_v (with returns, value and growth are the two ends of one axis) and Quality the percentile of β_q. Only equity and real estate ETFs get style scores; the rest stay neutral.
+
 ### Phase 2 · Moments, covariance and expected return
-- **Implied moments (BKM)**: from the Polygon option chain (30 to 90 day expiries), the model-free implied volatility, skewness and kurtosis (MFIV, MFIS, MFIK) are estimated with Bakshi, Kapadia & Madan (2003). Each strike's implied volatility is obtained by inverting the Bjerksund-Stensland American option model, smoothed with a spline, and the results are interpolated to a 60-day horizon. Dividend yields are read per ticker from FMP. If no options are available, historical moments are used instead.
+- **Implied moments (BKM)**: from the Polygon option chain (30 to 90 day expiries), the model-free implied volatility, skewness and kurtosis (MFIV, MFIS, MFIK) are estimated with Bakshi, Kapadia & Madan (2003). Each strike's implied volatility is obtained by inverting the Bjerksund-Stensland American option model, smoothed with a spline, and the results are interpolated to a 60-day horizon. Dividend yields are computed per ticker as trailing 12-month dividends (FMP `dividends`) over the last price. Option prices are quote midpoints when the Polygon plan includes quotes; otherwise the contract's last trade (`day.close`) is used, discarding trades older than 5 days (`OPTIONS_MAX_PRICE_AGE_DAYS`), since stale wing prices inflate the implied variance. If not enough options remain, historical moments are used instead.
 - **Covariance**: Σ = D·R·D, where
   - **D** holds the implied volatilities adjusted from the Q (risk-neutral) measure to the P (physical) measure to remove the variance risk premium;
   - **R** is the historical EWMA correlation (120-day half-life) with Ledoit-Wolf shrinkage toward constant correlation.
@@ -76,10 +84,10 @@ Before optimizing, a linear program checks that the targets are attainable and, 
 A six-phase issuer screening pipeline (`run_pipeline`):
 
 1. **Risk-free curve**: Treasury CMT nodes (1M to 30Y) from FRED, interpolated with PCHIP.
-2. **Screening and solvency**: US companies with market cap ≥ USD 10bn, excluding financial services. Requires Debt/EBITDA ≤ 3.0x and EBITDA/Interest ≥ 2.5x.
+2. **Screening and solvency**: US companies with market cap ≥ USD 10bn, excluding financial services. Notes, preferreds and other listed hybrids are dropped by name, and multiple share classes of the same issuer are collapsed to the most liquid one. Requires Debt/EBITDA ≤ 3.0x, EBITDA/Interest ≥ 2.5x and total debt ≥ USD 2bn (so that only actual bond issuers remain). When FMP reports zero interest expense on material debt (e.g. homebuilders that capitalize interest), interest is imputed as debt × 5.5%.
 3. **Free cash flow**: strictly increasing FCF **or** 3-year CAGR > 3% (configurable as `AND`).
-4. **Rating**: investment grade only (AAA to BBB-). FMP's rating is used as a proxy, and `MANUAL_RATING_OVERRIDES` lets you replace it with actual agency ratings.
-5. **Composite Credit Score**: `0.40·Z(Coverage) + 0.30·Z(−Debt/EBITDA) + 0.30·Z(FCF CAGR)`, with Z-scores winsorized at ±3. The top 15 issuers are selected.
+4. **Rating**: each issuer gets a **synthetic rating**: the worse of an EBIT/interest coverage rating (Damodaran's large-firm table) and a Debt/EBITDA rating, capped at AA. `MANUAL_RATING_OVERRIDES` lets you replace it with actual agency ratings. (FMP's `rating` field is an equity valuation score, not a credit rating, so it is not used.) With the current solvency thresholds every issuer is already BBB- or better, so this is not a funnel stage; issuers rated below BBB- (e.g. via a manual override) are dropped with a warning.
+5. **Composite Credit Score**: `0.30·Z(ln Coverage) + 0.25·Z(−Debt/EBITDA) + 0.25·Z(FCF CAGR) + 0.20·Z(rating notch)`, with raw metrics winsorized at the 5th/95th percentiles and Z-scores clipped at ±3. The top 15 issuers are selected.
 6. **Weighting and Yield Target**:
    - two weighting schemes: Equal Weight and Credit-Score Weight (15% cap per issuer), on a USD 10M notional;
    - **minimum required yield** for 3, 5 and 10 year tenors: `Rf(t) + rating spread + tenor premium + score adjustment`.
@@ -137,4 +145,4 @@ All parameters (investment profile, solver, screening thresholds, score weights,
 
 ## Disclaimer
 
-This code is for academic and research purposes only and does not constitute investment advice. In particular, FMP ratings are a quantitative proxy and do not replace ratings from S&P, Moody's or Fitch.
+This code is for academic and research purposes only and does not constitute investment advice. In particular, synthetic ratings are a quantitative proxy and do not replace ratings from S&P, Moody's or Fitch.
