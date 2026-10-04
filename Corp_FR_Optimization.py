@@ -129,7 +129,7 @@ ZSCORE_CLIP = 3.0                # winsoriza Z-scores a ±3 desviaciones
 WINSORIZE_QUANTILES = (0.05, 0.95)  # None para desactivar
 LOG_TRANSFORM_COVERAGE = True    # True: usa ln(cobertura) (reduce asimetría)
 NAN_CAGR_FILL = "min"            # CAGR no definido (FCF base <= 0): "min" o "zero"
-TOP_N = 15
+TOP_N = 25
 
 # ------------------------------------------------------- Ponderación ---------
 SCORE_WEIGHT_METHOD = "shift"    # "shift": (score - min + floor) | "softmax"
