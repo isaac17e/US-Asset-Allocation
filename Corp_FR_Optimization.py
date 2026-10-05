@@ -10,38 +10,36 @@
 from __future__ import annotations
 
 # =============================================================================
-#  BLOQUE DE CONFIGURACIÓN  
+#  BLOQUE DE CONFIGURACIÓN
 # =============================================================================
 import os
 
-try:  # las claves se leen de .env (junto a este script); si no hay dotenv, de os.environ
+try:  # claves desde .env (junto al script); sin dotenv se usa os.environ
     from dotenv import load_dotenv
     load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 except ImportError:
     pass
 
-# ---------------------------------------------------------------- APIs -------
+# --- Claves y URLs de APIs ---------------------------------------------------
 FMP_API_KEY = os.getenv("FMP_API_KEY", "")
 FRED_API_KEY = os.getenv("FRED_API_KEY", "")
-
 FMP_BASE_URL = "https://financialmodelingprep.com/stable"
 FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
 
-# Endpoints FMP (API "stable"). Cámbialos aquí si FMP renombra alguno.
+# --- Endpoints FMP -----------------------------------------------------------
 FMP_EP_SCREENER = "company-screener"
 FMP_EP_INCOME = "income-statement"
 FMP_EP_BALANCE = "balance-sheet-statement"
 FMP_EP_CASHFLOW = "cash-flow-statement"
 
-# ----------------------------------------------- Red / límites de peticiones -
+# --- Red y límites de peticiones ---------------------------------------------
 REQUEST_TIMEOUT_SEC = 20          # timeout por petición HTTP
 MAX_RETRIES = 4                   # reintentos ante 429 / 5xx / errores de red
 BACKOFF_BASE_SEC = 2.0            # backoff exponencial: 2, 4, 8, 16 s
 MIN_SECONDS_BETWEEN_CALLS = 0.25  # ~240 llamadas/min (ajusta a tu plan de FMP)
 
-# ---------------------------------------------- Curva libre de riesgo (FRED) -
-# Madurez en años -> serie CMT de FRED. (El nodo de 1 año es "DGS1".)
-TREASURY_SERIES = {
+# --- Curva libre de riesgo (FRED) --------------------------------------------
+TREASURY_SERIES = {               # madurez en años -> serie CMT de FRED
     1 / 12: "DGS1MO",
     0.25: "DGS3MO",
     0.50: "DGS6MO",
@@ -58,100 +56,84 @@ FRED_LOOKBACK_DAYS = 20            # ventana para encontrar el último dato vál
 CURVE_INTERP_METHOD = "pchip"      # "pchip" (sin oscilaciones), "cubic", "linear"
 BENCHMARK_TENORS = [3.0, 5.0, 10.0]  # horizontes del Yield Target Overlay (años)
 
-# ------------------------------------------------------ Screening base (FMP) -
+# --- Screening base (FMP) ----------------------------------------------------
 MIN_MARKET_CAP_USD = 10_000_000_000
 SCREENER_EXCHANGES = ["NYSE", "NASDAQ"]  # una llamada al screener por bolsa
 SCREENER_COUNTRY = "US"                  # None para no filtrar por país
 SCREENER_LIMIT = 1000                    # máx. resultados por llamada
 MAX_CANDIDATES = 300                     # tope de emisores a analizar (costo API)
 EXCLUDE_SECTORS = ["Financial Services"]  # EBITDA/deuda no aplican a bancos/aseg.
-# El screener también devuelve notas, preferentes y deuda listada en bolsa con
-# los estados financieros de la matriz. Se excluyen por nombre.
+
+# --- Exclusión de notas, preferentes y deuda listada -------------------------
 NON_COMMON_NAME_PATTERN = (
     r"\d+(?:\.\d+)?\s*%|\bseries\b|\bnotes?\b|\bnts\b|\bjr\b|\bjrsub\b|debenture|"
     r"collateral|preferred|\bpfd\b|depositary|subordinated|perpetual"
 )
 NON_COMMON_SYMBOL_PATTERN = r"-P[A-Z]?$"  # preferentes: CTA-PA, CTA-PB…
 
+# --- Apalancamiento y cobertura ----------------------------------------------
 FUNDAMENTALS_PERIOD = "annual"   # período de los estados financieros
 DEBT_DEFINITION = "total"        # "total" (Total Debt) o "net" (Net Debt)
 MAX_DEBT_TO_EBITDA = 3.0         # x
-# Deuda bruta mínima: deja solo emisores con bonos en circulación (empresas sin
-# deuda maximizan cobertura y apalancamiento pero no hay qué comprarles).
-MIN_TOTAL_DEBT_USD = 2_000_000_000
+MIN_TOTAL_DEBT_USD = 2_000_000_000  # solo emisores con bonos en circulación
 MIN_INTEREST_COVERAGE = 2.5      # x  (EBITDA / Interest Expense)
 COVERAGE_CAP = 100.0             # tope de cobertura (evita outliers/infinitos)
-# Gasto de intereses = 0 o ausente con deuda material (p. ej. constructoras que
-# capitalizan intereses): "impute" usa deuda × IMPUTED_INTEREST_RATE,
-# "cap" asigna COVERAGE_CAP y "exclude" descarta al emisor.
-ZERO_INTEREST_POLICY = "impute"
+
+# --- Gasto de intereses nulo o ausente ---------------------------------------
+ZERO_INTEREST_POLICY = "impute"  # "impute" (deuda × tasa) | "cap" | "exclude"
 IMPUTED_INTEREST_RATE = 0.055    # costo de deuda supuesto para la imputación
 ZERO_INTEREST_DEBT_TOL = 0.25    # deuda <= tol × EBITDA se considera inmaterial (-> cap)
 
-# ----------------------------------------------------------- Filtro de FCF ---
+# --- Filtro de FCF -----------------------------------------------------------
 FCF_HISTORY_YEARS = 5            # años de Cash Flow Statement a descargar (3-5)
 FCF_CAGR_YEARS = 3               # ventana del CAGR (t vs t-3)
 MIN_FCF_CAGR = 0.03              # 3.0 %
 FCF_FILTER_LOGIC = "OR"          # "OR": creciente O CAGR>min | "AND": ambos
 
-# ------------------------------------------------------ Filtro de rating -----
+# --- Filtro de rating --------------------------------------------------------
 INVESTMENT_GRADE_RATINGS = {
     "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
 }
-# Sin acceso a ratings de agencia se usa un rating SINTÉTICO: el peor (más
-# conservador) entre el rating por cobertura y el rating por apalancamiento.
-# (El campo "rating" de FMP es un puntaje de valuación de acciones, no crédito.)
-#
-# Cobertura EBIT / Intereses -> rating. Tabla de Damodaran para empresas no
-# financieras de gran capitalización (> USD 5 bn). Pares (umbral mínimo, rating).
-SYNTHETIC_COVERAGE_TABLE = [
+MANUAL_RATING_OVERRIDES: dict[str, str] = {}  # ratings de agencia, ej. {"AAPL": "AA+"}
+RATING_SELECTION: Optional[list[str]] = ["A+", "A"]  # Top N solo con estos ratings, ej. ["A+", "A"]; None = todos
+
+# --- Rating sintético (peor entre cobertura y apalancamiento) ----------------
+SYNTHETIC_COVERAGE_TABLE = [     # EBIT/Intereses (Damodaran): (umbral mín., rating)
     (8.50, "AAA"), (6.50, "AA"), (5.50, "A+"), (4.25, "A"), (3.00, "A-"),
     (2.50, "BBB"), (2.25, "BB+"), (2.00, "BB"), (1.75, "B+"), (1.50, "B"),
     (1.25, "B-"), (0.80, "CCC"), (0.65, "CC"), (0.20, "C"), (float("-inf"), "D"),
 ]
-# Deuda / EBITDA -> rating. Pares (umbral máximo, rating). Supuesto propio,
-# calibrado de forma aproximada a los rangos de S&P para riesgo de negocio
-# "fuerte"; ajústalo a tu criterio.
-SYNTHETIC_LEVERAGE_TABLE = [
+SYNTHETIC_LEVERAGE_TABLE = [     # Deuda/EBITDA (aprox. S&P): (umbral máx., rating)
     (0.50, "AAA"), (1.00, "AA"), (1.50, "A+"), (2.00, "A"), (2.50, "A-"),
     (3.00, "BBB+"), (3.50, "BBB"), (4.00, "BBB-"), (5.00, "BB"), (float("inf"), "B"),
 ]
-# Techo del rating sintético: en EE.UU. casi ningún corporativo es AAA.
-SYNTHETIC_MAX_RATING = "AA"
-# Calificaciones de agencia reales (prioridad sobre el sintético). Ej.: {"AAPL": "AA+"}
-MANUAL_RATING_OVERRIDES: dict[str, str] = {}
+SYNTHETIC_MAX_RATING = "AA"      # techo: casi ningún corporativo de EE.UU. es AAA
 
-# ------------------------------------------------ Scoring / Ranking ----------
+# --- Scoring y ranking -------------------------------------------------------
 SCORE_WEIGHTS = {"coverage": 0.30, "debt": 0.25, "fcf": 0.25, "rating": 0.20}
 ZSCORE_CLIP = 3.0                # winsoriza Z-scores a ±3 desviaciones
-# Winsoriza las métricas crudas (cuantiles) ANTES del Z-score: evita que un
-# CAGR de FCF de 190% por año base deprimido domine la media y la desviación.
-WINSORIZE_QUANTILES = (0.05, 0.95)  # None para desactivar
+WINSORIZE_QUANTILES = (0.05, 0.95)  # winsoriza métricas crudas antes del Z-score (None = off)
 LOG_TRANSFORM_COVERAGE = True    # True: usa ln(cobertura) (reduce asimetría)
 NAN_CAGR_FILL = "min"            # CAGR no definido (FCF base <= 0): "min" o "zero"
 TOP_N = 25
 
-# ------------------------------------------------------- Ponderación ---------
+# --- Ponderación del portafolio ----------------------------------------------
 SCORE_WEIGHT_METHOD = "shift"    # "shift": (score - min + floor) | "softmax"
 SCORE_SHIFT_FLOOR = 0.25         # piso (en unidades de score) para el peor emisor
 SOFTMAX_TEMPERATURE = 1.0
 MAX_SINGLE_ISSUER_WEIGHT = 0.15  # tope por emisor (None para desactivar)
 PORTFOLIO_NOTIONAL_USD = 10_000_000
 
-# ------------------------------------------ Yield Target Overlay (spreads) ---
-# Spread mínimo exigido sobre el Tesoro por bucket de rating (puntos básicos).
-MIN_SPREAD_BPS_BY_BUCKET = {"AAA": 40, "AA": 60, "A": 90, "BBB": 140}
-# Prima adicional por plazo (bps), aplicada sobre el spread del bucket.
-TENOR_PREMIUM_BPS = {3.0: 0, 5.0: 10, 10.0: 25}
-# Ajuste por calidad relativa: bps por unidad de Composite Score (negativo =
-# mejores scores exigen menos spread). 0 para desactivar.
-SCORE_SPREAD_ADJ_BPS_PER_UNIT = -5.0
+# --- Yield Target Overlay (spreads) ------------------------------------------
+MIN_SPREAD_BPS_BY_BUCKET = {"AAA": 40, "AA": 60, "A": 90, "BBB": 140}  # bps sobre el Tesoro
+TENOR_PREMIUM_BPS = {3.0: 0, 5.0: 10, 10.0: 25}  # prima por plazo sobre el bucket
+SCORE_SPREAD_ADJ_BPS_PER_UNIT = -5.0  # bps por unidad de score (0 = off)
 
-# ------------------------------------------------- Refinitiv / ejecución -----
+# --- Refinitiv / ejecución ---------------------------------------------------
 MIN_AMOUNT_OUTSTANDING_USD = 500_000_000   # liquidez mínima por emisión
 TENOR_WINDOW_YEARS = 1.0                   # ± años alrededor de cada tenor
 
-# ----------------------------------------------------------- Salidas ---------
+# --- Salidas -----------------------------------------------------------------
 HTML_OUTPUT_PATH = "reporte_portafolio_renta_fija.html"
 OPEN_HTML_IN_BROWSER = True
 PLOTLY_CDN = "https://cdn.plot.ly/plotly-2.35.2.min.js"
@@ -719,6 +701,24 @@ def stage_scoring(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _selected_ratings() -> list[str]:
+    """RATING_SELECTION normalizado (mayúsculas, sin espacios ni duplicados)."""
+    sel = [RATING_SELECTION] if isinstance(RATING_SELECTION, str) else RATING_SELECTION
+    return list(dict.fromkeys(str(r).strip().upper() for r in sel or []))
+
+
+def select_ratings(ranked: pd.DataFrame) -> pd.DataFrame:
+    """Deja solo los ratings de RATING_SELECTION (Z-scores ya calculados sobre todo IG)."""
+    sel = _selected_ratings()
+    unknown = [r for r in sel if r not in INVESTMENT_GRADE_RATINGS]
+    if unknown:
+        log.warning("RATING_SELECTION contiene ratings no IG o inválidos (se ignoran): %s",
+                    ", ".join(unknown))
+    df = ranked[ranked["rating"].isin(sel)].reset_index(drop=True)
+    df["Rank"] = np.arange(1, len(df) + 1)
+    return df
+
+
 # =============================================================================
 # FASE 6 — PONDERACIÓN Y BENCHMARK OVERLAY
 # =============================================================================
@@ -1139,6 +1139,10 @@ def run_pipeline() -> None:
 
     # --- Fase 5: scoring y Top N ---------------------------------------------
     ranked = stage_scoring(ig)
+    if RATING_SELECTION:
+        ranked = select_ratings(ranked)
+        funnel.append((f"Rating ∈ {{{', '.join(_selected_ratings())}}}", len(ranked)))
+        _abort_if_empty(ranked, "selección de rating", funnel)
     top = ranked.head(TOP_N).reset_index(drop=True)
     funnel.append((f"Top {TOP_N} por Composite Credit Score", len(top)))
     if len(top) < TOP_N:
