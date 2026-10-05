@@ -23,6 +23,7 @@ from scipy import stats
 from scipy.interpolate import CubicSpline
 from scipy.optimize import brentq, linprog, minimize
 
+import pipeline_io
 import risk_estimators as rk
 
 try:
@@ -1910,6 +1911,7 @@ class PassiveETFAllocationPipeline:
         self.logger.info("FASE 5 · Dashboard interactivo HTML")
         output = DashboardBuilder().build(DASHBOARD_FILE, self.profile, result, optimizer.targets, moments, mu_table, risk)
         self.logger.info("Dashboard generado: %s", output)
+        export_portfolio_json(self.profile, result, float(optimizer.max_weight))
         return result
 
     def _compare_solvers(self, optimizer: PortfolioOptimizer, primary: OptimizationResult) -> pd.DataFrame:
@@ -1964,6 +1966,69 @@ class PassiveETFAllocationPipeline:
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 # PUNTO DE ENTRADA
 # ══════════════════════════════════════════════════════════════════════════════════════════════
+
+def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, max_weight: float) -> None:
+    """Contrato v1: portfolio_latest.json y una copia con marca de tiempo. Nunca aborta la corrida."""
+    try:
+        moment = pipeline_io.now_bogota()
+        tickers, weights = pipeline_io.normalize_weights({str(k): float(v) for k, v in result.weights.items()})
+        if not weights:
+            print("WARNING: portafolio sin pesos positivos; no se escribe el JSON.", file=sys.stderr)
+            return
+        horizon_days = int(OPTIONS_TARGET_DAYS)
+        sharpe = None
+        if result.volatility > 0 and math.isfinite(result.volatility) and math.isfinite(result.expected_return):
+            sharpe = (result.expected_return - RISK_FREE_RATE) / result.volatility
+        payload = {
+            "schema_version": 1,
+            "source_repo": "US-Asset-Allocation",
+            "optimizer": "us_asset_manager",
+            "risk_profile": profile.name or None,
+            "run_ts": pipeline_io.iso_bogota(moment),
+            "horizon_days": horizon_days,
+            "horizon_end": (moment.date() + timedelta(days=horizon_days)).isoformat(),
+            "tickers": tickers,
+            "weights": weights,
+            "params": {
+                "lambda": float(profile.risk_aversion),
+                "max_weight": float(max_weight),
+                "max_weight_cap": float(profile.max_weight),
+                "factor_targets": {name: float(value) for name, value in profile.factor_targets.items()},
+                "shrinkage": float(CORRELATION_SHRINKAGE),
+                "use_lw_shrinkage": bool(USE_LW_SHRINKAGE),
+                "covariance_halflife_days": int(COVARIANCE_HALFLIFE_DAYS),
+            },
+            "metrics": {
+                "expected_return": _json_float(result.expected_return),
+                "volatility": _json_float(result.volatility),
+                "sharpe": _json_float(sharpe),
+                "utility": _json_float(result.utility),
+            },
+        }
+        out_dir = os.getenv("PORTFOLIO_OUT_DIR", "/workspace/pipeline/portfolio")
+        written = pipeline_io.write_json_files(
+            out_dir,
+            [
+                "portfolio_latest.json",
+                f"portfolio_us_asset_manager_{pipeline_io.stamp_bogota(moment)}.json",
+            ],
+            payload,
+        )
+        if written:
+            logging.getLogger("Pipeline").info("Portafolio JSON: %s", ", ".join(written))
+    except Exception as exc:
+        print(f"WARNING: no se pudo exportar el JSON del pipeline: {exc}", file=sys.stderr)
+
+
+def _json_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
 
 def configure_logging(level: str) -> None:
     logging.basicConfig(

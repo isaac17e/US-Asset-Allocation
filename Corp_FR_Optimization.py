@@ -160,6 +160,8 @@ import pandas as pd
 import requests
 from scipy.interpolate import CubicSpline, PchipInterpolator, interp1d
 
+import pipeline_io
+
 try:  # fredapi es la vía preferida; si no está instalada se usa requests.
     from fredapi import Fred
 
@@ -1101,6 +1103,64 @@ def _abort_if_empty(df: pd.DataFrame, stage: str, funnel: list) -> None:
         sys.exit(2)
 
 
+def _json_text(value: Any) -> str:
+    if value is None or bool(pd.isna(value)):
+        return ""
+    return str(value)
+
+
+def _json_score(value: Any) -> Optional[float]:
+    if value is None or bool(pd.isna(value)):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
+
+def export_universe_json(top: pd.DataFrame) -> None:
+    """Contrato v1: corp_fr_latest.json y una copia con marca de tiempo. Nunca aborta la corrida."""
+    try:
+        moment = pipeline_io.now_bogota()
+        tickers: list[str] = []
+        details: list[dict[str, Any]] = []
+        for position, row in enumerate(top.to_dict(orient="records"), start=1):
+            ticker = str(row.get("symbol", "")).strip()
+            if not ticker or ticker.lower() == "nan":
+                continue
+            tickers.append(ticker)
+            try:
+                rank = int(row.get("Rank", position))
+            except (TypeError, ValueError):
+                rank = position
+            details.append({
+                "ticker": ticker,
+                "rank": rank,
+                "name": _json_text(row.get("companyName")),
+                "sector": _json_text(row.get("sector")),
+                "score": _json_score(row.get("CompositeScore")),
+            })
+        payload = {
+            "schema_version": 1,
+            "source_repo": "US-Asset-Allocation",
+            "source": "Corp_FR_Optimization",
+            "run_ts": pipeline_io.iso_bogota(moment),
+            "tickers": tickers,
+            "details": details,
+        }
+        out_dir = os.getenv("UNIVERSE_OUT_DIR", "/workspace/pipeline/universe")
+        written = pipeline_io.write_json_files(
+            out_dir,
+            ["corp_fr_latest.json", f"corp_fr_{pipeline_io.stamp_bogota(moment)}.json"],
+            payload,
+        )
+        if written:
+            log.info("Universo JSON: %s", ", ".join(written))
+    except Exception as exc:
+        print(f"WARNING: no se pudo exportar el JSON del pipeline: {exc}", file=sys.stderr)
+
+
 def run_pipeline() -> None:
     t0 = time.time()
     _check_keys()
@@ -1161,6 +1221,7 @@ def run_pipeline() -> None:
     print_refinitiv_instructions(top, overlay)
 
     path = build_html_report(curve, funnel, top, overlay, summary, fmp.n_calls)
+    export_universe_json(top)
     _banner("FIN DEL PIPELINE")
     print(f"  Reporte interactivo: {path}")
     print(f"  Llamadas FMP: {fmp.n_calls} (fallidas: {fmp.n_failures}) · Tiempo: {time.time() - t0:,.1f}s")

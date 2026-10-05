@@ -76,6 +76,7 @@ Before optimizing, a linear program checks that the targets are attainable and, 
 ### Phases 4 and 5 · Outputs
 - Console: universe composition, dropped ETFs, factors, moments, μ, optimal weights, target vs. achieved factor exposure, metrics (return, volatility, Sharpe, effective N) and the solver comparison.
 - `portfolio_dashboard.html`: allocation chart, factor radar, risk-return scatter and weight vs. risk contribution.
+- Pipeline JSON (`portfolio_latest.json` plus a timestamped copy). See [Pipeline JSON](#pipeline-json).
 
 ---
 
@@ -92,7 +93,7 @@ A six-phase issuer screening pipeline (`run_pipeline`):
    - two weighting schemes: Equal Weight and Credit-Score Weight (15% cap per issuer), on a USD 10M notional;
    - **minimum required yield** for 3, 5 and 10 year tenors: `Rf(t) + rating spread + tenor premium + score adjustment`.
 
-**Outputs**: screening funnel, ranking, weights, yield target table, a checklist for finding the actual bond issues in **Refinitiv Workspace** (buy rule: YTW ≥ Target and OAS ≥ minimum spread) and the `reporte_portafolio_renta_fija.html` report.
+**Outputs**: screening funnel, ranking, weights, yield target table, a checklist for finding the actual bond issues in **Refinitiv Workspace** (buy rule: YTW ≥ Target and OAS ≥ minimum spread), the `reporte_portafolio_renta_fija.html` report, and the universe JSON (`corp_fr_latest.json` plus a timestamped copy; see [Pipeline JSON](#pipeline-json)).
 
 ---
 
@@ -142,6 +143,23 @@ python Corp_FR_Optimization.py      # produces reporte_portafolio_renta_fija.htm
 ```
 
 All parameters (investment profile, solver, screening thresholds, score weights, rating spreads, etc.) live in the configuration block at the top of each file.
+
+## Pipeline JSON
+
+A successful run also writes the shared pipeline contract (v1): UTF-8 JSON, `indent=2`, written atomically (`<file>.tmp` then replace). Timestamps are ISO 8601 with offset in `America/Bogota`. If the output directory cannot be created or written, the script prints a warning and continues (the HTML report and console tables are unchanged).
+
+| Script | Directory | Files |
+|---|---|---|
+| `US Asset Manager.py` | `PORTFOLIO_OUT_DIR` (default `/workspace/pipeline/portfolio`) | `portfolio_latest.json`, `portfolio_us_asset_manager_<YYYYMMDDTHHMMSS>.json` |
+| `Corp_FR_Optimization.py` | `UNIVERSE_OUT_DIR` (default `/workspace/pipeline/universe`) | `corp_fr_latest.json`, `corp_fr_<YYYYMMDDTHHMMSS>.json` |
+
+`US Asset Manager.py` sets `source_repo` to `US-Asset-Allocation` and `optimizer` to `us_asset_manager`. Weights below `1e-6` are dropped and renormalized so they sum to 1 at 6 decimal places. `params` carries λ (`lambda`), the weight cap, factor targets and covariance shrinkage. `horizon_days` is `OPTIONS_TARGET_DAYS`. `Corp_FR_Optimization.py` writes the selected Top-N tickers in ranking order, with rank, name, sector and composite score.
+
+The writer is `pipeline_io.py`. Its tests do not use the network:
+
+```bash
+python -m unittest discover -s tests
+```
 
 ## Disclaimer
 
