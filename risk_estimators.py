@@ -51,6 +51,8 @@ __all__ = [
     "portfolio_moments",
     "portfolio_moment_gradients",
     "higher_moments_admissible",
+    "mfik_cap",
+    "mfik_cap_tenor",
     "cornish_fisher_z",
     "cornish_fisher_domain",
     "cornish_fisher_moments",
@@ -563,6 +565,46 @@ def higher_moments_admissible(skew, kurt, kurt_max=np.inf):
     if not (np.isfinite(skew) and np.isfinite(kurt)):
         return False
     return bool(1.0 + skew ** 2 <= kurt <= kurt_max)
+
+
+def mfik_cap(n_otm, base=20.0, hard=80.0, strikes_at_base=8, strikes_at_hard=60):
+    """Tope de MFIK segun la profundidad de la cadena OTM.
+
+    Un indice liquido (SPY) concentra masa en las alas y su MFIK de BKM pasa
+    de 20 con una cadena densa; el mismo numero en cinco strikes es ruido.
+    Con `strikes_at_base` contratos OTM el tope es `base`. Crece en linea
+    hasta `hard` al llegar a `strikes_at_hard`. Por encima se queda en `hard`.
+    """
+    base = float(base)
+    hard = float(hard)
+    lo = float(strikes_at_base)
+    hi = float(strikes_at_hard)
+    if hard < base:
+        raise ValueError("hard debe ser >= base")
+    if hi <= lo:
+        raise ValueError("strikes_at_hard debe ser > strikes_at_base")
+    n = 0.0 if n_otm is None or not np.isfinite(n_otm) else float(n_otm)
+    if n <= lo:
+        return base
+    if n >= hi:
+        return hard
+    return base + (n - lo) / (hi - lo) * (hard - base)
+
+
+def mfik_cap_tenor(n_otm, dte, ref_dte=30.0, **cap_kwargs):
+    """Tope de MFIK (curtosis total) al plazo de la cadena.
+
+    El exceso sobre 3 escala como ref_dte/dte: una cadena corta tiene
+    curtosis mecanicamente alta y no se rechaza contra el tope de 30 dias.
+    Equivale a llevar el exceso al plazo de referencia y compararlo con
+    `mfik_cap` sin escalar.
+    """
+    cap = mfik_cap(n_otm, **cap_kwargs)
+    dte = float(dte)
+    ref = float(ref_dte)
+    if not (np.isfinite(dte) and dte > 0 and np.isfinite(ref) and ref > 0):
+        return cap
+    return 3.0 + (cap - 3.0) * (ref / dte)
 
 
 def cornish_fisher_z(z_alpha, s, k):

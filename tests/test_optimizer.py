@@ -194,6 +194,70 @@ class TailPenaltySolveTests(unittest.TestCase):
         self.assertGreaterEqual(total(tail), total(base) - 1e-7)
 
 
+class OneSidedPenaltyTests(unittest.TestCase):
+    def test_thin_tails_are_not_rewarded(self):
+        # Todos los activos con asimetría positiva y curtosis baja: colas más delgadas que la gaussiana.
+        mu, cov, factors, moments = _tail_inputs(skews=np.full(6, 0.6), kurts=np.full(6, 3.3))
+        model = mgr.ImpliedTailModel(moments, cov, n_scenarios=20000, seed=1)
+        w = np.full(6, 1 / 6)
+        value, gradient = model.excess_tail(w, list(cov.index))
+        self.assertGreaterEqual(value, 0.0)
+        self.assertLess(value, 1e-3)
+        self.assertLess(float(np.abs(gradient).max()), 1e-2)
+
+    def test_fat_tails_are_penalized(self):
+        mu, cov, factors, moments = _tail_inputs(skews=np.full(6, -1.0), kurts=np.full(6, 7.0))
+        model = mgr.ImpliedTailModel(moments, cov, n_scenarios=20000, seed=1)
+        value, _ = model.excess_tail(np.full(6, 1 / 6), list(cov.index))
+        self.assertGreater(value, 1e-3)
+
+    def test_penalty_never_negative_at_any_weights(self):
+        mu, cov, factors, moments = _tail_inputs()
+        model = mgr.ImpliedTailModel(moments, cov, n_scenarios=20000, seed=1)
+        rng = np.random.default_rng(2)
+        for _ in range(10):
+            self.assertGreaterEqual(model.excess_tail(rng.dirichlet(np.ones(6)), list(cov.index))[0], 0.0)
+
+
+class MfikCapTests(unittest.TestCase):
+    """El techo de MFIK depende de la densidad de la cadena y del plazo del vencimiento."""
+
+    def _engine(self, n_strikes, days, kurtosis, skew=-3.1):
+        import datetime as dt
+        strikes = np.linspace(80, 120, 2 * n_strikes + 1)
+        expiry = str(dt.date.today() + dt.timedelta(days=days))
+        records = [
+            {"type": "call" if k > 100 else "put", "strike": float(k), "expiry": expiry, "price": 1.0}
+            for k in strikes if k != 100
+        ]
+        engine = mgr.ImpliedMomentsEngine(mock_stub(), None, pd.DataFrame({"A": [100.0]}), 0.04)
+        engine._parse_chain = lambda contracts, ticker: (pd.DataFrame(records), 100.0)
+        engine._dividend_yield = lambda ticker: 0.0
+        fake = {"annualized_variance": 0.04, "skewness": skew, "kurtosis": kurtosis}
+        self._patch = mock_patch(mgr.BKMEstimator, "moments", staticmethod(lambda *a, **k: dict(fake)))
+        self._patch.__enter__()
+        self.addCleanup(self._patch.__exit__)
+        return engine
+
+    def test_dense_chain_keeps_high_kurtosis_that_a_thin_one_loses(self):
+        dense = self._engine(n_strikes=40, days=72, kurtosis=27.8)._implied_from_options("A")
+        self.assertTrue(np.isfinite(dense["MFIK"]))
+        self._patch.__exit__()
+        thin = self._engine(n_strikes=5, days=72, kurtosis=27.8)._implied_from_options("A")
+        self.assertTrue(np.isnan(thin["MFIK"]))
+
+    def test_cap_is_looser_for_shorter_expiries(self):
+        short = self._engine(n_strikes=5, days=30, kurtosis=27.8)._implied_from_options("A")
+        self.assertTrue(np.isfinite(short["MFIK"]))
+
+
+def mock_stub():
+    class _Polygon:
+        def options_chain_snapshot(self, *args, **kwargs):
+            return []
+    return _Polygon()
+
+
 class TailRiskReportTests(unittest.TestCase):
     def test_cvar_exceeds_var_and_fat_tails_reported(self):
         mu, cov, _, moments = _tail_inputs()

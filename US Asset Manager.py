@@ -34,6 +34,7 @@ from risk_estimators import (
     cornish_fisher_z,
     cov_ewma_shrunk,
     higher_moments_admissible,
+    mfik_cap_tenor,
     portfolio_moment_gradients,
     portfolio_moments,
     q_to_p_vol,
@@ -83,9 +84,11 @@ SOLVER: Literal["cvxpy", "scipy", "qubo_sa"] = "cvxpy"
 RUN_SOLVER_COMPARISON: bool = True
 TAIL_RISK_CONFIDENCE_LEVELS: Tuple[float, ...] = (0.95, 0.99)  # VaR/CVaR Cornish-Fisher del portafolio final
 # Penalización de cola (opcional). Con False el optimizador es el media-varianza de siempre. Con True se
-# resta γ · σ_p · (ES_CF − ES_gaussiano) a la utilidad, con γ del perfil (PROFILES["tail_penalty"]).
+# resta γ · σ_p · max(0, ES_CF − ES_gaussiano) a la utilidad (suavizado), con γ del perfil (PROFILES["tail_penalty"]).
+# Solo penaliza colas peores que las gaussianas: no premia las más delgadas.
 USE_TAIL_PENALTY: bool = False
 TAIL_PENALTY_CONFIDENCE: float = 0.95
+TAIL_PENALTY_SMOOTHING: float = 0.02  # escala del softplus (en σ) que deja solo el exceso positivo de ES
 TAIL_SCENARIOS: int = 20_000
 TAIL_RANDOM_SEED: int = 42
 
@@ -152,7 +155,12 @@ MAX_OPTION_PAGES: int = 8
 # opciones OTM poco negociadas puede tener meses y contaminar la IV de las alas.
 OPTIONS_MAX_PRICE_AGE_DAYS: int = 5
 BKM_SPLINE_POINTS: int = 200
-BKM_MFIK_MAX: float = 20.0  # techo de sanidad de MFIK; por encima, o si K < 1 + S², MFIS/MFIK se anulan
+# Techo de sanidad de MFIK (curtosis total) por vencimiento; por encima, o si K < 1 + S², MFIS/MFIK se anulan.
+# El techo depende de la cadena: BKM_MFIK_MAX con pocos strikes OTM, hasta BKM_MFIK_MAX_HARD con muchos
+# (un índice líquido concentra masa en las alas), y se lleva al plazo del vencimiento respecto de
+# OPTIONS_TARGET_DAYS (el exceso de curtosis escala como 1/plazo). Ver risk_estimators.mfik_cap_tenor.
+BKM_MFIK_MAX: float = 20.0
+BKM_MFIK_MAX_HARD: float = 80.0
 MIN_TOTAL_VOL: float = 1e-3
 
 COVARIANCE_MODE: Literal["correlation", "beta"] = "correlation"
@@ -1190,9 +1198,12 @@ class ImpliedMomentsEngine:
             if result:
                 # Un par fuera de K >= 1 + S² o sobre el techo delata una integración mala: se anulan
                 # asimetría y curtosis de ese vencimiento (sin recortar) y se conserva la varianza.
-                if not higher_moments_admissible(result["skewness"], result["kurtosis"], BKM_MFIK_MAX):
-                    self.logger.info("%s %s: MFIS/MFIK inadmisibles (%.2f, %.2f), se anulan",
-                                     ticker, expiry, result["skewness"], result["kurtosis"])
+                mfik_cap = mfik_cap_tenor(
+                    len(calls) + len(puts), days, ref_dte=OPTIONS_TARGET_DAYS, base=BKM_MFIK_MAX, hard=BKM_MFIK_MAX_HARD
+                )
+                if not higher_moments_admissible(result["skewness"], result["kurtosis"], mfik_cap):
+                    self.logger.info("%s %s: MFIS/MFIK inadmisibles (%.2f, %.2f; tope %.1f con %d strikes OTM), se anulan",
+                                     ticker, expiry, result["skewness"], result["kurtosis"], mfik_cap, len(calls) + len(puts))
                     result = {**result, "skewness": float("nan"), "kurtosis": float("nan")}
                 # Mismo plazo para todos: MFIS y MFIK (exceso) del vencimiento → DTE objetivo, antes de interpolar.
                 at_target = scale_moments(
@@ -1457,15 +1468,23 @@ class ImpliedTailModel:
     def excess_tail(
         self, weights: np.ndarray, tickers: Sequence[str], confidence: float = TAIL_PENALTY_CONFIDENCE
     ) -> Tuple[float, np.ndarray]:
-        """σ_p · (ES_CF − ES_gaussiano) en unidades de σ anual, y su gradiente respecto a `weights`."""
+        """σ_p · softplus(ES_CF − ES_gaussiano) en unidades de σ anual, y su gradiente respecto a `weights`.
+
+        Un solo lado: el softplus (escala TAIL_PENALTY_SMOOTHING) vale ~0 cuando las colas son más delgadas
+        que las gaussianas, así que el optimizador no gana nada por buscar asimetría positiva.
+        """
         full, columns = self._full_vector(weights, tickers)
         alpha = 1.0 - confidence
         grad = portfolio_moment_gradients(full, self.panel)
         es, d_es_ds, d_es_dk = cornish_fisher_es_gradient(alpha, grad["skew"], grad["exkurt"])
-        excess_std = -es - norm.pdf(norm.ppf(alpha)) / alpha
+        raw_excess = -es - norm.pdf(norm.ppf(alpha)) / alpha
+        scale = TAIL_PENALTY_SMOOTHING
+        z = raw_excess / scale
+        excess_std = float(scale * (max(z, 0.0) + math.log1p(math.exp(-abs(z)))))  # softplus estable
+        slope = 1.0 / (1.0 + math.exp(-z)) if z > -700 else 0.0                    # d softplus / d raw
         sigma_p = float(math.sqrt(max(full @ self.sigma @ full, 1e-18)))
         d_sigma = (self.sigma @ full) / sigma_p
-        d_excess = -(d_es_ds * grad["d_skew_dw"] + d_es_dk * grad["d_exkurt_dw"])
+        d_excess = -slope * (d_es_ds * grad["d_skew_dw"] + d_es_dk * grad["d_exkurt_dw"])
         gradient = d_sigma * excess_std + sigma_p * d_excess
         return sigma_p * excess_std, gradient[columns]
 
