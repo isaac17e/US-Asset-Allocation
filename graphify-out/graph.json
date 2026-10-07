@@ -54,19 +54,6 @@
   },
   "nodes": [
     {
-      "id": "us_asset_manager_bkmestimator",
-      "label": "BKMEstimator",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "bkmestimator",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L886"
-    },
-    {
       "id": "us_asset_manager_consolereporter",
       "label": "ConsoleReporter",
       "_callable": true,
@@ -171,6 +158,19 @@
       "source_location": "L1995"
     },
     {
+      "id": "us_asset_manager_pipelineinputs",
+      "label": "PipelineInputs",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "pipelineinputs",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1983"
+    },
+    {
       "id": "us_asset_manager_portfoliooptimizer",
       "label": "PortfolioOptimizer",
       "_callable": true,
@@ -197,13 +197,26 @@
       "source_location": "L372"
     },
     {
+      "id": "us_asset_manager_redundancyfilter",
+      "label": "RedundancyFilter",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "redundancyfilter",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L663"
+    },
+    {
       "id": "fmp_client_apiauthorizationerror",
       "label": "APIAuthorizationError",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "apiauthorizationerror",
       "source_file": "fmp_client.py",
@@ -216,7 +229,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "apierror",
       "source_file": "fmp_client.py",
@@ -229,7 +242,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "basehttpclient",
       "source_file": "fmp_client.py",
@@ -242,11 +255,37 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "fmpclient",
       "source_file": "fmp_client.py",
       "source_location": "L89"
+    },
+    {
+      "id": "us_asset_manager_marketdataloader",
+      "label": "MarketDataLoader",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": "marketdataloader",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L633"
+    },
+    {
+      "id": "us_asset_manager_polygonclient",
+      "label": "PolygonClient",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": "polygonclient",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L474"
     },
     {
       "id": "tests_test_pipeline_io_weighttests",
@@ -431,6 +470,19 @@
       "source_location": "L1714"
     },
     {
+      "id": "us_asset_manager_bkmestimator",
+      "label": "BKMEstimator",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "BKMEstimator",
+      "file_type": "code",
+      "norm_label": "bkmestimator",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L886"
+    },
+    {
       "id": "us_asset_manager_etfdescriptor",
       "label": "ETFDescriptor",
       "_callable": true,
@@ -470,56 +522,17 @@
       "source_location": "L419"
     },
     {
-      "id": "us_asset_manager_marketdataloader",
-      "label": "MarketDataLoader",
+      "id": "us_asset_manager_impliedmomentsengine",
+      "label": "ImpliedMomentsEngine",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
       "community_name": "Any",
       "file_type": "code",
-      "norm_label": "marketdataloader",
+      "norm_label": "impliedmomentsengine",
       "source_file": "US Asset Manager.py",
-      "source_location": "L633"
-    },
-    {
-      "id": "us_asset_manager_pipelineinputs",
-      "label": "PipelineInputs",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "pipelineinputs",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1983"
-    },
-    {
-      "id": "us_asset_manager_polygonclient",
-      "label": "PolygonClient",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "polygonclient",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L474"
-    },
-    {
-      "id": "us_asset_manager_redundancyfilter",
-      "label": "RedundancyFilter",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "redundancyfilter",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L663"
+      "source_location": "L1069"
     },
     {
       "id": "us_asset_manager_universebuilder",
@@ -533,19 +546,6 @@
       "norm_label": "universebuilder",
       "source_file": "US Asset Manager.py",
       "source_location": "L510"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine",
-      "label": "ImpliedMomentsEngine",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "impliedmomentsengine",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1069"
     },
     {
       "id": "tests_test_pipeline_io_atomicwritetests",
@@ -624,114 +624,6 @@
       "norm_label": "transporttests",
       "source_file": "tests/test_fmp_client.py",
       "source_location": "L47"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_american_call",
-      "label": "._american_call()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._american_call()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L927"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_american_price",
-      "label": "._american_price()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._american_price()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L958"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_anchor_at_spot",
-      "label": "._anchor_at_spot()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._anchor_at_spot()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1011"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_bs93_phi",
-      "label": "._bs93_phi()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._bs93_phi()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L909"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_bs_price",
-      "label": "._bs_price()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._bs_price()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L894"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_implied_vol",
-      "label": "._implied_vol()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._implied_vol()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L968"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_moments",
-      "label": ".moments()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": ".moments()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1024"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_resample_via_iv_spline",
-      "label": "._resample_via_iv_spline()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._resample_via_iv_spline()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L985"
-    },
-    {
-      "id": "us_asset_manager_bkmestimator_trapezoid",
-      "label": "._trapezoid()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "._trapezoid()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L888"
     },
     {
       "id": "us_asset_manager_consolereporter_allocation_table",
@@ -1010,6 +902,30 @@
       "source_location": "L2077"
     },
     {
+      "id": "us_asset_manager_passiveetfallocationpipeline_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1996"
+    },
+    {
+      "id": "us_asset_manager_passiveetfallocationpipeline_prepare",
+      "label": ".prepare()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".prepare()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2007"
+    },
+    {
       "id": "us_asset_manager_passiveetfallocationpipeline_print_reports",
       "label": "._print_reports()",
       "_callable": true,
@@ -1202,6 +1118,18 @@
       "source_location": "L1533"
     },
     {
+      "id": "us_asset_manager_profileconfig_from_registry",
+      "label": ".from_registry()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".from_registry()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L380"
+    },
+    {
       "id": "us_asset_manager_profileconfig_target_vector",
       "label": ".target_vector()",
       "_callable": true,
@@ -1226,12 +1154,36 @@
       "source_location": "L343"
     },
     {
+      "id": "us_asset_manager_redundancyfilter_apply",
+      "label": ".apply()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".apply()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L670"
+    },
+    {
+      "id": "us_asset_manager_redundancyfilter_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L664"
+    },
+    {
       "id": "fmp_client_basehttpclient_backoff",
       "label": "._backoff()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "._backoff()",
       "source_file": "fmp_client.py",
@@ -1243,7 +1195,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": ".__init__()",
       "source_file": "fmp_client.py",
@@ -1255,7 +1207,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "._request_json()",
       "source_file": "fmp_client.py",
@@ -1267,7 +1219,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "._throttle()",
       "source_file": "fmp_client.py",
@@ -1279,7 +1231,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "._as_records()",
       "source_file": "fmp_client.py",
@@ -1291,7 +1243,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "._get()",
       "source_file": "fmp_client.py",
@@ -1303,7 +1255,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": ".__init__()",
       "source_file": "fmp_client.py",
@@ -1315,7 +1267,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "._single_record()",
       "source_file": "fmp_client.py",
@@ -1327,11 +1279,83 @@
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "_to_float()",
       "source_file": "fmp_client.py",
       "source_location": "L28"
+    },
+    {
+      "id": "us_asset_manager_fmpclient_historical_adjusted_close",
+      "label": ".historical_adjusted_close()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": ".historical_adjusted_close()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L448"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1070"
+    },
+    {
+      "id": "us_asset_manager_marketdataloader_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L634"
+    },
+    {
+      "id": "us_asset_manager_marketdataloader_load",
+      "label": ".load()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": ".load()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L640"
+    },
+    {
+      "id": "us_asset_manager_polygonclient_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L475"
+    },
+    {
+      "id": "us_asset_manager_polygonclient_options_chain_snapshot",
+      "label": ".options_chain_snapshot()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": ".options_chain_snapshot()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L479"
     },
     {
       "id": "risk_estimators_cornish_fisher_domain",
@@ -2618,64 +2642,112 @@
       "source_location": "L1721"
     },
     {
-      "id": "risk_estimators_average_correlation",
-      "label": "average_correlation()",
+      "id": "us_asset_manager_bkmestimator_american_call",
+      "label": "._american_call()",
       "_callable": true,
       "_origin": "ast",
       "community": 17,
-      "community_name": "cov_ewma_shrunk",
+      "community_name": "BKMEstimator",
       "file_type": "code",
-      "norm_label": "average_correlation()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L132"
+      "norm_label": "._american_call()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L927"
     },
     {
-      "id": "risk_estimators_cov_ewma_shrunk",
-      "label": "cov_ewma_shrunk()",
+      "id": "us_asset_manager_bkmestimator_american_price",
+      "label": "._american_price()",
       "_callable": true,
       "_origin": "ast",
       "community": 17,
-      "community_name": "cov_ewma_shrunk",
+      "community_name": "BKMEstimator",
       "file_type": "code",
-      "norm_label": "cov_ewma_shrunk()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L259"
+      "norm_label": "._american_price()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L958"
     },
     {
-      "id": "risk_estimators_effective_sample_size",
-      "label": "effective_sample_size()",
+      "id": "us_asset_manager_bkmestimator_anchor_at_spot",
+      "label": "._anchor_at_spot()",
       "_callable": true,
       "_origin": "ast",
       "community": 17,
-      "community_name": "cov_ewma_shrunk",
+      "community_name": "BKMEstimator",
       "file_type": "code",
-      "norm_label": "effective_sample_size()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L94"
+      "norm_label": "._anchor_at_spot()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1011"
     },
     {
-      "id": "risk_estimators_ledoit_wolf_constant_correlation",
-      "label": "ledoit_wolf_constant_correlation()",
+      "id": "us_asset_manager_bkmestimator_bs93_phi",
+      "label": "._bs93_phi()",
       "_callable": true,
       "_origin": "ast",
       "community": 17,
-      "community_name": "cov_ewma_shrunk",
+      "community_name": "BKMEstimator",
       "file_type": "code",
-      "norm_label": "ledoit_wolf_constant_correlation()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L145"
+      "norm_label": "._bs93_phi()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L909"
     },
     {
-      "id": "risk_estimators_ledoit_wolf_constant_correlation_out",
-      "label": "_out()",
+      "id": "us_asset_manager_bkmestimator_bs_price",
+      "label": "._bs_price()",
       "_callable": true,
       "_origin": "ast",
       "community": 17,
-      "community_name": "cov_ewma_shrunk",
+      "community_name": "BKMEstimator",
       "file_type": "code",
-      "norm_label": "_out()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L201"
+      "norm_label": "._bs_price()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L894"
+    },
+    {
+      "id": "us_asset_manager_bkmestimator_implied_vol",
+      "label": "._implied_vol()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "BKMEstimator",
+      "file_type": "code",
+      "norm_label": "._implied_vol()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L968"
+    },
+    {
+      "id": "us_asset_manager_bkmestimator_moments",
+      "label": ".moments()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "BKMEstimator",
+      "file_type": "code",
+      "norm_label": ".moments()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1024"
+    },
+    {
+      "id": "us_asset_manager_bkmestimator_resample_via_iv_spline",
+      "label": "._resample_via_iv_spline()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "BKMEstimator",
+      "file_type": "code",
+      "norm_label": "._resample_via_iv_spline()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L985"
+    },
+    {
+      "id": "us_asset_manager_bkmestimator_trapezoid",
+      "label": "._trapezoid()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "BKMEstimator",
+      "file_type": "code",
+      "norm_label": "._trapezoid()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L888"
     },
     {
       "id": "us_asset_manager_clip",
@@ -2870,18 +2942,6 @@
       "source_location": "L445"
     },
     {
-      "id": "us_asset_manager_fmpclient_historical_adjusted_close",
-      "label": ".historical_adjusted_close()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".historical_adjusted_close()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L448"
-    },
-    {
       "id": "us_asset_manager_fmpclient_key_metrics_ttm",
       "label": ".key_metrics_ttm()",
       "_callable": true,
@@ -2918,16 +2978,124 @@
       "source_location": "L420"
     },
     {
-      "id": "us_asset_manager_impliedmomentsengine_init",
-      "label": ".__init__()",
+      "id": "us_asset_manager_impliedmomentsengine_compute",
+      "label": ".compute()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "community_name": "Any",
       "file_type": "code",
-      "norm_label": ".__init__()",
+      "norm_label": ".compute()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L1070"
+      "source_location": "L1087"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_dividend_yield",
+      "label": "._dividend_yield()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._dividend_yield()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1141"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_historical_fallback",
+      "label": "._historical_fallback()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._historical_fallback()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1280"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_implied_from_options",
+      "label": "._implied_from_options()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._implied_from_options()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1175"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_interpolate_to_target",
+      "label": "._interpolate_to_target()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._interpolate_to_target()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1262"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_log_dividend_yield_coverage",
+      "label": "._log_dividend_yield_coverage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._log_dividend_yield_coverage()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1117"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_log_horizon_alignment",
+      "label": "._log_horizon_alignment()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._log_horizon_alignment()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1109"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_normalize_yield",
+      "label": "._normalize_yield()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._normalize_yield()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1133"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_parse_chain",
+      "label": "._parse_chain()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._parse_chain()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1234"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_trailing_dividends",
+      "label": "._trailing_dividends()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": "._trailing_dividends()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1161"
     },
     {
       "id": "us_asset_manager_json_float",
@@ -2942,54 +3110,6 @@
       "source_location": "L2190"
     },
     {
-      "id": "us_asset_manager_marketdataloader_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L634"
-    },
-    {
-      "id": "us_asset_manager_marketdataloader_load",
-      "label": ".load()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".load()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L640"
-    },
-    {
-      "id": "us_asset_manager_passiveetfallocationpipeline_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1996"
-    },
-    {
-      "id": "us_asset_manager_passiveetfallocationpipeline_prepare",
-      "label": ".prepare()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".prepare()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2007"
-    },
-    {
       "id": "us_asset_manager_percentile_score",
       "label": "_percentile_score()",
       "_callable": true,
@@ -3000,66 +3120,6 @@
       "norm_label": "_percentile_score()",
       "source_file": "US Asset Manager.py",
       "source_location": "L316"
-    },
-    {
-      "id": "us_asset_manager_polygonclient_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L475"
-    },
-    {
-      "id": "us_asset_manager_polygonclient_options_chain_snapshot",
-      "label": ".options_chain_snapshot()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".options_chain_snapshot()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L479"
-    },
-    {
-      "id": "us_asset_manager_profileconfig_from_registry",
-      "label": ".from_registry()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".from_registry()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L380"
-    },
-    {
-      "id": "us_asset_manager_redundancyfilter_apply",
-      "label": ".apply()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".apply()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L670"
-    },
-    {
-      "id": "us_asset_manager_redundancyfilter_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L664"
     },
     {
       "id": "us_asset_manager_to_float",
@@ -3158,6 +3218,42 @@
       "source_location": "L556"
     },
     {
+      "id": "risk_estimators_average_correlation",
+      "label": "average_correlation()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "code",
+      "norm_label": "average_correlation()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L132"
+    },
+    {
+      "id": "risk_estimators_cov_ewma_shrunk",
+      "label": "cov_ewma_shrunk()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "code",
+      "norm_label": "cov_ewma_shrunk()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L259"
+    },
+    {
+      "id": "risk_estimators_effective_sample_size",
+      "label": "effective_sample_size()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "code",
+      "norm_label": "effective_sample_size()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L94"
+    },
+    {
       "id": "risk_estimators_ewma_cov",
       "label": "ewma_cov()",
       "_callable": true,
@@ -3182,28 +3278,40 @@
       "source_location": "L79"
     },
     {
-      "id": "risk_estimators_nearest_psd",
-      "label": "nearest_psd()",
+      "id": "risk_estimators_ledoit_wolf_constant_correlation",
+      "label": "ledoit_wolf_constant_correlation()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
       "community_name": "risk_estimators.py",
       "file_type": "code",
-      "norm_label": "nearest_psd()",
+      "norm_label": "ledoit_wolf_constant_correlation()",
       "source_file": "risk_estimators.py",
-      "source_location": "L323"
+      "source_location": "L145"
     },
     {
-      "id": "risk_estimators_portfolio_moment_gradients",
-      "label": "portfolio_moment_gradients()",
+      "id": "risk_estimators_ledoit_wolf_constant_correlation_out",
+      "label": "_out()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
       "community_name": "risk_estimators.py",
       "file_type": "code",
-      "norm_label": "portfolio_moment_gradients()",
+      "norm_label": "_out()",
       "source_file": "risk_estimators.py",
-      "source_location": "L493"
+      "source_location": "L201"
+    },
+    {
+      "id": "risk_estimators_q_to_p_correlation",
+      "label": "q_to_p_correlation()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "code",
+      "norm_label": "q_to_p_correlation()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L393"
     },
     {
       "id": "risk_estimators_scale_cov",
@@ -3223,7 +3331,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "code",
       "norm_label": "annualize()",
       "source_file": "risk_estimators.py",
@@ -3235,7 +3343,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "code",
       "norm_label": "scale_bkm_moments()",
       "source_file": "risk_estimators.py",
@@ -3247,7 +3355,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "code",
       "norm_label": "scale_moments()",
       "source_file": "risk_estimators.py",
@@ -3259,7 +3367,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "code",
       "norm_label": "_f()",
       "source_file": "risk_estimators.py",
@@ -3271,7 +3379,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "code",
       "norm_label": "to_years()",
       "source_file": "risk_estimators.py",
@@ -3283,131 +3391,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "code",
       "norm_label": ".test_iid_scaling_to_target_horizon()",
       "source_file": "tests/test_optimizer.py",
       "source_location": "L298"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_compute",
-      "label": ".compute()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": ".compute()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1087"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_dividend_yield",
-      "label": "._dividend_yield()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._dividend_yield()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1141"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_historical_fallback",
-      "label": "._historical_fallback()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._historical_fallback()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1280"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_implied_from_options",
-      "label": "._implied_from_options()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._implied_from_options()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1175"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_interpolate_to_target",
-      "label": "._interpolate_to_target()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._interpolate_to_target()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1262"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_log_dividend_yield_coverage",
-      "label": "._log_dividend_yield_coverage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._log_dividend_yield_coverage()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1117"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_log_horizon_alignment",
-      "label": "._log_horizon_alignment()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._log_horizon_alignment()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1109"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_normalize_yield",
-      "label": "._normalize_yield()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._normalize_yield()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1133"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_parse_chain",
-      "label": "._parse_chain()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._parse_chain()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1234"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_trailing_dividends",
-      "label": "._trailing_dividends()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "code",
-      "norm_label": "._trailing_dividends()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1161"
     },
     {
       "id": "us_asset_manager_configure_logging",
@@ -4046,6 +4034,30 @@
       "source_location": "L594"
     },
     {
+      "id": "risk_estimators_nearest_psd",
+      "label": "nearest_psd()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "nearest_psd()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L323"
+    },
+    {
+      "id": "risk_estimators_portfolio_moment_gradients",
+      "label": "portfolio_moment_gradients()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "portfolio_moment_gradients()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L493"
+    },
+    {
       "id": "risk_estimators_portfolio_moments",
       "label": "portfolio_moments()",
       "_callable": true,
@@ -4056,18 +4068,6 @@
       "norm_label": "portfolio_moments()",
       "source_file": "risk_estimators.py",
       "source_location": "L464"
-    },
-    {
-      "id": "risk_estimators_q_to_p_correlation",
-      "label": "q_to_p_correlation()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "numpy",
-      "file_type": "code",
-      "norm_label": "q_to_p_correlation()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L393"
     },
     {
       "id": "risk_estimators_q_to_p_vol",
@@ -4082,28 +4082,6 @@
       "source_location": "L360"
     },
     {
-      "id": "dataframe",
-      "label": "DataFrame",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "dataframe",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "exception",
-      "label": "Exception",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "exception",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "figure",
       "label": "Figure",
       "_origin": "ast",
@@ -4115,7 +4093,29 @@
       "source_location": ""
     },
     {
-      "id": "ndarray",
+      "id": "us_asset_manager_py_dataframe",
+      "label": "DataFrame",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "dataframe",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "us_asset_manager_py_exception",
+      "label": "Exception",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "exception",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "us_asset_manager_py_ndarray",
       "label": "ndarray",
       "_origin": "ast",
       "community": 0,
@@ -4126,7 +4126,7 @@
       "source_location": ""
     },
     {
-      "id": "series",
+      "id": "us_asset_manager_py_series",
       "label": "Series",
       "_origin": "ast",
       "community": 0,
@@ -4181,6 +4181,17 @@
       "source_location": "L1559"
     },
     {
+      "id": "us_asset_manager_rationale_2008",
+      "label": "Fases 0 a 2: universo, matriz B, momentos, \u03a3 y \u03bc. Es lo que reutilizan el\u2026",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "DataFrame",
+      "file_type": "rationale",
+      "norm_label": "fases 0 a 2: universo, matriz b, momentos, \u03c3 y \u03bc. es lo que reutilizan el...",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2008"
+    },
+    {
       "id": "us_asset_manager_rationale_368",
       "label": "Fallo del motor de optimizaci\u00f3n.",
       "_origin": "ast",
@@ -4192,11 +4203,22 @@
       "source_location": "L368"
     },
     {
+      "id": "date",
+      "label": "date",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "APIAuthorizationError",
+      "file_type": "code",
+      "norm_label": "date",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "fmp_client",
       "label": "fmp_client.py",
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "fmp_client.py",
       "source_file": "fmp_client.py",
@@ -4207,7 +4229,7 @@
       "label": "Any",
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "any",
       "source_file": "",
@@ -4218,7 +4240,7 @@
       "label": "Exception",
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "code",
       "norm_label": "exception",
       "source_file": "",
@@ -4229,7 +4251,7 @@
       "label": "Cliente HTTP compartido para la API 'stable' de Financial Modeling Prep. Lo\u2026",
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "rationale",
       "norm_label": "cliente http compartido para la api 'stable' de financial modeling prep. lo...",
       "source_file": "fmp_client.py",
@@ -4240,7 +4262,7 @@
       "label": "Error gen\u00e9rico de comunicaci\u00f3n con un proveedor de datos.",
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "rationale",
       "norm_label": "error generico de comunicacion con un proveedor de datos.",
       "source_file": "fmp_client.py",
@@ -4251,7 +4273,7 @@
       "label": "Clave inv\u00e1lida o endpoint no incluido en el plan contratado.",
       "_origin": "ast",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "file_type": "rationale",
       "norm_label": "clave invalida o endpoint no incluido en el plan contratado.",
       "source_file": "fmp_client.py",
@@ -4830,75 +4852,9 @@
       "source_location": "L1715"
     },
     {
-      "id": "risk_estimators_rationale_133",
-      "label": "Correlacion promedio fuera de la diagonal de una matriz de covarianza.",
-      "_origin": "ast",
-      "community": 17,
-      "community_name": "cov_ewma_shrunk",
-      "file_type": "rationale",
-      "norm_label": "correlacion promedio fuera de la diagonal de una matriz de covarianza.",
-      "source_file": "risk_estimators.py",
-      "source_location": "L133"
-    },
-    {
-      "id": "risk_estimators_rationale_147",
-      "label": "Intensidad de shrinkage optima hacia el objetivo de correlacion constante.\u2026",
-      "_origin": "ast",
-      "community": 17,
-      "community_name": "cov_ewma_shrunk",
-      "file_type": "rationale",
-      "norm_label": "intensidad de shrinkage optima hacia el objetivo de correlacion constante....",
-      "source_file": "risk_estimators.py",
-      "source_location": "L147"
-    },
-    {
-      "id": "risk_estimators_rationale_261",
-      "label": "Pipeline completo: EWMA -> shrinkage Ledoit-Wolf -> reescalado. Es el reemplazo\u2026",
-      "_origin": "ast",
-      "community": 17,
-      "community_name": "cov_ewma_shrunk",
-      "file_type": "rationale",
-      "norm_label": "pipeline completo: ewma -> shrinkage ledoit-wolf -> reescalado. es el reemplazo...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L261"
-    },
-    {
-      "id": "risk_estimators_rationale_95",
-      "label": "Tamano de muestra efectivo de Kish: 1 / sum(w^2). Con pesos iguales devuelve n.\u2026",
-      "_origin": "ast",
-      "community": 17,
-      "community_name": "cov_ewma_shrunk",
-      "file_type": "rationale",
-      "norm_label": "tamano de muestra efectivo de kish: 1 / sum(w^2). con pesos iguales devuelve n....",
-      "source_file": "risk_estimators.py",
-      "source_location": "L95"
-    },
-    {
       "id": "us_asset_manager_py_any",
       "label": "Any",
       "_origin": "ast",
-      "community": 18,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "any",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "us_asset_manager_py_dataframe",
-      "label": "DataFrame",
-      "_origin": "ast",
-      "community": 19,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "dataframe",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "any",
-      "label": "Any",
-      "_origin": "ast",
       "community": 2,
       "community_name": "Any",
       "file_type": "code",
@@ -4907,48 +4863,26 @@
       "source_location": ""
     },
     {
-      "id": "basehttpclient",
-      "label": "BaseHTTPClient",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "basehttpclient",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "date",
-      "label": "date",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "date",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "fmptransport",
-      "label": "_FMPTransport",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": "_fmptransport",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "us_asset_manager_rationale_2008",
-      "label": "Fases 0 a 2: universo, matriz B, momentos, \u03a3 y \u03bc. Es lo que reutilizan el\u2026",
+      "id": "us_asset_manager_rationale_1162",
+      "label": "Suma de dividendos con fecha ex en los \u00faltimos 365 d\u00edas (0.0 si no pag\u00f3).",
       "_origin": "ast",
       "community": 2,
       "community_name": "Any",
       "file_type": "rationale",
-      "norm_label": "fases 0 a 2: universo, matriz b, momentos, \u03c3 y \u03bc. es lo que reutilizan el...",
+      "norm_label": "suma de dividendos con fecha ex en los ultimos 365 dias (0.0 si no pago).",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2008"
+      "source_location": "L1162"
+    },
+    {
+      "id": "us_asset_manager_rationale_1263",
+      "label": "Interpola al DTE objetivo (MFIS/MFIK ya vienen escalados a ese plazo). None si\u2026",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "Any",
+      "file_type": "rationale",
+      "norm_label": "interpola al dte objetivo (mfis/mfik ya vienen escalados a ese plazo). none si...",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1263"
     },
     {
       "id": "claude",
@@ -4997,6 +4931,39 @@
       "source_location": "L106"
     },
     {
+      "id": "risk_estimators_rationale_133",
+      "label": "Correlacion promedio fuera de la diagonal de una matriz de covarianza.",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "rationale",
+      "norm_label": "correlacion promedio fuera de la diagonal de una matriz de covarianza.",
+      "source_file": "risk_estimators.py",
+      "source_location": "L133"
+    },
+    {
+      "id": "risk_estimators_rationale_147",
+      "label": "Intensidad de shrinkage optima hacia el objetivo de correlacion constante.\u2026",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "rationale",
+      "norm_label": "intensidad de shrinkage optima hacia el objetivo de correlacion constante....",
+      "source_file": "risk_estimators.py",
+      "source_location": "L147"
+    },
+    {
+      "id": "risk_estimators_rationale_261",
+      "label": "Pipeline completo: EWMA -> shrinkage Ledoit-Wolf -> reescalado. Es el reemplazo\u2026",
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "rationale",
+      "norm_label": "pipeline completo: ewma -> shrinkage ledoit-wolf -> reescalado. es el reemplazo...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L261"
+    },
+    {
       "id": "risk_estimators_rationale_319",
       "label": "Reescala una covarianza por un factor temporal (raiz del tiempo en vol).",
       "_origin": "ast",
@@ -5008,26 +4975,15 @@
       "source_location": "L319"
     },
     {
-      "id": "risk_estimators_rationale_324",
-      "label": "Proyeccion PSD por recorte de autovalores. Mantiene la escala: el piso es\u2026",
+      "id": "risk_estimators_rationale_395",
+      "label": "Corrige la prima de riesgo de correlacion. La correlacion implicita extraida\u2026",
       "_origin": "ast",
       "community": 21,
       "community_name": "risk_estimators.py",
       "file_type": "rationale",
-      "norm_label": "proyeccion psd por recorte de autovalores. mantiene la escala: el piso es...",
+      "norm_label": "corrige la prima de riesgo de correlacion. la correlacion implicita extraida...",
       "source_file": "risk_estimators.py",
-      "source_location": "L324"
-    },
-    {
-      "id": "risk_estimators_rationale_494",
-      "label": "Gradientes analiticos de sd, asimetria y exceso de curtosis respecto a w.\u2026",
-      "_origin": "ast",
-      "community": 21,
-      "community_name": "risk_estimators.py",
-      "file_type": "rationale",
-      "norm_label": "gradientes analiticos de sd, asimetria y exceso de curtosis respecto a w....",
-      "source_file": "risk_estimators.py",
-      "source_location": "L494"
+      "source_location": "L395"
     },
     {
       "id": "risk_estimators_rationale_80",
@@ -5041,44 +4997,22 @@
       "source_location": "L80"
     },
     {
-      "id": "us_asset_manager_py_exception",
-      "label": "Exception",
+      "id": "risk_estimators_rationale_95",
+      "label": "Tamano de muestra efectivo de Kish: 1 / sum(w^2). Con pesos iguales devuelve n.\u2026",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "Exception",
-      "file_type": "code",
-      "norm_label": "exception",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "us_asset_manager_py_ndarray",
-      "label": "ndarray",
-      "_origin": "ast",
-      "community": 23,
-      "community_name": "ndarray",
-      "file_type": "code",
-      "norm_label": "ndarray",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "us_asset_manager_py_series",
-      "label": "Series",
-      "_origin": "ast",
-      "community": 24,
-      "community_name": "Series",
-      "file_type": "code",
-      "norm_label": "series",
-      "source_file": "",
-      "source_location": ""
+      "community": 21,
+      "community_name": "risk_estimators.py",
+      "file_type": "rationale",
+      "norm_label": "tamano de muestra efectivo de kish: 1 / sum(w^2). con pesos iguales devuelve n....",
+      "source_file": "risk_estimators.py",
+      "source_location": "L95"
     },
     {
       "id": "risk_estimators_rationale_763",
       "label": "Convierte un plazo a anos. Exactamente UNA forma de expresarlo:\u2026",
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "rationale",
       "norm_label": "convierte un plazo a anos. exactamente una forma de expresarlo:...",
       "source_file": "risk_estimators.py",
@@ -5089,7 +5023,7 @@
       "label": "Escala momentos de un plazo `from_years` a otro `to_years` bajo iid. Solo se\u2026",
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "rationale",
       "norm_label": "escala momentos de un plazo `from_years` a otro `to_years` bajo iid. solo se...",
       "source_file": "risk_estimators.py",
@@ -5100,7 +5034,7 @@
       "label": "Atajo: scale_moments(from_years, 1.0, **moments).",
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "rationale",
       "norm_label": "atajo: scale_moments(from_years, 1.0, **moments).",
       "source_file": "risk_estimators.py",
@@ -5111,33 +5045,11 @@
       "label": "Lleva MFIV, MFIS y MFIK del DTE de la cadena al DTE objetivo (iid). MFIV es\u2026",
       "_origin": "ast",
       "community": 3,
-      "community_name": "ImpliedMomentsEngine",
+      "community_name": "scale_moments",
       "file_type": "rationale",
       "norm_label": "lleva mfiv, mfis y mfik del dte de la cadena al dte objetivo (iid). mfiv es...",
       "source_file": "risk_estimators.py",
       "source_location": "L849"
-    },
-    {
-      "id": "us_asset_manager_rationale_1162",
-      "label": "Suma de dividendos con fecha ex en los \u00faltimos 365 d\u00edas (0.0 si no pag\u00f3).",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "rationale",
-      "norm_label": "suma de dividendos con fecha ex en los ultimos 365 dias (0.0 si no pago).",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1162"
-    },
-    {
-      "id": "us_asset_manager_rationale_1263",
-      "label": "Interpola al DTE objetivo (MFIS/MFIK ya vienen escalados a ese plazo). None si\u2026",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "ImpliedMomentsEngine",
-      "file_type": "rationale",
-      "norm_label": "interpola al dte objetivo (mfis/mfik ya vienen escalados a ese plazo). none si...",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1263"
     },
     {
       "id": "us_asset_manager",
@@ -5448,6 +5360,17 @@
       "source_location": "L1"
     },
     {
+      "id": "risk_estimators_rationale_324",
+      "label": "Proyeccion PSD por recorte de autovalores. Mantiene la escala: el piso es\u2026",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "proyeccion psd por recorte de autovalores. mantiene la escala: el piso es...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L324"
+    },
+    {
       "id": "risk_estimators_rationale_361",
       "label": "Convierte volatilidad implicita (medida Q) a volatilidad fisica (P). sigma_P =\u2026",
       "_origin": "ast",
@@ -5459,17 +5382,6 @@
       "source_location": "L361"
     },
     {
-      "id": "risk_estimators_rationale_395",
-      "label": "Corrige la prima de riesgo de correlacion. La correlacion implicita extraida\u2026",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "numpy",
-      "file_type": "rationale",
-      "norm_label": "corrige la prima de riesgo de correlacion. la correlacion implicita extraida...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L395"
-    },
-    {
       "id": "risk_estimators_rationale_465",
       "label": "Momentos centrales 1 a 4 del retorno del portafolio, en O(J*n). Equivale a\u2026",
       "_origin": "ast",
@@ -5479,6 +5391,17 @@
       "norm_label": "momentos centrales 1 a 4 del retorno del portafolio, en o(j*n). equivale a...",
       "source_file": "risk_estimators.py",
       "source_location": "L465"
+    },
+    {
+      "id": "risk_estimators_rationale_494",
+      "label": "Gradientes analiticos de sd, asimetria y exceso de curtosis respecto a w.\u2026",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "gradientes analiticos de sd, asimetria y exceso de curtosis respecto a w....",
+      "source_file": "risk_estimators.py",
+      "source_location": "L494"
     },
     {
       "id": "risk_estimators_rationale_571",
@@ -5579,8 +5502,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 21,
-      "community_name": "risk_estimators.py",
+      "community": 5,
+      "community_name": "pipeline_io.py",
       "contributor": null,
       "file_type": "document",
       "norm_label": "us asset allocation readme",
@@ -6058,7 +5981,7 @@
       "label": "typing",
       "_origin": "semantic",
       "community": 1,
-      "community_name": "fmp_client.py",
+      "community_name": "APIAuthorizationError",
       "external": true,
       "file_type": "concept",
       "norm_label": "typing",
@@ -11061,7 +10984,7 @@
     },
     {
       "source": "us_asset_manager_bkmestimator_anchor_at_spot",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11073,7 +10996,7 @@
     },
     {
       "source": "us_asset_manager_bkmestimator_resample_via_iv_spline",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11081,18 +11004,6 @@
       "context": "generic_arg",
       "source_file": "US Asset Manager.py",
       "source_location": "L985",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_factormodelbuilder_build",
-      "target": "dataframe",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "generic_arg",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L719",
       "weight": 1.0
     },
     {
@@ -11108,8 +11019,20 @@
       "weight": 1.0
     },
     {
+      "source": "us_asset_manager_factormodelbuilder_build",
+      "target": "us_asset_manager_py_dataframe",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L719",
+      "weight": 1.0
+    },
+    {
       "source": "us_asset_manager_factormodelbuilder_safe_fetch",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11121,7 +11044,7 @@
     },
     {
       "source": "us_asset_manager_first_number",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11133,7 +11056,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_dividends",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11145,7 +11068,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_etf_holdings",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11157,7 +11080,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_etf_info",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11169,7 +11092,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_financial_growth",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11181,7 +11104,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_key_metrics_ttm",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11193,7 +11116,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_ratios_ttm",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11205,7 +11128,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_screen_etfs",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11217,7 +11140,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_historical_fallback",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11229,7 +11152,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_implied_from_options",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11265,7 +11188,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_parse_chain",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11277,7 +11200,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_parse_chain",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11289,7 +11212,7 @@
     },
     {
       "source": "us_asset_manager_impliedtailmodel_excess_tail",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11301,7 +11224,7 @@
     },
     {
       "source": "us_asset_manager_impliedtailmodel_full_vector",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11313,7 +11236,7 @@
     },
     {
       "source": "us_asset_manager_polygonclient_options_chain_snapshot",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11325,7 +11248,7 @@
     },
     {
       "source": "us_asset_manager_portfoliooptimizer_feasible_targets",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11349,7 +11272,7 @@
     },
     {
       "source": "us_asset_manager_portfoliooptimizer_solve_cvxpy",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11361,7 +11284,7 @@
     },
     {
       "source": "us_asset_manager_portfoliooptimizer_solve_qubo_sa",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11373,7 +11296,7 @@
     },
     {
       "source": "us_asset_manager_portfoliooptimizer_solve_scipy",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11385,7 +11308,7 @@
     },
     {
       "source": "us_asset_manager_profileconfig_from_registry",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11397,7 +11320,7 @@
     },
     {
       "source": "us_asset_manager_redundancyfilter_apply",
-      "target": "dataframe",
+      "target": "us_asset_manager_etfdescriptor",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11409,7 +11332,7 @@
     },
     {
       "source": "us_asset_manager_redundancyfilter_apply",
-      "target": "us_asset_manager_etfdescriptor",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11433,7 +11356,7 @@
     },
     {
       "source": "us_asset_manager_universebuilder_enrich_and_deduplicate",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -11445,7 +11368,7 @@
     },
     {
       "source": "us_asset_manager_universebuilder_parse_screener_record",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13305,7 +13228,7 @@
     },
     {
       "source": "us_asset_manager_bkmestimator_moments",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13317,7 +13240,7 @@
     },
     {
       "source": "us_asset_manager_bkmestimator_trapezoid",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13329,7 +13252,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_allocation_table",
-      "target": "series",
+      "target": "us_asset_manager_optimizationresult",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13341,7 +13264,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_allocation_table",
-      "target": "us_asset_manager_optimizationresult",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13353,7 +13276,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_factor_table",
-      "target": "ndarray",
+      "target": "us_asset_manager_optimizationresult",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13365,7 +13288,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_factor_table",
-      "target": "us_asset_manager_optimizationresult",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13401,7 +13324,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_risk_contributions",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13413,7 +13336,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_table",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13437,7 +13360,7 @@
     },
     {
       "source": "us_asset_manager_dashboardbuilder_allocation_pie",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13449,42 +13372,6 @@
     },
     {
       "source": "us_asset_manager_dashboardbuilder_build",
-      "target": "dataframe",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1830",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_dashboardbuilder_build",
-      "target": "ndarray",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1830",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_dashboardbuilder_build",
-      "target": "series",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1830",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_dashboardbuilder_build",
       "target": "us_asset_manager_optimizationresult",
       "relation": "references",
       "_origin": "ast",
@@ -13508,20 +13395,44 @@
       "weight": 1.0
     },
     {
-      "source": "us_asset_manager_dashboardbuilder_factor_radar",
-      "target": "figure",
+      "source": "us_asset_manager_dashboardbuilder_build",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L1896",
+      "source_location": "L1830",
+      "weight": 1.0
+    },
+    {
+      "source": "us_asset_manager_dashboardbuilder_build",
+      "target": "us_asset_manager_py_ndarray",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1830",
+      "weight": 1.0
+    },
+    {
+      "source": "us_asset_manager_dashboardbuilder_build",
+      "target": "us_asset_manager_py_series",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1830",
       "weight": 1.0
     },
     {
       "source": "us_asset_manager_dashboardbuilder_factor_radar",
-      "target": "ndarray",
+      "target": "figure",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13556,6 +13467,18 @@
       "weight": 1.0
     },
     {
+      "source": "us_asset_manager_dashboardbuilder_factor_radar",
+      "target": "us_asset_manager_py_ndarray",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1896",
+      "weight": 1.0
+    },
+    {
       "source": "us_asset_manager_dashboardbuilder_risk_budget_bars",
       "target": "figure",
       "relation": "references",
@@ -13569,7 +13492,7 @@
     },
     {
       "source": "us_asset_manager_dashboardbuilder_risk_budget_bars",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13577,18 +13500,6 @@
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
       "source_location": "L1964",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_dashboardbuilder_risk_return_scatter",
-      "target": "dataframe",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1918",
       "weight": 1.0
     },
     {
@@ -13606,6 +13517,18 @@
     {
       "source": "us_asset_manager_dashboardbuilder_risk_return_scatter",
       "target": "us_asset_manager_optimizationresult",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1918",
+      "weight": 1.0
+    },
+    {
+      "source": "us_asset_manager_dashboardbuilder_risk_return_scatter",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13641,7 +13564,7 @@
     },
     {
       "source": "us_asset_manager_factormodelbuilder_init",
-      "target": "dataframe",
+      "target": "us_asset_manager_fmpclient",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13653,7 +13576,7 @@
     },
     {
       "source": "us_asset_manager_factormodelbuilder_init",
-      "target": "us_asset_manager_fmpclient",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13677,7 +13600,7 @@
     },
     {
       "source": "us_asset_manager_historical_betas",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13689,7 +13612,7 @@
     },
     {
       "source": "us_asset_manager_impliedcovariancebuilder_correlation",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13701,7 +13624,7 @@
     },
     {
       "source": "us_asset_manager_impliedcovariancebuilder_physical_vol",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13713,7 +13636,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_init",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13725,7 +13648,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_log_horizon_alignment",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13737,7 +13660,7 @@
     },
     {
       "source": "us_asset_manager_impliedtailmodel_init",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13749,7 +13672,7 @@
     },
     {
       "source": "us_asset_manager_impliedtailmodel_portfolio_moments",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13761,7 +13684,7 @@
     },
     {
       "source": "us_asset_manager_impliedtailmodel_volatility",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13773,7 +13696,7 @@
     },
     {
       "source": "us_asset_manager_json_float",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13821,30 +13744,6 @@
     },
     {
       "source": "us_asset_manager_passiveetfallocationpipeline_print_reports",
-      "target": "dataframe",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2099",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_passiveetfallocationpipeline_print_reports",
-      "target": "series",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2099",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_passiveetfallocationpipeline_print_reports",
       "target": "us_asset_manager_optimizationresult",
       "relation": "references",
       "_origin": "ast",
@@ -13868,6 +13767,30 @@
       "weight": 1.0
     },
     {
+      "source": "us_asset_manager_passiveetfallocationpipeline_print_reports",
+      "target": "us_asset_manager_py_dataframe",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2099",
+      "weight": 1.0
+    },
+    {
+      "source": "us_asset_manager_passiveetfallocationpipeline_print_reports",
+      "target": "us_asset_manager_py_series",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2099",
+      "weight": 1.0
+    },
+    {
       "source": "us_asset_manager_polygonclient_options_chain_snapshot",
       "target": "date",
       "relation": "references",
@@ -13881,7 +13804,7 @@
     },
     {
       "source": "us_asset_manager_portfoliooptimizer_build_result",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13889,30 +13812,6 @@
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
       "source_location": "L1692",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_portfoliooptimizer_init",
-      "target": "dataframe",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1495",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_portfoliooptimizer_init",
-      "target": "series",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1495",
       "weight": 1.0
     },
     {
@@ -13928,8 +13827,32 @@
       "weight": 1.0
     },
     {
+      "source": "us_asset_manager_portfoliooptimizer_init",
+      "target": "us_asset_manager_py_dataframe",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1495",
+      "weight": 1.0
+    },
+    {
+      "source": "us_asset_manager_portfoliooptimizer_init",
+      "target": "us_asset_manager_py_series",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1495",
+      "weight": 1.0
+    },
+    {
       "source": "us_asset_manager_portfoliooptimizer_max_violation",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13941,7 +13864,7 @@
     },
     {
       "source": "us_asset_manager_portfoliooptimizer_utility",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13949,18 +13872,6 @@
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
       "source_location": "L1533",
-      "weight": 1.0
-    },
-    {
-      "source": "us_asset_manager_portfoliotailrisk_compute",
-      "target": "series",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "parameter_type",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1724",
       "weight": 1.0
     },
     {
@@ -13976,8 +13887,20 @@
       "weight": 1.0
     },
     {
+      "source": "us_asset_manager_portfoliotailrisk_compute",
+      "target": "us_asset_manager_py_series",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1724",
+      "weight": 1.0
+    },
+    {
       "source": "us_asset_manager_to_float",
-      "target": "any",
+      "target": "us_asset_manager_py_any",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14217,7 +14140,7 @@
     },
     {
       "source": "us_asset_manager_combine_scores",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14229,7 +14152,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_allocation_table",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14241,7 +14164,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_factor_table",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14253,7 +14176,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_metrics_table",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14265,7 +14188,7 @@
     },
     {
       "source": "us_asset_manager_consolereporter_risk_contributions",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14277,7 +14200,7 @@
     },
     {
       "source": "us_asset_manager_expectedreturnmodel_build",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14289,7 +14212,7 @@
     },
     {
       "source": "us_asset_manager_factormodelbuilder_assemble_matrix",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14301,7 +14224,7 @@
     },
     {
       "source": "us_asset_manager_factormodelbuilder_style_betas",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14313,7 +14236,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient_historical_adjusted_close",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14325,7 +14248,7 @@
     },
     {
       "source": "us_asset_manager_historical_betas",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14337,7 +14260,7 @@
     },
     {
       "source": "us_asset_manager_impliedcovariancebuilder_build",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14349,7 +14272,7 @@
     },
     {
       "source": "us_asset_manager_impliedcovariancebuilder_correlation",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14361,7 +14284,7 @@
     },
     {
       "source": "us_asset_manager_impliedcovariancebuilder_physical_vol",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14373,7 +14296,7 @@
     },
     {
       "source": "us_asset_manager_impliedmomentsengine_compute",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14385,7 +14308,7 @@
     },
     {
       "source": "us_asset_manager_marketdataloader_load",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14397,7 +14320,7 @@
     },
     {
       "source": "us_asset_manager_nearest_psd",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14409,7 +14332,7 @@
     },
     {
       "source": "us_asset_manager_passiveetfallocationpipeline_compare_solvers",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14433,7 +14356,7 @@
     },
     {
       "source": "us_asset_manager_percentile_score",
-      "target": "series",
+      "target": "us_asset_manager_py_series",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14469,7 +14392,7 @@
     },
     {
       "source": "us_asset_manager_portfoliotailrisk_compute",
-      "target": "dataframe",
+      "target": "us_asset_manager_py_dataframe",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14481,7 +14404,7 @@
     },
     {
       "source": "us_asset_manager_profileconfig_target_vector",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14493,7 +14416,7 @@
     },
     {
       "source": "us_asset_manager_project_capped_simplex",
-      "target": "ndarray",
+      "target": "us_asset_manager_py_ndarray",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -16199,7 +16122,7 @@
     },
     {
       "source": "us_asset_manager_fmpclient",
-      "target": "fmptransport",
+      "target": "fmp_client_fmpclient",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -16210,7 +16133,7 @@
     },
     {
       "source": "us_asset_manager_optimizationerror",
-      "target": "exception",
+      "target": "us_asset_manager_py_exception",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -16221,7 +16144,7 @@
     },
     {
       "source": "us_asset_manager_polygonclient",
-      "target": "basehttpclient",
+      "target": "fmp_client_basehttpclient",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -19265,6 +19188,149 @@
       "weight": 0.8
     },
     {
+      "source": "us_asset_manager_factormodelbuilder",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L795",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_factormodelbuilder",
+      "target": "fmp_client_apierror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L800",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_fmpclient",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L452",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_impliedmomentsengine",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1094",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_impliedmomentsengine",
+      "target": "fmp_client_apierror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1097",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_main",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2225",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_main",
+      "target": "fmp_client_apierror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2228",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_marketdataloader",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L647",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_marketdataloader",
+      "target": "fmp_client_apierror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L649",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_polygonclient",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L496",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_polygonclient",
+      "target": "fmp_client_apierror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L498",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_universebuilder",
+      "target": "fmp_client_apiauthorizationerror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L543",
+      "weight": 0.8
+    },
+    {
+      "source": "us_asset_manager_universebuilder",
+      "target": "fmp_client_apierror",
+      "relation": "uses",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "US Asset Manager.py",
+      "source_location": "L546",
+      "weight": 0.8
+    },
+    {
       "source": "readme_bkm_implied_moments",
       "target": "readme_covariance_drd",
       "relation": "conceptually_related_to",
@@ -19820,5 +19886,5 @@
       "source_file": "README.md"
     }
   ],
-  "built_at_commit": "bdff44e7aecd1240789141c64890c7e34ec4fcb0"
+  "built_at_commit": "5ad484f568b701e1cd437d2bd9f9c2ea9d008abb"
 }

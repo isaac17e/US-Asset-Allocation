@@ -83,10 +83,10 @@ INVESTMENT_PROFILE: Literal["Conservador", "Crecimiento", "Momentum/Agresivo"] =
 SOLVER: Literal["cvxpy", "scipy", "qubo_sa"] = "cvxpy"
 RUN_SOLVER_COMPARISON: bool = True
 TAIL_RISK_CONFIDENCE_LEVELS: Tuple[float, ...] = (0.95, 0.99)  # VaR/CVaR Cornish-Fisher del portafolio final
-# Penalización de cola (opcional). Con False el optimizador es el media-varianza de siempre. Con True se
+# Penalización de cola (activa). Con False el optimizador es el media-varianza de siempre. Con True se
 # resta γ · σ_p · max(0, ES_CF − ES_gaussiano) a la utilidad (suavizado), con γ del perfil (PROFILES["tail_penalty"]).
 # Solo penaliza colas peores que las gaussianas: no premia las más delgadas.
-USE_TAIL_PENALTY: bool = False
+USE_TAIL_PENALTY: bool = True
 TAIL_PENALTY_CONFIDENCE: float = 0.95
 TAIL_PENALTY_SMOOTHING: float = 0.02  # escala del softplus (en σ) que deja solo el exceso positivo de ES
 TAIL_SCENARIOS: int = 20_000
@@ -208,19 +208,19 @@ LOG_LEVEL: str = "INFO"
 PROFILES: Dict[str, Dict[str, Any]] = {
     "Conservador": {
         "risk_aversion": 8.0,
-        "tail_penalty": 2.0,
+        "tail_penalty": 0.25,
         "max_weight": 0.15,
         "targets": {"Value": 0.45, "Growth": 0.00, "Momentum": 0.00, "Quality": 0.55, "LowVol": 0.70},
     },
     "Crecimiento": {
         "risk_aversion": 4.0,
-        "tail_penalty": 1.0,
+        "tail_penalty": 0.15,
         "max_weight": 0.20,
         "targets": {"Value": 0.00, "Growth": 0.60, "Momentum": 0.45, "Quality": 0.55, "LowVol": 0.00},
     },
     "Momentum/Agresivo": {
         "risk_aversion": 2.0,
-        "tail_penalty": 0.5,
+        "tail_penalty": 0.10,
         "max_weight": 0.25,
         "targets": {"Value": 0.00, "Growth": 0.55, "Momentum": 0.70, "Quality": 0.00, "LowVol": 0.00},
     },

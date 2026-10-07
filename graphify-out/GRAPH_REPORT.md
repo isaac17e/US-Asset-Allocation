@@ -1,25 +1,25 @@
 # Graph Report - US-Asset-Allocation  (2026-10-07)
 
 ## Corpus Check
-- 13 files · ~26,824 words
+- 13 files · ~26,879 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 3 file(s) not represented in the graph (top: (none) 3)
 
 ## Summary
-- 534 nodes · 1146 edges · 25 communities (16 shown, 9 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 12 edges (avg confidence: 0.88)
+- 527 nodes · 1159 edges · 20 communities (15 shown, 5 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 25 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bdff44e7`
+- Built from commit: `5ad484f5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - DataFrame
-- fmp_client.py
+- APIAuthorizationError
 - Any
-- ImpliedMomentsEngine
+- scale_moments
 - US Asset Manager.py
 - pipeline_io.py
 - IG corporate bond issuer screening pipeline (run_pipeline)
@@ -33,21 +33,21 @@
 - sweep_tail_penalty.py
 - test_optimizer.py
 - var_cvar_cornish_fisher
-- cov_ewma_shrunk
+- BKMEstimator
 - CLAUDE.md
 - risk_estimators.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `run_pipeline()` - 26 edges
-2. `FMPClient` - 15 edges
-3. `OptimizationResult` - 14 edges
-4. `PortfolioOptimizer` - 14 edges
-5. `export_portfolio_json()` - 14 edges
-6. `ImpliedMomentsEngine` - 13 edges
-7. `FMPClient` - 13 edges
-8. `FakeResponse` - 12 edges
-9. `FactorModelBuilder` - 11 edges
-10. `scale_moments()` - 11 edges
+2. `FMPClient` - 16 edges
+3. `APIError` - 16 edges
+4. `APIAuthorizationError` - 16 edges
+5. `ImpliedMomentsEngine` - 15 edges
+6. `OptimizationResult` - 14 edges
+7. `PortfolioOptimizer` - 14 edges
+8. `export_portfolio_json()` - 14 edges
+9. `FMPClient` - 13 edges
+10. `FactorModelBuilder` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `_client()` --calls--> `FMPClient`  [EXTRACTED]
@@ -56,10 +56,10 @@
   Corp_FR_Optimization.py → fmp_client.py
 - `FMPClient` --uses--> `APIError`  [INFERRED]
   Corp_FR_Optimization.py → fmp_client.py
-- `FMPClient` --inherits--> `FMPClient`  [EXTRACTED]
-  Corp_FR_Optimization.py → fmp_client.py
-- `export_portfolio_json()` --calls--> `iso_bogota()`  [EXTRACTED]
-  US Asset Manager.py → pipeline_io.py
+- `FMPClient` --uses--> `APIAuthorizationError`  [INFERRED]
+  US Asset Manager.py → fmp_client.py
+- `UniverseBuilder` --uses--> `APIAuthorizationError`  [INFERRED]
+  US Asset Manager.py → fmp_client.py
 
 ## Import Cycles
 - None detected.
@@ -69,23 +69,23 @@
 - **ETF allocation pipeline phases (universe, factors, moments/covariance, optimization)** — readme_hybrid_universe, readme_factor_loading_matrix_b, readme_covariance_drd, readme_expected_return_mu, readme_mean_variance_optimization [EXTRACTED 1.00]
 - **risk_estimators library components** — readme_covariance_ewma_shrunk, readme_q_to_p_correction, readme_portfolio_moments, readme_cornish_fisher, readme_svix_martin_wagner [EXTRACTED 1.00]
 
-## Communities (25 total, 9 thin omitted)
+## Communities (20 total, 5 thin omitted)
 
 ### Community 0 - "DataFrame"
-Cohesion: 0.06
-Nodes (17): BKMEstimator, ConsoleReporter, DashboardBuilder, ExpectedReturnModel, _historical_betas(), ImpliedCovarianceBuilder, ImpliedTailModel, _nearest_psd() (+9 more)
+Cohesion: 0.07
+Nodes (18): ConsoleReporter, DashboardBuilder, ExpectedReturnModel, _historical_betas(), ImpliedCovarianceBuilder, ImpliedTailModel, _nearest_psd(), OptimizationError (+10 more)
 
-### Community 1 - "fmp_client.py"
-Cohesion: 0.19
-Nodes (5): APIAuthorizationError, APIError, BaseHTTPClient, FMPClient, _to_float()
+### Community 1 - "APIAuthorizationError"
+Cohesion: 0.12
+Nodes (7): APIAuthorizationError, APIError, BaseHTTPClient, FMPClient, _to_float(), MarketDataLoader, PolygonClient
 
 ### Community 2 - "Any"
-Cohesion: 0.06
-Nodes (14): _clip(), _combine_scores(), ETFDescriptor, FactorModelBuilder, _first_number(), FMPClient, _json_float(), MarketDataLoader (+6 more)
+Cohesion: 0.08
+Nodes (11): _clip(), _combine_scores(), ETFDescriptor, FactorModelBuilder, _first_number(), FMPClient, ImpliedMomentsEngine, _json_float() (+3 more)
 
-### Community 3 - "ImpliedMomentsEngine"
-Cohesion: 0.14
-Nodes (5): annualize(), scale_bkm_moments(), scale_moments(), to_years(), ImpliedMomentsEngine
+### Community 3 - "scale_moments"
+Cohesion: 0.22
+Nodes (4): annualize(), scale_bkm_moments(), scale_moments(), to_years()
 
 ### Community 4 - "US Asset Manager.py"
 Cohesion: 0.18
@@ -93,7 +93,7 @@ Nodes (4): configure_logging(), _is_configured_key(), main(), validate_configura
 
 ### Community 5 - "pipeline_io.py"
 Cohesion: 0.07
-Nodes (13): export_universe_json(), atomic_write_json(), _atomic_write_text(), _dumps(), iso_bogota(), normalize_weights(), now_bogota(), stamp_bogota() (+5 more)
+Nodes (14): export_universe_json(), atomic_write_json(), _atomic_write_text(), _dumps(), iso_bogota(), normalize_weights(), now_bogota(), stamp_bogota() (+6 more)
 
 ### Community 6 - "IG corporate bond issuer screening pipeline (run_pipeline)"
 Cohesion: 0.07
@@ -108,8 +108,8 @@ Cohesion: 0.11
 Nodes (6): definitions(), main(), _client(), CorpTolerantClientTests, FakeResponse, TransportTests
 
 ### Community 9 - "numpy"
-Cohesion: 0.17
-Nodes (6): martin_wagner_excess_return(), mfik_cap(), mfik_cap_tenor(), portfolio_moments(), q_to_p_correlation(), q_to_p_vol()
+Cohesion: 0.14
+Nodes (7): martin_wagner_excess_return(), mfik_cap(), mfik_cap_tenor(), nearest_psd(), portfolio_moment_gradients(), portfolio_moments(), q_to_p_vol()
 
 ### Community 10 - "cornish_fisher_moments"
 Cohesion: 0.18
@@ -127,33 +127,29 @@ Nodes (38): _abort_if_empty(), _banner(), build_html_report(), build_risk_free_c
 Cohesion: 0.06
 Nodes (14): FactorTargetTests, HorizonAlignmentTests, MfikCapTests, mock_patch, mock_stub(), OneSidedPenaltyTests, PortfolioConstraintTests, _profile() (+6 more)
 
-### Community 17 - "cov_ewma_shrunk"
-Cohesion: 0.25
-Nodes (4): average_correlation(), cov_ewma_shrunk(), effective_sample_size(), ledoit_wolf_constant_correlation()
-
 ### Community 21 - "risk_estimators.py"
-Cohesion: 0.12
-Nodes (10): US Asset Allocation README, AM-PM repository (source of risk_estimators copy), Cornish-Fisher VaR/CVaR (Maillard 2012), Portfolio skewness/kurtosis in O(J n) with analytical gradients, SVIX / Martin-Wagner expected return (experimental, disabled), ewma_cov(), ewma_weights(), nearest_psd() (+2 more)
+Cohesion: 0.11
+Nodes (12): AM-PM repository (source of risk_estimators copy), Cornish-Fisher VaR/CVaR (Maillard 2012), Portfolio skewness/kurtosis in O(J n) with analytical gradients, SVIX / Martin-Wagner expected return (experimental, disabled), average_correlation(), cov_ewma_shrunk(), effective_sample_size(), ewma_cov() (+4 more)
 
 ## Knowledge Gaps
 - **18 isolated node(s):** `graphify`, `AM-PM repository (source of risk_estimators copy)`, `Cornish-Fisher VaR/CVaR (Maillard 2012)`, `Portfolio skewness/kurtosis in O(J n) with analytical gradients`, `SVIX / Martin-Wagner expected return (experimental, disabled)` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 169 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 162 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `IG corporate bond issuer screening pipeline (run_pipeline)` connect `IG corporate bond issuer screening pipeline (run_pipeline)` to `Corp_FR_Optimization.py`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
 - **What connects `graphify`, `AM-PM repository (source of risk_estimators copy)`, `Cornish-Fisher VaR/CVaR (Maillard 2012)` to the rest of the system?**
   _18 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `DataFrame` be split into smaller, more focused modules?**
-  _Cohesion score 0.0647887323943662 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06521739130434782 - nodes in this community are weakly interconnected._
+- **Why does `FMPClient` connect `APIAuthorizationError` to `FakeResponse`, `Any`, `US Asset Manager.py`, `Corp_FR_Optimization.py`?**
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+- **Should `APIAuthorizationError` be split into smaller, more focused modules?**
+  _Cohesion score 0.12315270935960591 - nodes in this community are weakly interconnected._
 - **Why does `PassiveETFAllocationPipeline (ETF allocation pipeline)` connect `IG corporate bond issuer screening pipeline (run_pipeline)` to `US Asset Manager.py`?**
-  _High betweenness centrality (0.036) - this node is a cross-community bridge._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **Should `Any` be split into smaller, more focused modules?**
-  _Cohesion score 0.06386066763425254 - nodes in this community are weakly interconnected._
-- **Why does `FMPClient` connect `fmp_client.py` to `FakeResponse`, `US Asset Manager.py`, `Corp_FR_Optimization.py`?**
-  _High betweenness centrality (0.036) - this node is a cross-community bridge._
-- **Should `ImpliedMomentsEngine` be split into smaller, more focused modules?**
-  _Cohesion score 0.1383399209486166 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08140610545790934 - nodes in this community are weakly interconnected._
