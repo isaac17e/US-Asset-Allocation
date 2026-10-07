@@ -20,11 +20,29 @@ import plotly.graph_objects as go
 import requests
 from plotly.subplots import make_subplots
 from scipy import stats
+from scipy.stats import norm
 from scipy.interpolate import CubicSpline
 from scipy.optimize import brentq, linprog, minimize
 
 import pipeline_io
-import risk_estimators as rk
+from fmp_client import APIAuthorizationError, APIError, BaseHTTPClient
+from fmp_client import FMPClient as _FMPTransport
+from risk_estimators import (
+    cornish_fisher_es_gradient,
+    cornish_fisher_moments,
+    cornish_fisher_params,
+    cornish_fisher_z,
+    cov_ewma_shrunk,
+    higher_moments_admissible,
+    portfolio_moment_gradients,
+    portfolio_moments,
+    q_to_p_vol,
+    rescale_panel,
+    scale_moments,
+    standardized_panel,
+    to_years,
+    var_cvar_cornish_fisher,
+)
 
 try:
     import cvxpy as cp
@@ -63,6 +81,13 @@ POLYGON_BASE_URL: str = "https://api.polygon.io"
 INVESTMENT_PROFILE: Literal["Conservador", "Crecimiento", "Momentum/Agresivo"] = "Crecimiento"
 SOLVER: Literal["cvxpy", "scipy", "qubo_sa"] = "cvxpy"
 RUN_SOLVER_COMPARISON: bool = True
+TAIL_RISK_CONFIDENCE_LEVELS: Tuple[float, ...] = (0.95, 0.99)  # VaR/CVaR Cornish-Fisher del portafolio final
+# Penalización de cola (opcional). Con False el optimizador es el media-varianza de siempre. Con True se
+# resta γ · σ_p · (ES_CF − ES_gaussiano) a la utilidad, con γ del perfil (PROFILES["tail_penalty"]).
+USE_TAIL_PENALTY: bool = False
+TAIL_PENALTY_CONFIDENCE: float = 0.95
+TAIL_SCENARIOS: int = 20_000
+TAIL_RANDOM_SEED: int = 42
 
 BENCHMARK_TICKER: str = "SPY"
 RISK_FREE_RATE: float = 0.040
@@ -116,6 +141,11 @@ STYLE_MIN_OBSERVATIONS: int = 120
 OPTIONS_MIN_DAYS: int = 30
 OPTIONS_MAX_DAYS: int = 90
 OPTIONS_TARGET_DAYS: int = 60
+# Horizonte común: la asimetría y la curtosis BKM son del vencimiento de cada contrato. Se escalan (iid)
+# al DTE objetivo antes de interpolar para que todos los activos queden en el mismo plazo. Si un activo
+# no tiene vencimientos a ambos lados del objetivo, False escala desde el más cercano (queda marcado en
+# 'DTE bajo'/'DTE alto'); True lo manda al fallback histórico.
+OPTIONS_REQUIRE_BRACKET: bool = False
 MIN_OTM_STRIKES_PER_SIDE: int = 4
 MAX_OPTION_PAGES: int = 8
 # Sin acceso a quotes (bid/ask) el precio es day.close, el último trade del contrato, que en
@@ -170,16 +200,19 @@ LOG_LEVEL: str = "INFO"
 PROFILES: Dict[str, Dict[str, Any]] = {
     "Conservador": {
         "risk_aversion": 8.0,
+        "tail_penalty": 2.0,
         "max_weight": 0.15,
         "targets": {"Value": 0.45, "Growth": 0.00, "Momentum": 0.00, "Quality": 0.55, "LowVol": 0.70},
     },
     "Crecimiento": {
         "risk_aversion": 4.0,
+        "tail_penalty": 1.0,
         "max_weight": 0.20,
         "targets": {"Value": 0.00, "Growth": 0.60, "Momentum": 0.45, "Quality": 0.55, "LowVol": 0.00},
     },
     "Momentum/Agresivo": {
         "risk_aversion": 2.0,
+        "tail_penalty": 0.5,
         "max_weight": 0.25,
         "targets": {"Value": 0.00, "Growth": 0.55, "Momentum": 0.70, "Quality": 0.00, "LowVol": 0.00},
     },
@@ -323,14 +356,6 @@ def _historical_betas(returns: pd.DataFrame, benchmark: pd.Series) -> pd.Series:
 # EXCEPCIONES Y ESTRUCTURAS DE DATOS
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-class APIError(Exception):
-    """Error genérico de comunicación con un proveedor de datos."""
-
-
-class APIAuthorizationError(APIError):
-    """Clave inválida o endpoint no incluido en el plan contratado."""
-
-
 class OptimizationError(Exception):
     """Fallo del motor de optimización."""
 
@@ -341,6 +366,7 @@ class ProfileConfig:
     risk_aversion: float
     max_weight: float
     factor_targets: Dict[str, float]
+    tail_penalty: float = 0.0
 
     @classmethod
     def from_registry(cls, name: str, registry: Mapping[str, Mapping[str, Any]]) -> "ProfileConfig":
@@ -348,7 +374,7 @@ class ProfileConfig:
             raise ValueError(f"Perfil '{name}' no definido. Opciones: {list(registry)}")
         spec = registry[name]
         targets = {factor: float(spec["targets"].get(factor, 0.0)) for factor in FACTORS}
-        return cls(name, float(spec["risk_aversion"]), float(spec["max_weight"]), targets)
+        return cls(name, float(spec["risk_aversion"]), float(spec["max_weight"]), targets, float(spec.get("tail_penalty", 0.0)))
 
     def target_vector(self) -> np.ndarray:
         return np.array([self.factor_targets[factor] for factor in FACTORS], dtype=float)
@@ -379,103 +405,10 @@ class OptimizationResult:
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
-# CLIENTE HTTP BASE (THROTTLING, REINTENTOS Y MANEJO DE ERRORES)
+# CLIENTE FINANCIAL MODELING PREP (transporte compartido en fmp_client.py)
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-class BaseHTTPClient:
-    def __init__(self, api_key: str, provider: str, min_interval: float, timeout: int, max_retries: int) -> None:
-        self.api_key = api_key
-        self.provider = provider
-        self.min_interval = min_interval
-        self.timeout = timeout
-        self.max_retries = max_retries
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "ETF-Passive-Allocator/1.0"})
-        self.logger = logging.getLogger(provider)
-        self._last_request_ts: float = 0.0
-
-    def _throttle(self) -> None:
-        elapsed = time.monotonic() - self._last_request_ts
-        if elapsed < self.min_interval:
-            time.sleep(self.min_interval - elapsed)
-        self._last_request_ts = time.monotonic()
-
-    @staticmethod
-    def _backoff(attempt: int, retry_after: Optional[str]) -> None:
-        wait = _to_float(retry_after) if retry_after is not None else float("nan")
-        time.sleep(max(wait if math.isfinite(wait) else 0.0, min(2.0 ** attempt, 60.0)))
-
-    def _request_json(self, url: str, params: Optional[Dict[str, Any]], endpoint: str) -> Any:
-        last_error: Optional[Exception] = None
-        for attempt in range(1, self.max_retries + 1):
-            self._throttle()
-            try:
-                response = self.session.get(url, params=params, timeout=self.timeout)
-            except requests.RequestException as exc:
-                last_error = exc
-                self._backoff(attempt, None)
-                continue
-            status = response.status_code
-            if status == 429 or status >= 500:
-                last_error = APIError(f"HTTP {status}")
-                self.logger.warning("%s %s: HTTP %s, reintento %d/%d", self.provider, endpoint, status, attempt, self.max_retries)
-                self._backoff(attempt, response.headers.get("Retry-After"))
-                continue
-            if status in (401, 402, 403):
-                raise APIAuthorizationError(f"{self.provider} {endpoint}: HTTP {status} (clave inválida o plan sin acceso)")
-            if status == 404:
-                raise APIError(f"{self.provider} {endpoint}: recurso no encontrado (404)")
-            if not response.ok:
-                raise APIError(f"{self.provider} {endpoint}: HTTP {status}")
-            try:
-                return response.json()
-            except ValueError as exc:
-                raise APIError(f"{self.provider} {endpoint}: respuesta no es JSON válido") from exc
-        raise APIError(f"{self.provider} {endpoint}: agotados {self.max_retries} reintentos ({last_error})")
-
-
-# ══════════════════════════════════════════════════════════════════════════════════════════════
-# CLIENTE FINANCIAL MODELING PREP
-# ══════════════════════════════════════════════════════════════════════════════════════════════
-
-class FMPClient(BaseHTTPClient):
-    PLAN_ERROR_TOKENS: Tuple[str, ...] = ("api key", "subscription", "premium", "legacy", "upgrade")
-
-    def __init__(self, api_key: str, base_url: str, min_interval: float, timeout: int, max_retries: int) -> None:
-        super().__init__(api_key, "FMP", min_interval, timeout, max_retries)
-        self.base_url = base_url.rstrip("/")
-        self._cache: Dict[Tuple[str, str], Any] = {}
-
-    def _get(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> Any:
-        query = dict(params or {})
-        cache_key = (endpoint, repr(sorted(query.items())))
-        if cache_key in self._cache:
-            return self._cache[cache_key]
-        query["apikey"] = self.api_key
-        payload = self._request_json(f"{self.base_url}/{endpoint}", query, endpoint)
-        if isinstance(payload, dict) and "Error Message" in payload:
-            message = str(payload["Error Message"])
-            if any(token in message.lower() for token in self.PLAN_ERROR_TOKENS):
-                raise APIAuthorizationError(f"FMP {endpoint}: {message}")
-            raise APIError(f"FMP {endpoint}: {message}")
-        self._cache[cache_key] = payload
-        return payload
-
-    @staticmethod
-    def _as_records(payload: Any) -> List[Dict[str, Any]]:
-        if isinstance(payload, list):
-            return [row for row in payload if isinstance(row, dict)]
-        if isinstance(payload, dict):
-            for key in ("historical", "data", "results"):
-                if isinstance(payload.get(key), list):
-                    return [row for row in payload[key] if isinstance(row, dict)]
-            return [payload] if payload else []
-        return []
-
-    def _single_record(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
-        records = self._as_records(self._get(endpoint, params))
-        return records[0] if records else {}
-
+class FMPClient(_FMPTransport):
     def screen_etfs(self, exchange: str, limit: int, min_share_volume: int) -> List[Dict[str, Any]]:
         params = {
             "isEtf": "true",
@@ -1161,7 +1094,17 @@ class ImpliedMomentsEngine:
             if index % 10 == 0:
                 self.logger.info("Momentos implícitos: %d/%d", index, len(tickers))
         self._log_dividend_yield_coverage()
-        return pd.DataFrame(rows).set_index("Ticker")
+        frame = pd.DataFrame(rows).set_index("Ticker")
+        self._log_horizon_alignment(frame)
+        return frame
+
+    def _log_horizon_alignment(self, frame: pd.DataFrame) -> None:
+        options = frame[frame["Fuente"].astype(str).str.startswith("BKM")]
+        interpolated = int((options["DTE bajo"] != options["DTE alto"]).sum())
+        self.logger.info(
+            "Horizonte común %d DTE: %d interpolados entre vencimientos, %d escalados desde el más cercano, %d histórico.",
+            OPTIONS_TARGET_DAYS, interpolated, len(options) - interpolated, len(frame) - len(options),
+        )
 
     def _log_dividend_yield_coverage(self) -> None:
         resolved = len(self._div_yield_cache) - len(self._div_yield_fallbacks)
@@ -1247,14 +1190,23 @@ class ImpliedMomentsEngine:
             if result:
                 # Un par fuera de K >= 1 + S² o sobre el techo delata una integración mala: se anulan
                 # asimetría y curtosis de ese vencimiento (sin recortar) y se conserva la varianza.
-                if not rk.higher_moments_admissible(result["skewness"], result["kurtosis"], BKM_MFIK_MAX):
+                if not higher_moments_admissible(result["skewness"], result["kurtosis"], BKM_MFIK_MAX):
                     self.logger.info("%s %s: MFIS/MFIK inadmisibles (%.2f, %.2f), se anulan",
                                      ticker, expiry, result["skewness"], result["kurtosis"])
                     result = {**result, "skewness": float("nan"), "kurtosis": float("nan")}
+                # Mismo plazo para todos: MFIS y MFIK (exceso) del vencimiento → DTE objetivo, antes de interpolar.
+                at_target = scale_moments(
+                    to_years(dte=days), to_years(dte=OPTIONS_TARGET_DAYS),
+                    skew=result["skewness"], exkurt=result["kurtosis"] - 3.0,
+                )
+                result = {**result, "skewness": at_target["skew"], "kurtosis": at_target["exkurt"] + 3.0}
                 estimates.append({"days": float(days), **result})
         if not estimates:
             return None
         blended = self._interpolate_to_target(estimates)
+        if blended is None:
+            self.logger.info("%s: sin vencimientos a ambos lados de %d DTE; fallback histórico.", ticker, OPTIONS_TARGET_DAYS)
+            return None
         mfiv = math.sqrt(blended["annualized_variance"])
         if not 0.005 < mfiv < 3.0:
             return None
@@ -1264,6 +1216,8 @@ class ImpliedMomentsEngine:
             "MFIK": blended["kurtosis"],
             "Fuente": "BKM (Polygon)",
             "Vencimientos": len(estimates),
+            "DTE bajo": blended["dte_low"],
+            "DTE alto": blended["dte_high"],
         }
 
     def _parse_chain(self, contracts: Sequence[Mapping[str, Any]], ticker: str) -> Tuple[pd.DataFrame, float]:
@@ -1294,24 +1248,39 @@ class ImpliedMomentsEngine:
         return pd.DataFrame(records), spot
 
     @staticmethod
-    def _interpolate_to_target(estimates: List[Dict[str, float]]) -> Dict[str, float]:
+    def _interpolate_to_target(estimates: List[Dict[str, float]]) -> Optional[Dict[str, float]]:
+        """Interpola al DTE objetivo (MFIS/MFIK ya vienen escalados a ese plazo). None si se exige bracket y no hay."""
         ordered = sorted(estimates, key=lambda item: item["days"])
+        keys = ("annualized_variance", "skewness", "kurtosis")
         below = [item for item in ordered if item["days"] <= OPTIONS_TARGET_DAYS]
         above = [item for item in ordered if item["days"] >= OPTIONS_TARGET_DAYS]
-        if below and above and below[-1]["days"] != above[0]["days"]:
+        if below and above:
             low, high = below[-1], above[0]
+            if low["days"] == high["days"]:
+                return {**{key: low[key] for key in keys}, "dte_low": low["days"], "dte_high": high["days"]}
             alpha = (OPTIONS_TARGET_DAYS - low["days"]) / (high["days"] - low["days"])
-            return {key: (1 - alpha) * low[key] + alpha * high[key] for key in ("annualized_variance", "skewness", "kurtosis")}
-        return min(ordered, key=lambda item: abs(item["days"] - OPTIONS_TARGET_DAYS))
+            blended = {key: (1 - alpha) * low[key] + alpha * high[key] for key in keys}
+            return {**blended, "dte_low": low["days"], "dte_high": high["days"]}
+        if OPTIONS_REQUIRE_BRACKET:
+            return None
+        nearest = min(ordered, key=lambda item: abs(item["days"] - OPTIONS_TARGET_DAYS))
+        return {**{key: nearest[key] for key in keys}, "dte_low": nearest["days"], "dte_high": nearest["days"]}
 
     def _historical_fallback(self, ticker: str) -> Dict[str, Any]:
         daily = self.prices[ticker].dropna().pct_change().dropna().tail(VOLATILITY_LOOKBACK_DAYS)
+        # Asimetría y curtosis diarias → mismo horizonte (DTE objetivo) que las de opciones, escalado iid.
+        at_target = scale_moments(
+            to_years(trading_days=1), to_years(dte=OPTIONS_TARGET_DAYS),
+            skew=float(stats.skew(daily)), exkurt=float(stats.kurtosis(daily, fisher=True)),
+        )
         return {
             "MFIV": float(daily.std(ddof=1) * math.sqrt(252)),
-            "MFIS": float(stats.skew(daily)),
-            "MFIK": float(stats.kurtosis(daily, fisher=False)),
+            "MFIS": float(at_target["skew"]),
+            "MFIK": float(at_target["exkurt"] + 3.0),
             "Fuente": "Histórico (fallback)",
             "Vencimientos": 0,
+            "DTE bajo": float("nan"),
+            "DTE alto": float("nan"),
         }
 
 
@@ -1351,7 +1320,7 @@ class ImpliedCovarianceBuilder:
 
         hist = returns[list(tickers)].tail(self.lookback).std(ddof=1).to_numpy(dtype=float) * math.sqrt(252.0)
         sigma_p = sigma_q.copy()
-        ajustado, ratio = rk.q_to_p_vol(
+        ajustado, ratio = q_to_p_vol(
             sigma_q[es_riesgo_neutral], hist[es_riesgo_neutral],
             ratio_bounds=self.vrp_bounds, fallback_ratio=self.vrp_fallback,
         )
@@ -1366,7 +1335,7 @@ class ImpliedCovarianceBuilder:
 
     def _correlation(self, recent: pd.DataFrame, tickers: Sequence[str]) -> np.ndarray:
         if self.use_lw and len(recent.dropna()) >= 60:
-            cov, info = rk.cov_ewma_shrunk(
+            cov, info = cov_ewma_shrunk(
                 recent[list(tickers)].dropna(), halflife=self.halflife, scale=1.0, shrink=True,
             )
             cov = np.asarray(cov, dtype=float)
@@ -1436,11 +1405,81 @@ class ExpectedReturnModel:
 # FASE 3 · OPTIMIZADOR CUADRÁTICO CON RESTRICCIONES FACTORIALES (OPCIÓN B)
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
+class ImpliedTailModel:
+    """Escenarios con colas implícitas: marginales con MFIS/MFIK (al horizonte común) y dependencia de Σ.
+
+    Cada activo se simula como Cornish-Fisher de una normal, con (s, k) elegidos para reproducir su MFIS y
+    MFIK (Maillard 2012); las normales se correlacionan con la correlación de Σ (cópula gaussiana). Los
+    activos sin MFIS/MFIK admisibles quedan gaussianos. Las columnas se escalan a la volatilidad de Σ.
+    La muestra es fija (semilla), así que el objetivo y su gradiente son deterministas.
+    """
+
+    def __init__(
+        self, moments: pd.DataFrame, covariance: pd.DataFrame,
+        n_scenarios: int = TAIL_SCENARIOS, seed: int = TAIL_RANDOM_SEED,
+    ) -> None:
+        self.logger = logging.getLogger("COLAS")
+        self.tickers: List[str] = list(covariance.index)
+        self._position = {ticker: i for i, ticker in enumerate(self.tickers)}
+        self.sigma = covariance.to_numpy(dtype=float)
+        vol = np.sqrt(np.clip(np.diag(self.sigma), 1e-18, None))
+        correlation = self.sigma / np.outer(vol, vol)
+        eigenvalues, eigenvectors = np.linalg.eigh(0.5 * (correlation + correlation.T))
+        root = eigenvectors * np.sqrt(np.clip(eigenvalues, 0.0, None))
+        normals = np.random.default_rng(seed).standard_normal((n_scenarios, len(self.tickers))) @ root.T
+        shaped = 0
+        for i, ticker in enumerate(self.tickers):
+            skew = float(moments.loc[ticker, "MFIS"])
+            kurt = float(moments.loc[ticker, "MFIK"])
+            if higher_moments_admissible(skew, kurt):
+                s, k, _ = cornish_fisher_params(skew, kurt - 3.0)
+                normals[:, i] = cornish_fisher_z(normals[:, i], s, k) / cornish_fisher_moments(s, k)[0]
+                shaped += 1
+        standardized, _ = standardized_panel(normals)
+        self.panel = rescale_panel(standardized, np.zeros(len(vol)), vol)
+        self.logger.info("Modelo de colas: %d de %d activos con MFIS/MFIK admisibles, %d escenarios.",
+                         shaped, len(self.tickers), n_scenarios)
+
+    def _full_vector(self, weights: np.ndarray, tickers: Sequence[str]) -> Tuple[np.ndarray, List[int]]:
+        columns = [self._position[t] for t in tickers]
+        full = np.zeros(len(self.tickers))
+        full[columns] = weights
+        return full, columns
+
+    def portfolio_moments(self, weights: np.ndarray, tickers: Sequence[str]) -> Dict[str, float]:
+        full, _ = self._full_vector(weights, tickers)
+        return portfolio_moments(full, self.panel)
+
+    def volatility(self, weights: np.ndarray, tickers: Sequence[str]) -> float:
+        full, _ = self._full_vector(weights, tickers)
+        return float(math.sqrt(max(full @ self.sigma @ full, 0.0)))
+
+    def excess_tail(
+        self, weights: np.ndarray, tickers: Sequence[str], confidence: float = TAIL_PENALTY_CONFIDENCE
+    ) -> Tuple[float, np.ndarray]:
+        """σ_p · (ES_CF − ES_gaussiano) en unidades de σ anual, y su gradiente respecto a `weights`."""
+        full, columns = self._full_vector(weights, tickers)
+        alpha = 1.0 - confidence
+        grad = portfolio_moment_gradients(full, self.panel)
+        es, d_es_ds, d_es_dk = cornish_fisher_es_gradient(alpha, grad["skew"], grad["exkurt"])
+        excess_std = -es - norm.pdf(norm.ppf(alpha)) / alpha
+        sigma_p = float(math.sqrt(max(full @ self.sigma @ full, 1e-18)))
+        d_sigma = (self.sigma @ full) / sigma_p
+        d_excess = -(d_es_ds * grad["d_skew_dw"] + d_es_dk * grad["d_exkurt_dw"])
+        gradient = d_sigma * excess_std + sigma_p * d_excess
+        return sigma_p * excess_std, gradient[columns]
+
+
 class PortfolioOptimizer:
     CONSTRAINT_TOLERANCE: float = 1e-7
 
-    def __init__(self, mu: pd.Series, covariance: pd.DataFrame, factor_matrix: pd.DataFrame, profile: ProfileConfig) -> None:
+    def __init__(
+        self, mu: pd.Series, covariance: pd.DataFrame, factor_matrix: pd.DataFrame, profile: ProfileConfig,
+        tail_model: Optional[ImpliedTailModel] = None,
+    ) -> None:
         self.logger = logging.getLogger("Optimizador")
+        self.tail_model = tail_model
+        self.tail_penalty = profile.tail_penalty if tail_model is not None else 0.0
         self.tickers: List[str] = list(mu.index)
         self.mu = mu.to_numpy(dtype=float)
         self.sigma = covariance.loc[self.tickers, self.tickers].to_numpy(dtype=float)
@@ -1496,6 +1535,35 @@ class PortfolioOptimizer:
             method = "scipy"
             weights, status = solvers[method]()
         return self._build_result(method, weights, status, time.perf_counter() - start)
+
+    def solve_with_tail(self, base: OptimizationResult) -> OptimizationResult:
+        """Utilidad media-varianza menos γ·σ_p·(ES_CF − ES_gauss). No convexo: SLSQP desde la solución `base`."""
+        if self.tail_model is None or self.tail_penalty <= 0.0:
+            return base
+        start = time.perf_counter()
+        gamma, model, tickers = self.tail_penalty, self.tail_model, self.tickers
+
+        def objective(x: np.ndarray) -> float:
+            return -(self.utility(x) - gamma * model.excess_tail(x, tickers)[0])
+
+        def gradient(x: np.ndarray) -> np.ndarray:
+            return -(self.mu - self.risk_aversion * self.sigma @ x - gamma * model.excess_tail(x, tickers)[1])
+
+        result = minimize(
+            fun=objective, x0=base.weights.to_numpy(dtype=float), jac=gradient,
+            bounds=[(0.0, self.max_weight)] * len(tickers),
+            constraints=[
+                {"type": "eq", "fun": lambda x: np.sum(x) - 1.0, "jac": lambda x: np.ones_like(x)},
+                {"type": "ineq", "fun": lambda x: self.B.T @ x - (self.targets - self.CONSTRAINT_TOLERANCE), "jac": lambda x: self.B.T},
+            ],
+            method="SLSQP", options={"maxiter": 500, "ftol": 1e-10},
+        )
+        if not result.success and self._max_violation(result.x) > 1e-5:
+            self.logger.warning("Optimización con penalización de cola no convergió (%s); se conserva %s.", result.message, base.method)
+            return base
+        penalty = model.excess_tail(result.x, tickers)[0]
+        status = f"{'optimal' if result.success else 'aceptable'} · γ={gamma:g} · penalización de cola {gamma * penalty:.5f}"
+        return self._build_result(f"{base.method}+colas", np.asarray(result.x, dtype=float), status, time.perf_counter() - start)
 
     def _solve_cvxpy(self) -> Tuple[np.ndarray, str]:
         w = cp.Variable(len(self.tickers))
@@ -1621,6 +1689,43 @@ class PortfolioOptimizer:
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
+# FASE 3 · RIESGO DE COLA DEL PORTAFOLIO (CORNISH-FISHER)
+# ══════════════════════════════════════════════════════════════════════════════════════════════
+
+class PortfolioTailRisk:
+    """Asimetría, curtosis y VaR/CVaR del portafolio al horizonte común (OPTIONS_TARGET_DAYS), con colas implícitas.
+
+    Usa ImpliedTailModel: marginales con MFIS/MFIK y dependencia de Σ. Mide; solo entra al optimizador
+    si USE_TAIL_PENALTY está activo.
+    """
+
+    def __init__(self, confidence_levels: Sequence[float] = TAIL_RISK_CONFIDENCE_LEVELS) -> None:
+        self.confidence_levels = tuple(confidence_levels)
+
+    def compute(self, weights: pd.Series, model: ImpliedTailModel, mu: pd.Series) -> pd.DataFrame:
+        active = weights[weights > 1e-4]
+        tickers = list(active.index)
+        w = active.to_numpy(dtype=float) / float(active.sum())
+        moments = model.portfolio_moments(w, tickers)
+        horizon = to_years(dte=OPTIONS_TARGET_DAYS)
+        mean_h = float(mu.loc[tickers].to_numpy(dtype=float) @ w) * horizon
+        sd_h = model.volatility(w, tickers) * math.sqrt(horizon)
+        rows = {}
+        for level in self.confidence_levels:
+            cf = var_cvar_cornish_fisher(mean_h, sd_h, moments["skew"], moments["exkurt"], level)
+            rows[f"{level:.0%}"] = {
+                "VaR gaussiano": -cf["var_gaussian"], "VaR CF": -cf["var"],
+                "CVaR gaussiano": -cf["cvar_gaussian"], "CVaR CF": -cf["cvar"],
+                "CF exacto": "sí" if cf["exact"] else "aprox.",
+            }
+        table = pd.DataFrame(rows).T
+        table.insert(0, "Curtosis exc.", moments["exkurt"])
+        table.insert(0, "Asimetría", moments["skew"])
+        table.insert(0, "σ horizonte", sd_h)
+        return table
+
+
+# ══════════════════════════════════════════════════════════════════════════════════════════════
 # FASE 4 · REPORTE EN CONSOLA (SIN CSV)
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
@@ -1684,6 +1789,7 @@ class ConsoleReporter:
             "Perfil": profile.name,
             "Solver": result.method,
             "Aversión al riesgo (λ)": f"{profile.risk_aversion:.2f}",
+            **({"Penalización de cola (γ)": f"{profile.tail_penalty:.2f}"} if "colas" in result.method else {}),
             "Retorno esperado (μᵀw)": f"{result.expected_return:.2%}",
             "Volatilidad implícita": f"{result.volatility:.2%}",
             "Sharpe implícito": f"{sharpe:.3f}",
@@ -1854,6 +1960,19 @@ class DashboardBuilder:
 # ORQUESTADOR DEL PIPELINE
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
+@dataclass
+class PipelineInputs:
+    tickers: List[str]
+    universe_frame: pd.DataFrame
+    dropped: pd.DataFrame
+    raw_factors: pd.DataFrame
+    factor_matrix: pd.DataFrame
+    moments: pd.DataFrame
+    mu_table: pd.DataFrame
+    covariance: pd.DataFrame
+    returns: pd.DataFrame
+
+
 class PassiveETFAllocationPipeline:
     def __init__(self) -> None:
         self.logger = logging.getLogger("Pipeline")
@@ -1866,7 +1985,8 @@ class PassiveETFAllocationPipeline:
         )
         self.reporter = ConsoleReporter()
 
-    def run(self) -> OptimizationResult:
+    def prepare(self) -> PipelineInputs:
+        """Fases 0 a 2: universo, matriz B, momentos, Σ y μ. Es lo que reutilizan el barrido de γ y run()."""
         self.logger.info("FASE 0 · Construcción del universo híbrido")
         candidates = UniverseBuilder(self.fmp, MASTER_ETF_LIST).build_candidates()
         load_list = list(dict.fromkeys([BENCHMARK_TICKER] + [etf.ticker for etf in candidates]))
@@ -1898,15 +2018,36 @@ class PassiveETFAllocationPipeline:
             use_q_to_p=USE_Q_TO_P_VOL, vrp_bounds=VRP_RATIO_BOUNDS, vrp_fallback=VRP_FALLBACK_RATIO,
         ).build(moments, returns)
         mu_table = ExpectedReturnModel(BENCHMARK_TICKER).build(returns, moments)
+        return PipelineInputs(
+            tickers, universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, covariance, returns
+        )
+
+    def run(self) -> OptimizationResult:
+        inputs = self.prepare()
+        tickers, universe_frame, dropped, raw_factors = inputs.tickers, inputs.universe_frame, inputs.dropped, inputs.raw_factors
+        factor_matrix, moments, mu_table = inputs.factor_matrix, inputs.moments, inputs.mu_table
+        covariance, returns = inputs.covariance, inputs.returns
 
         self.logger.info("FASE 3 · Optimización cuadrática con restricciones factoriales")
-        optimizer = PortfolioOptimizer(mu_table["Mu_Base"], covariance, factor_matrix, self.profile)
+        tail_model = ImpliedTailModel(moments.loc[tickers], covariance.loc[tickers, tickers])
+        optimizer = PortfolioOptimizer(
+            mu_table["Mu_Base"], covariance, factor_matrix, self.profile, tail_model if USE_TAIL_PENALTY else None
+        )
         result = optimizer.solve(SOLVER)
+        mean_variance_result = result
+        if USE_TAIL_PENALTY:
+            result = optimizer.solve_with_tail(result)
         comparison = self._compare_solvers(optimizer, result) if RUN_SOLVER_COMPARISON else pd.DataFrame()
 
         self.logger.info("FASE 4 · Reporte en consola")
         risk = self.reporter.risk_contributions(result.weights, covariance)
-        self._print_reports(universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, result, optimizer, risk, comparison)
+        tail_reporter = PortfolioTailRisk()
+        tail_risk = tail_reporter.compute(result.weights, tail_model, mu_table["Mu_Base"])
+        tail_risk_base = (
+            tail_reporter.compute(mean_variance_result.weights, tail_model, mu_table["Mu_Base"])
+            if result is not mean_variance_result else pd.DataFrame()
+        )
+        self._print_reports(universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, result, optimizer, risk, comparison, tail_risk, tail_risk_base)
 
         self.logger.info("FASE 5 · Dashboard interactivo HTML")
         output = DashboardBuilder().build(DASHBOARD_FILE, self.profile, result, optimizer.targets, moments, mu_table, risk)
@@ -1948,6 +2089,8 @@ class PassiveETFAllocationPipeline:
         optimizer: PortfolioOptimizer,
         risk: pd.Series,
         comparison: pd.DataFrame,
+        tail_risk: pd.DataFrame,
+        tail_risk_base: pd.DataFrame,
     ) -> None:
         composition = universe_frame.groupby(["Fuente", "Categoría"]).size().rename("N° ETFs").to_frame()
         self.reporter.table("UNIVERSO HÍBRIDO · COMPOSICIÓN", composition)
@@ -1959,6 +2102,11 @@ class PassiveETFAllocationPipeline:
         self.reporter.table("FASE 3 · PESOS ÓPTIMOS w* (activos)", self.reporter.allocation_table(result, universe_frame, moments, mu_table, risk))
         self.reporter.table("FASE 3 · EXPOSICIÓN FACTORIAL: DESEADA vs. LOGRADA", self.reporter.factor_table(result, optimizer.requested_targets, optimizer.targets))
         self.reporter.table("FASE 3 · MÉTRICAS DEL PORTAFOLIO", self.reporter.metrics_table(result, self.profile))
+        horizon_title = f"RIESGO DE COLA A {OPTIONS_TARGET_DAYS} DÍAS (colas implícitas, Cornish-Fisher, pérdidas en positivo)"
+        if not tail_risk.empty:
+            self.reporter.table(f"FASE 3 · {horizon_title}", tail_risk, floatfmt=".4f")
+        if not tail_risk_base.empty:
+            self.reporter.table(f"FASE 3 · {horizon_title} · SOLUCIÓN SIN PENALIZACIÓN (media-varianza)", tail_risk_base, floatfmt=".4f")
         if not comparison.empty:
             self.reporter.table("FASE 3 · COMPARACIÓN DE SOLVERS (QP vs. QUBO/SA)", comparison, floatfmt=".5f")
 

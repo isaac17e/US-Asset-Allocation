@@ -1,15 +1,15 @@
 {
   "Corp_FR_Optimization.py": {
-    "mtime": 1791237159.1088567,
-    "seen": 1791305964.3532338,
-    "ast_hash": "5ef22d44d24b4d9aa74e3531a43cd9fd",
-    "semantic_hash": "5ef22d44d24b4d9aa74e3531a43cd9fd"
+    "mtime": 1791383577.0699918,
+    "seen": 1791383606.8488781,
+    "ast_hash": "3b9f74190f59e2239b7e3fd897535f95",
+    "semantic_hash": ""
   },
   "US Asset Manager.py": {
-    "mtime": 1791237159.1101243,
-    "seen": 1791305964.353238,
-    "ast_hash": "be53310257ab5c2bd8bdd18fc374b615",
-    "semantic_hash": "be53310257ab5c2bd8bdd18fc374b615"
+    "mtime": 1791385385.753065,
+    "seen": 1791385774.813337,
+    "ast_hash": "3fa3c3c37a969555485c0c51c3b6356e",
+    "semantic_hash": ""
   },
   "pipeline_io.py": {
     "mtime": 1791237159.1103008,
@@ -18,10 +18,10 @@
     "semantic_hash": "bd1a8643b6d3cadc3fe2795c446462ad"
   },
   "risk_estimators.py": {
-    "mtime": 1791244792.9848747,
-    "seen": 1791305964.353239,
-    "ast_hash": "7dbc3fab658d01735313cc6c99481bcc",
-    "semantic_hash": "7dbc3fab658d01735313cc6c99481bcc"
+    "mtime": 1791385405.7031198,
+    "seen": 1791385774.813341,
+    "ast_hash": "fc9953be9f7e3be3e64d9000faec913f",
+    "semantic_hash": ""
   },
   "tests/test_pipeline_io.py": {
     "mtime": 1791237159.1105342,
@@ -36,21 +36,45 @@
     "semantic_hash": "dcfee1d76e61747a8dfe4c898bd597d5"
   },
   "README.md": {
-    "mtime": 1791237159.109509,
-    "seen": 1791305964.3532412,
-    "ast_hash": "879b19eb083ebebf948ae48535f75188",
-    "semantic_hash": "879b19eb083ebebf948ae48535f75188"
-  },
-  ".claude/settings.json": {
-    "mtime": 1791306752.339087,
-    "seen": 1791308869.045952,
-    "ast_hash": "b041e9c3584cb1677e3b3b63c9a641fe",
+    "mtime": 1791385770.8176715,
+    "seen": 1791385774.813347,
+    "ast_hash": "a853de22b1f436b281849f1d75965a04",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
     "mtime": 1791306752.3388236,
     "seen": 1791308869.045961,
     "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
+  },
+  "fmp_client.py": {
+    "mtime": 1791383562.7167406,
+    "seen": 1791383606.848882,
+    "ast_hash": "a5af0a1fa7833682824fd5ce9ca268c1",
+    "semantic_hash": ""
+  },
+  "scripts/check_risk_estimators_sync.py": {
+    "mtime": 1791383523.4909136,
+    "seen": 1791383606.848886,
+    "ast_hash": "90d219b5a935fc658825f55b379ac232",
+    "semantic_hash": ""
+  },
+  "tests/test_fmp_client.py": {
+    "mtime": 1791383597.3272076,
+    "seen": 1791383606.848887,
+    "ast_hash": "5360cc5a9f0d51c9533feea7d6d10c45",
+    "semantic_hash": ""
+  },
+  "tests/test_optimizer.py": {
+    "mtime": 1791384658.2006488,
+    "seen": 1791384693.343152,
+    "ast_hash": "2c534db5dcb95ff42baba9803f789ee6",
+    "semantic_hash": ""
+  },
+  "scripts/sweep_tail_penalty.py": {
+    "mtime": 1791385594.225518,
+    "seen": 1791385774.8133419,
+    "ast_hash": "aef1f89caa0a3fc6e5a2c031bff8a7a4",
     "semantic_hash": ""
   }
 }

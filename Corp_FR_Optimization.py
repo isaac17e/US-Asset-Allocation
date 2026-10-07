@@ -161,6 +161,8 @@ import requests
 from scipy.interpolate import CubicSpline, PchipInterpolator, interp1d
 
 import pipeline_io
+from fmp_client import APIAuthorizationError, APIError
+from fmp_client import FMPClient as _FMPTransport
 
 try:  # fredapi es la vía preferida; si no está instalada se usa requests.
     from fredapi import Fred
@@ -250,24 +252,12 @@ def rating_bucket(rating: Optional[str]) -> Optional[str]:
 # =============================================================================
 # CLIENTE FMP (rate limiting, reintentos, caché y manejo de errores)
 # =============================================================================
-class FMPClient:
-    """Cliente HTTP mínimo y robusto para la API 'stable' de FMP."""
+class FMPClient(_FMPTransport):
+    """Cliente FMP tolerante: sobre el transporte compartido (fmp_client.py) devuelve None si la llamada falla."""
 
     def __init__(self, api_key: str, base_url: str = FMP_BASE_URL) -> None:
-        self.api_key = api_key
-        self.base_url = base_url.rstrip("/")
-        self.session = requests.Session()
-        self._last_call = 0.0
-        self._cache: dict[tuple, Any] = {}
-        self.n_calls = 0
+        super().__init__(api_key, base_url, MIN_SECONDS_BETWEEN_CALLS, REQUEST_TIMEOUT_SEC, MAX_RETRIES)
         self.n_failures = 0
-
-    def _throttle(self) -> None:
-        """Garantiza un intervalo mínimo entre llamadas (límite de peticiones)."""
-        elapsed = time.monotonic() - self._last_call
-        if elapsed < MIN_SECONDS_BETWEEN_CALLS:
-            time.sleep(MIN_SECONDS_BETWEEN_CALLS - elapsed)
-        self._last_call = time.monotonic()
 
     @staticmethod
     def _norm_params(params: dict) -> dict:
@@ -285,62 +275,21 @@ class FMPClient:
         Devuelve el JSON decodificado o None si la llamada falla definitivamente.
         """
         params = self._norm_params(params)
-        key = (endpoint, tuple(sorted(params.items())))
-        if key in self._cache:
-            return self._cache[key]
-
-        url = f"{self.base_url}/{endpoint}"
-        query = {**params, "apikey": self.api_key}
-
-        for attempt in range(1, MAX_RETRIES + 1):
-            self._throttle()
-            self.n_calls += 1
-            try:
-                resp = self.session.get(url, params=query, timeout=REQUEST_TIMEOUT_SEC)
-            except requests.RequestException as exc:
-                wait = BACKOFF_BASE_SEC * 2 ** (attempt - 1)
-                log.warning("FMP %s: error de red (%s). Reintento en %.0fs", endpoint, exc, wait)
-                time.sleep(wait)
-                continue
-
-            if resp.status_code == 429:  # límite de peticiones
-                retry_after = _to_float(resp.headers.get("Retry-After"))
-                wait = retry_after if not math.isnan(retry_after) else BACKOFF_BASE_SEC * 2 ** (attempt - 1)
-                log.warning("FMP 429 (rate limit) en %s. Esperando %.0fs", endpoint, wait)
-                time.sleep(wait)
-                continue
-            if resp.status_code in (401, 402, 403):
-                log.error("FMP %s -> HTTP %s: API key inválida o endpoint fuera de tu plan.",
-                          endpoint, resp.status_code)
-                self.n_failures += 1
-                return None
-            if resp.status_code >= 500:
-                wait = BACKOFF_BASE_SEC * 2 ** (attempt - 1)
-                log.warning("FMP %s -> HTTP %s. Reintento en %.0fs", endpoint, resp.status_code, wait)
-                time.sleep(wait)
-                continue
-            if resp.status_code != 200:
-                log.warning("FMP %s -> HTTP %s (%s)", endpoint, resp.status_code, params)
-                self.n_failures += 1
-                return None
-
-            try:
-                data = resp.json()
-            except ValueError:
-                log.warning("FMP %s: respuesta no es JSON válido.", endpoint)
-                self.n_failures += 1
-                return None
-            if isinstance(data, dict) and ("Error Message" in data or "error" in data):
-                log.warning("FMP %s: %s", endpoint, data.get("Error Message") or data.get("error"))
-                self.n_failures += 1
-                return None
-
-            self._cache[key] = data
-            return data
-
-        log.error("FMP %s: agotados %d reintentos (%s).", endpoint, MAX_RETRIES, params)
-        self.n_failures += 1
-        return None
+        try:
+            data = self._get(endpoint, params)
+        except APIAuthorizationError:
+            log.error("FMP %s: API key inválida o endpoint fuera de tu plan.", endpoint)
+            self.n_failures += 1
+            return None
+        except APIError as exc:
+            log.warning("%s (%s)", exc, params)
+            self.n_failures += 1
+            return None
+        if isinstance(data, dict) and "error" in data:
+            log.warning("FMP %s: %s", endpoint, data["error"])
+            self.n_failures += 1
+            return None
+        return data
 
     def get_records(self, endpoint: str, **params: Any) -> list[dict]:
         """Como get(), pero siempre devuelve una lista de diccionarios."""

@@ -6,6 +6,7 @@ Python tools for building investment portfolios in the US market from live marke
 |---|---|
 | [`US Asset Manager.py`](US%20Asset%20Manager.py) | **ETF** asset allocation: builds the universe, estimates factor exposures, option-implied moments and covariance, and optimizes weights for an investment profile. |
 | [`Corp_FR_Optimization.py`](Corp_FR_Optimization.py) | **Investment Grade corporate fixed income (USD)** portfolio selection: screens issuers on solvency, cash flow and rating, ranks them, and computes the minimum required yield by tenor. |
+| [`fmp_client.py`](fmp_client.py) | Shared FMP HTTP transport (throttling, retries, cache, plan-error detection) used by both scripts. |
 | [`risk_estimators.py`](risk_estimators.py) | Risk estimator library (EWMA + Ledoit-Wolf covariance, Q→P correction, portfolio moments, Cornish-Fisher). Used by `US Asset Manager.py`. |
 
 Each script runs end to end, prints tables to the console and produces an interactive Plotly HTML report.
@@ -45,7 +46,7 @@ r_i = α + β_m·SPY + β_v·(VTV − VUG) + β_q·(QUAL − SPY)
 Value is the percentile of β_v, Growth the percentile of −β_v (with returns, value and growth are the two ends of one axis) and Quality the percentile of β_q. Only equity and real estate ETFs get style scores; the rest stay neutral.
 
 ### Phase 2 · Moments, covariance and expected return
-- **Implied moments (BKM)**: from the Polygon option chain (30 to 90 day expiries), the model-free implied volatility, skewness and kurtosis (MFIV, MFIS, MFIK) are estimated with Bakshi, Kapadia & Madan (2003). Each strike's implied volatility is obtained by inverting the Bjerksund-Stensland American option model, smoothed with a spline, and the results are interpolated to a 60-day horizon. Dividend yields are computed per ticker as trailing 12-month dividends (FMP `dividends`) over the last price. Option prices are quote midpoints when the Polygon plan includes quotes; otherwise the contract's last trade (`day.close`) is used, discarding trades older than 5 days (`OPTIONS_MAX_PRICE_AGE_DAYS`), since stale wing prices inflate the implied variance. If not enough options remain, historical moments are used instead.
+- **Implied moments (BKM)**: from the Polygon option chain (30 to 90 day expiries), the model-free implied volatility, skewness and kurtosis (MFIV, MFIS, MFIK) are estimated with Bakshi, Kapadia & Madan (2003). Each strike's implied volatility is obtained by inverting the Bjerksund-Stensland American option model, smoothed with a spline, and the results are interpolated to a common 60-day horizon. Each expiry's skewness and excess kurtosis are first scaled to that horizon (iid: skew/√h, exkurt/h), so every asset is on the same maturity; the table records the expiries used (`DTE bajo`/`DTE alto`). If an asset has no expiry on both sides of 60 days it is scaled from the nearest one (or sent to the historical fallback with `OPTIONS_REQUIRE_BRACKET = True`). The historical fallback is scaled to the same horizon. Dividend yields are computed per ticker as trailing 12-month dividends (FMP `dividends`) over the last price. Option prices are quote midpoints when the Polygon plan includes quotes; otherwise the contract's last trade (`day.close`) is used, discarding trades older than 5 days (`OPTIONS_MAX_PRICE_AGE_DAYS`), since stale wing prices inflate the implied variance. If not enough options remain, historical moments are used instead.
 - **Covariance**: Σ = D·R·D, where
   - **D** holds the implied volatilities adjusted from the Q (risk-neutral) measure to the P (physical) measure to remove the variance risk premium;
   - **R** is the historical EWMA correlation (120-day half-life) with Ledoit-Wolf shrinkage toward constant correlation.
@@ -62,11 +63,13 @@ s.t. Σw = 1,   0 ≤ w ≤ w_max,   Bᵀw ≥ factor targets
 
 Parameters depend on the selected profile:
 
-| Profile | λ | w_max | Minimum targets |
-|---|---|---|---|
-| Conservador (Conservative) | 8 | 15% | Value 0.45 · Quality 0.55 · LowVol 0.70 |
-| Crecimiento (Growth) | 4 | 20% | Growth 0.60 · Momentum 0.45 · Quality 0.55 |
-| Momentum/Agresivo (Aggressive) | 2 | 25% | Growth 0.55 · Momentum 0.70 |
+| Profile | λ | γ (tail) | w_max | Minimum targets |
+|---|---|---|---|---|
+| Conservador (Conservative) | 8 | 2.0 | 15% | Value 0.45 · Quality 0.55 · LowVol 0.70 |
+| Crecimiento (Growth) | 4 | 1.0 | 20% | Growth 0.60 · Momentum 0.45 · Quality 0.55 |
+| Momentum/Agresivo (Aggressive) | 2 | 0.5 | 25% | Growth 0.55 · Momentum 0.70 |
+
+**Optional tail penalty** (`USE_TAIL_PENALTY = False` by default, so the optimizer is the mean-variance one above). When enabled, the utility becomes `μᵀw − ½·λ·wᵀΣw − γ·σ_p·(ES_CF − ES_Gaussian)`, where the expected shortfall (95%) comes from the portfolio's skewness and excess kurtosis. These are built by `ImpliedTailModel`: each asset is simulated with its implied MFIS/MFIK (Cornish-Fisher marginals) and the dependence of Σ (Gaussian copula). The problem is no longer convex, so it is solved with SLSQP starting from the mean-variance solution (`cvxpy`/`qubo_sa` do not apply); the solver comparison then shows the penalized portfolio next to the plain ones. The γ values are starting points, not calibrated. `python scripts/sweep_tail_penalty.py` runs phases 0-2 once and sweeps γ per profile with real data (E[R], σ, tail term vs. variance term, CVaR, skewness, weight distance to γ = 0). In the first sweep (2026-10-07) the signed excess tail rewarded positive skewness: for γ ≥ 1 the penalty term turned negative and, for Conservador, CVaR95 got worse than with γ = 0. Review before enabling it (e.g. penalize only a positive excess).
 
 Before optimizing, a linear program checks that the targets are attainable and, if they are not, relaxes them by the minimum amount needed. Three solvers are available and can optionally be compared against each other:
 - `cvxpy`: quadratic programming (default);
@@ -74,7 +77,7 @@ Before optimizing, a linear program checks that the targets are attainable and, 
 - `qubo_sa`: QUBO formulation with 5 bits per asset, solved with *simulated annealing*.
 
 ### Phases 4 and 5 · Outputs
-- Console: universe composition, dropped ETFs, factors, moments, μ, optimal weights, target vs. achieved factor exposure, metrics (return, volatility, Sharpe, effective N) and the solver comparison.
+- Console: tail risk of the final portfolio (daily skewness, excess kurtosis, Gaussian vs. Cornish-Fisher VaR/CVaR at 95% and 99%; measured only, it is not part of the optimization), universe composition, dropped ETFs, factors, moments, μ, optimal weights, target vs. achieved factor exposure, metrics (return, volatility, Sharpe, effective N) and the solver comparison.
 - `portfolio_dashboard.html`: allocation chart, factor radar, risk-return scatter and weight vs. risk contribution.
 - Pipeline JSON (`portfolio_latest.json` plus a timestamped copy). See [Pipeline JSON](#pipeline-json).
 
@@ -159,6 +162,14 @@ The writer is `pipeline_io.py`. Its tests do not use the network:
 
 ```bash
 python -m unittest discover -s tests
+```
+
+The optimizer, the tail-risk measure and the shared FMP client are also tested offline (`tests/test_optimizer.py`, `tests/test_fmp_client.py`).
+
+`risk_estimators.py` is copied by hand between repositories and has already drifted. To see which functions differ from the AM-PM copy:
+
+```bash
+python scripts/check_risk_estimators_sync.py [path/to/AM-PM/risk_estimators.py] [--strict]
 ```
 
 ## Disclaimer

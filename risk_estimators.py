@@ -59,6 +59,14 @@ __all__ = [
     "cornish_fisher_es_gradient",
     "var_cvar_cornish_fisher",
     "martin_wagner_excess_return",
+    "DAYS_PER_YEAR",
+    "TRADING_DAYS_PER_YEAR",
+    "WEEKS_PER_YEAR",
+    "MONTHS_PER_YEAR",
+    "to_years",
+    "scale_moments",
+    "annualize",
+    "scale_bkm_moments",
 ]
 
 
@@ -159,13 +167,13 @@ def ledoit_wolf_constant_correlation(returns, S=None, t_eff=None, weights=None,
     return_info : si True devuelve ademas un dict con delta_raw y delta.
 
     Consistencia cuando S es la EWMA:
-      - El objetivo F (varianzas y correlacion promedio) se construye con la
-        MISMA matriz S que se encoge.
+      - El objetivo F (varianzas y correlacion promedio) y gamma = ||F - S||^2
+        se construyen con la MISMA matriz S que se encoge.
       - pi y rho (y la S_sample que entra en ellos) se calculan con los MISMOS
         pesos EWMA, y el divisor es t_eff (Kish). Antes pi y rho eran los de la
         muestra completa sin pesos divididos por t_eff: con un shock aislado
-        (COVID, marzo 2020) lejos en el pasado, pi quedaba inflado y delta se
-        saturaba en 1.
+        (COVID, marzo 2020) lejos en el pasado, pi quedaba ~3 veces inflado y
+        delta se saturaba en 1 (diagnostico mv_shrinkage_diag, variante D).
     Con weights=None y S=None es exactamente el Ledoit-Wolf clasico.
 
     Devuelve (S_shrunk, delta, F), o (S_shrunk, delta, F, info) si return_info.
@@ -220,7 +228,7 @@ def ledoit_wolf_constant_correlation(returns, S=None, t_eff=None, weights=None,
     np.fill_diagonal(rho_off, 0.0)
     rho_hat = float(np.trace(pi_mat) + rho_off.sum())
 
-    gamma_hat = float(np.sum((F - S_sample) ** 2))
+    gamma_hat = float(np.sum((F - S) ** 2))
 
     if gamma_hat <= 0 or not np.isfinite(gamma_hat):
         return _out(S, 0.0, F)
@@ -672,6 +680,142 @@ def var_cvar_cornish_fisher(mu, sd, skew, exkurt, confidence=0.95):
             "z_cf": cola["q"], "exact": cola["exact"], "cf_s": cola["s"], "cf_k": cola["k"],
             "var_gaussian": float(var_g), "cvar_gaussian": float(cvar_g),
             "skew": float(skew), "exkurt": float(exkurt)}
+
+
+# ==============================================================================
+# 6. ESCALADO TEMPORAL UNICO (copiado de AM-PM)
+# ==============================================================================
+# Un unico punto para pasar momentos de un plazo a otro. Los optimizadores
+# mezclaban convenciones: MFIV integrada sobre ~30 DTE dividida por el
+# horizonte del portafolio, asimetria semanal combinada con sigma al horizonte
+# sin escalar, retornos mensuales anualizados con 12/horizonte, volatilidad
+# anual en una matriz que debia estar al horizonte. Todas esas operaciones
+# son la misma regla con plazos de entrada y salida distintos:
+#
+#   h = to_years / from_years          (ratio de plazos)
+#   mu_h   = mu  * h                   (log-retornos iid; aprox. para simples)
+#   var_h  = var * h
+#   sd_h   = sd  * sqrt(h)
+#   S_h    = S   / sqrt(h)             (asimetria estandarizada, iid)
+#   K_h    = K   / h                   (EXCESO de curtosis, iid)
+#
+# Los plazos se expresan en ANOS y se construyen con `to_years`, que acepta
+# el DTE real de la cadena (dias de calendario), semanas, meses o periodos
+# de una frecuencia dada. Asi el plazo de una MFIV es el de sus contratos
+# (info["dte"] de polygon_client.fetch_otm_chain), no el del portafolio.
+#
+# El escalado iid de S y K es un supuesto (sin dependencia temporal ni
+# clustering de volatilidad). Es el mismo que ya usaba
+# `momentos_cola_historicos`; aqui se centraliza para que todos los bloques
+# lo apliquen igual.
+# ==============================================================================
+
+DAYS_PER_YEAR = 365.0            # calendario: vencimientos de opciones (DTE)
+TRADING_DAYS_PER_YEAR = 252.0    # retornos diarios bursatiles
+WEEKS_PER_YEAR = 52.0
+MONTHS_PER_YEAR = 12.0
+
+
+def to_years(periods=None, periods_per_year=None, *, dte=None, trading_days=None,
+             weeks=None, months=None, days_per_year=DAYS_PER_YEAR):
+    """Convierte un plazo a anos. Exactamente UNA forma de expresarlo:
+
+    to_years(dte=30)                       -> 30 / 365    (dias de calendario)
+    to_years(trading_days=21)              -> 21 / 252
+    to_years(weeks=4.33)                   -> 4.33 / 52
+    to_years(months=3)                     -> 3 / 12
+    to_years(periods=5, periods_per_year=52) -> 5 / 52     (frecuencia arbitraria)
+
+    Acepta escalares o arrays (p. ej. un DTE distinto por ticker). Lanza
+    ValueError si se da mas de una forma, ninguna, o un plazo no positivo.
+    """
+    formas = {"periods": periods, "dte": dte, "trading_days": trading_days,
+              "weeks": weeks, "months": months}
+    dadas = [k for k, v in formas.items() if v is not None]
+    if len(dadas) != 1:
+        raise ValueError(f"to_years: indicar exactamente un plazo, se dieron {dadas or 'ninguno'}")
+    nombre = dadas[0]
+    valor = np.asarray(formas[nombre], dtype=float)
+
+    if nombre == "periods":
+        if periods_per_year is None or periods_per_year <= 0:
+            raise ValueError("to_years: `periods` requiere periods_per_year > 0")
+        divisor = float(periods_per_year)
+    elif nombre == "dte":
+        divisor = float(days_per_year)
+    elif nombre == "trading_days":
+        divisor = TRADING_DAYS_PER_YEAR
+    elif nombre == "weeks":
+        divisor = WEEKS_PER_YEAR
+    else:
+        divisor = MONTHS_PER_YEAR
+
+    if np.any(~np.isfinite(valor)) or np.any(valor <= 0):
+        raise ValueError(f"to_years: plazo no positivo o no finito en `{nombre}`: {formas[nombre]}")
+    anos = valor / divisor
+    return float(anos) if anos.ndim == 0 else anos
+
+
+def scale_moments(from_years, to_years, mu=None, var=None, sd=None, skew=None, exkurt=None):
+    """Escala momentos de un plazo `from_years` a otro `to_years` bajo iid.
+
+    Solo se escalan los momentos que se pasan; el resto no aparece en la
+    salida. Todos aceptan escalares o arrays (broadcast con los plazos).
+
+    Devuelve dict con "h" (= to_years/from_years) y las claves pedidas entre
+    mu, var, sd, skew, exkurt. `exkurt` es EXCESO de curtosis; la curtosis
+    total no escala como K/h (hay que restar 3 antes y sumarlo despues).
+
+    Ejemplos
+    --------
+    MFIV integrada sobre 30 DTE -> varianza anual:
+        scale_moments(to_years(dte=30), 1.0, var=mfiv)["var"]
+    Asimetria y exceso de curtosis semanales -> horizonte de 1 mes:
+        scale_moments(to_years(weeks=1), to_years(months=1), skew=S, exkurt=K)
+    """
+    f = np.asarray(from_years, dtype=float)
+    t = np.asarray(to_years, dtype=float)
+    if np.any(~np.isfinite(f)) or np.any(f <= 0) or np.any(~np.isfinite(t)) or np.any(t <= 0):
+        raise ValueError("scale_moments: los plazos deben ser positivos y finitos")
+    h = t / f
+    out = {"h": float(h) if h.ndim == 0 else h}
+
+    def _f(x, fn):
+        x_arr = np.asarray(x, dtype=float)
+        y = fn(x_arr)
+        return float(y) if y.ndim == 0 else y
+
+    if mu is not None:
+        out["mu"] = _f(mu, lambda x: x * h)
+    if var is not None:
+        out["var"] = _f(var, lambda x: x * h)
+    if sd is not None:
+        out["sd"] = _f(sd, lambda x: x * np.sqrt(h))
+    if skew is not None:
+        out["skew"] = _f(skew, lambda x: x / np.sqrt(h))
+    if exkurt is not None:
+        out["exkurt"] = _f(exkurt, lambda x: x / h)
+    return out
+
+
+def annualize(from_years, **moments):
+    """Atajo: scale_moments(from_years, 1.0, **moments)."""
+    return scale_moments(from_years, 1.0, **moments)
+
+
+def scale_bkm_moments(mfiv, mfis, mfik, from_dte, to_dte):
+    """Lleva MFIV, MFIS y MFIK del DTE de la cadena al DTE objetivo (iid).
+
+    MFIV es varianza integrada. MFIS es asimetria. MFIK es curtosis TOTAL:
+    se escala el exceso (MFIK - 3) y se vuelve a sumar 3. No escala MFIK/h.
+    """
+    exkurt = np.asarray(mfik, dtype=float) - 3.0
+    esc = scale_moments(
+        to_years(dte=from_dte), to_years(dte=to_dte),
+        var=mfiv, skew=mfis, exkurt=exkurt,
+    )
+    mfik_out = esc["exkurt"] + 3.0
+    return {"mfiv": esc["var"], "mfis": esc["skew"], "mfik": mfik_out, "h": esc["h"]}
 
 
 # ==============================================================================
