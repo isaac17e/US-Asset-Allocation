@@ -39,6 +39,28 @@ class TimestampTests(unittest.TestCase):
         self.assertEqual(pipeline_io.iso_bogota(utc), "2026-10-05T16:40:12-05:00")
 
 
+class RiskFreeRateTests(unittest.TestCase):
+    def test_default_without_env(self) -> None:
+        self.assertEqual(pipeline_io.resolve_risk_free_rate(0.040, env={}), 0.040)
+        self.assertEqual(pipeline_io.resolve_risk_free_rate(0.040, env={"RISK_FREE_RATE": " "}), 0.040)
+
+    def test_env_override(self) -> None:
+        with mock.patch.dict(os.environ, {"RISK_FREE_RATE": "0.052"}):
+            self.assertAlmostEqual(pipeline_io.resolve_risk_free_rate(0.040), 0.052)
+        self.assertEqual(pipeline_io.resolve_risk_free_rate(0.040, env={"RISK_FREE_RATE": "0"}), 0.0)
+
+    def test_invalid_values_raise_a_clear_error(self) -> None:
+        for value in ("abc", "5.2", "0.5", "-0.01", "nan", "inf"):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "RISK_FREE_RATE"):
+                pipeline_io.resolve_risk_free_rate(0.040, env={"RISK_FREE_RATE": value})
+
+    def test_us_asset_manager_reads_env_and_records_rf(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        source = (root / "US Asset Manager.py").read_text(encoding="utf-8")
+        self.assertIn("RISK_FREE_RATE: float = pipeline_io.resolve_risk_free_rate(0.040)", source)
+        self.assertIn('"risk_free_rate": float(RISK_FREE_RATE),', source)
+
+
 class WeightTests(unittest.TestCase):
     def test_drops_dust_renormalizes_and_orders(self) -> None:
         tickers, weights = pipeline_io.normalize_weights(

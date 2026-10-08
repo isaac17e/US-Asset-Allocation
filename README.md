@@ -147,6 +147,8 @@ python Corp_FR_Optimization.py      # produces reporte_portafolio_renta_fija.htm
 
 All parameters (investment profile, solver, screening thresholds, score weights, rating spreads, etc.) live in the configuration block at the top of each file.
 
+`RISK_FREE_RATE` (annual decimal, e.g. `0.052`) overrides the risk-free rate of `US Asset Manager.py` (default `0.040`). It is read once at startup (`pipeline_io.resolve_risk_free_rate`) and feeds the CAPM expected return, the implied-moments engine and every Sharpe ratio. A non-number or a value outside `0 <= rf < 0.5` stops the run with a clear error. `Corp_FR_Optimization.py` ignores it: it builds its risk-free curve from FRED and has no flat scalar fallback (fewer than three nodes stops the run).
+
 ## Pipeline JSON
 
 A successful run also writes the shared pipeline contract (v1): UTF-8 JSON, `indent=2`, written atomically (`<file>.tmp` then replace). Timestamps are ISO 8601 with offset in `America/Bogota`. If the output directory cannot be created or written, the script prints a warning and continues (the HTML report and console tables are unchanged).
@@ -156,7 +158,7 @@ A successful run also writes the shared pipeline contract (v1): UTF-8 JSON, `ind
 | `US Asset Manager.py` | `PORTFOLIO_OUT_DIR` (default `/workspace/pipeline/portfolio`) | `portfolio_latest.json`, `portfolio_us_asset_manager_<YYYYMMDDTHHMMSS>.json` |
 | `Corp_FR_Optimization.py` | `UNIVERSE_OUT_DIR` (default `/workspace/pipeline/universe`) | `corp_fr_latest.json`, `corp_fr_<YYYYMMDDTHHMMSS>.json` |
 
-`US Asset Manager.py` sets `source_repo` to `US-Asset-Allocation` and `optimizer` to `us_asset_manager`. Weights below `1e-6` are dropped and renormalized so they sum to 1 at 6 decimal places. `params` carries λ (`lambda`), the weight cap, factor targets and covariance shrinkage. `horizon_days` is `OPTIONS_TARGET_DAYS`. `Corp_FR_Optimization.py` writes the selected Top-N tickers in ranking order, with rank, name, sector and composite score.
+`US Asset Manager.py` sets `source_repo` to `US-Asset-Allocation` and `optimizer` to `us_asset_manager`. Weights below `1e-6` are dropped and renormalized so they sum to 1 at 6 decimal places. `params` carries the risk-free rate used (`risk_free_rate`), λ (`lambda`), the weight cap, factor targets and covariance shrinkage. `horizon_days` is `OPTIONS_TARGET_DAYS`. `Corp_FR_Optimization.py` writes the selected Top-N tickers in ranking order, with rank, name, sector and composite score.
 
 The writer is `pipeline_io.py`. Its tests do not use the network:
 

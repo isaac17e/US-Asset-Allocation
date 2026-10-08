@@ -9,6 +9,7 @@ return; these functions do not raise.
 from __future__ import annotations
 
 import json
+import math
 import os
 import sys
 from datetime import datetime
@@ -41,6 +42,29 @@ def iso_bogota(moment: datetime | None = None) -> str:
 def stamp_bogota(moment: datetime | None = None) -> str:
     """``YYYYMMDDTHHMMSS`` in America/Bogota, for timestamped filenames."""
     return now_bogota(moment).strftime("%Y%m%dT%H%M%S")
+
+
+def resolve_risk_free_rate(default: float, env: Mapping[str, str] | None = None) -> float:
+    """Annual risk-free rate (decimal): ``RISK_FREE_RATE`` when set, else ``default``.
+
+    Read once at startup. A non-number or a value outside ``0 <= rf < 0.5``
+    raises ``ValueError`` (``0.052`` is 5.2%; ``5.2`` is rejected).
+    """
+    raw = (os.environ if env is None else env).get("RISK_FREE_RATE")
+    if raw is None or not str(raw).strip():
+        return float(default)
+    try:
+        rate = float(str(raw).strip())
+    except ValueError:
+        raise ValueError(
+            f"RISK_FREE_RATE is not a number: {raw!r}. Use an annual decimal, e.g. 0.052."
+        ) from None
+    if not math.isfinite(rate) or not 0.0 <= rate < 0.5:
+        raise ValueError(
+            f"RISK_FREE_RATE out of range: {raw!r}. Expected 0 <= rf < 0.5 "
+            "(annual decimal: 0.052 is 5.2%)."
+        )
+    return rate
 
 
 def normalize_weights(

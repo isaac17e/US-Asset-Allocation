@@ -93,7 +93,7 @@ TAIL_SCENARIOS: int = 20_000
 TAIL_RANDOM_SEED: int = 42
 
 BENCHMARK_TICKER: str = "SPY"
-RISK_FREE_RATE: float = 0.040
+RISK_FREE_RATE: float = pipeline_io.resolve_risk_free_rate(0.040)  # env RISK_FREE_RATE (decimal anual) la sobreescribe
 DIVIDEND_YIELD_FALLBACK: float = 0.015
 MAX_DIVIDEND_YIELD: float = 0.25
 EQUITY_RISK_PREMIUM: float = 0.050
@@ -2157,6 +2157,7 @@ def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, ma
             "tickers": tickers,
             "weights": weights,
             "params": {
+                "risk_free_rate": float(RISK_FREE_RATE),
                 "lambda": float(profile.risk_aversion),
                 "max_weight": float(max_weight),
                 "max_weight_cap": float(profile.max_weight),
