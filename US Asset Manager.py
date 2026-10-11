@@ -119,13 +119,13 @@ EXCLUDE_LEVERAGED_INVERSE: bool = True
 # PARÁMETROS EDITABLES · FACTORES
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-FACTORS: Tuple[str, ...] = ("Value", "Growth", "Momentum", "Quality", "LowVol")
+FACTORS: Tuple[str, ...] = ("Value", "Growth", "Momentum", "Quality")
 TOP_HOLDINGS_PER_ETF: int = 10
 FETCH_GROWTH_FUNDAMENTALS: bool = True
 NEUTRAL_FACTOR_SCORE: float = 0.50
 MOMENTUM_LOOKBACK_DAYS: int = 252
 MOMENTUM_SKIP_DAYS: int = 21
-VOLATILITY_LOOKBACK_DAYS: int = 252
+VOLATILITY_LOOKBACK_DAYS: int = 252  # ventana de vol. del respaldo histórico de momentos (ya no alimenta ningún factor)
 
 # Fuente de Value/Growth/Quality. "holdings": fundamentales de las posiciones
 # (requiere etf/holdings en el plan FMP). "returns": regresión de estilo sobre
@@ -202,27 +202,41 @@ LOG_LEVEL: str = "INFO"
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
-# PARÁMETROS EDITABLES · PERFILES DE INVERSIÓN (Target_k mínimos sobre scores 0-1)
+# PARÁMETROS EDITABLES · PERFILES DE INVERSIÓN (Target_k mínimos sobre scores 0-1 + banda de beta)
 # ══════════════════════════════════════════════════════════════════════════════════════════════
+
+# El riesgo de mercado del perfil lo fija la BETA contra BENCHMARK_TICKER, no la volatilidad:
+#   · beta_port_lo / beta_port_hi: banda de Σ wᵢβᵢ del portafolio (restricción del optimizador). hi=None → sin techo.
+#   · beta_asset_min / beta_asset_max: rango de beta individual para entrar al pool. max=None → sin máximo.
+# β = beta OLS semanal en USD contra SPY, encogida hacia 1 (Blume: 2/3·β + 1/3). Ver market_beta().
+BETA_WINDOW_WEEKS: int = 104
+BETA_MIN_OBS_WEEKS: int = 52
+RESID_VOL_PERCENTILE: float = 0.85  # del pool se excluye solo el 15% más errático (vol. residual vs. SPY)
 
 PROFILES: Dict[str, Dict[str, Any]] = {
     "Conservador": {
         "risk_aversion": 8.0,
         "tail_penalty": 0.25,
         "max_weight": 0.15,
-        "targets": {"Value": 0.45, "Growth": 0.00, "Momentum": 0.00, "Quality": 0.55, "LowVol": 0.70},
+        "beta_port_lo": 0.60, "beta_port_hi": 0.80,
+        "beta_asset_min": 0.20, "beta_asset_max": 1.30,
+        "targets": {"Value": 0.45, "Growth": 0.00, "Momentum": 0.00, "Quality": 0.55},
     },
     "Crecimiento": {
         "risk_aversion": 4.0,
         "tail_penalty": 0.15,
         "max_weight": 0.20,
-        "targets": {"Value": 0.00, "Growth": 0.60, "Momentum": 0.45, "Quality": 0.55, "LowVol": 0.00},
+        "beta_port_lo": 0.80, "beta_port_hi": 0.95,
+        "beta_asset_min": 0.40, "beta_asset_max": 1.50,
+        "targets": {"Value": 0.00, "Growth": 0.60, "Momentum": 0.45, "Quality": 0.55},
     },
     "Momentum/Agresivo": {
         "risk_aversion": 2.0,
         "tail_penalty": 0.10,
         "max_weight": 0.25,
-        "targets": {"Value": 0.00, "Growth": 0.55, "Momentum": 0.70, "Quality": 0.00, "LowVol": 0.00},
+        "beta_port_lo": 0.95, "beta_port_hi": None,
+        "beta_asset_min": 0.50, "beta_asset_max": None,
+        "targets": {"Value": 0.00, "Growth": 0.55, "Momentum": 0.70, "Quality": 0.00},
     },
 }
 
@@ -360,6 +374,51 @@ def _historical_betas(returns: pd.DataFrame, benchmark: pd.Series) -> pd.Series:
     return returns.apply(lambda column: column.cov(benchmark) / variance)
 
 
+def market_beta(
+    prices: pd.DataFrame, benchmark: str, window_weeks: int = BETA_WINDOW_WEEKS, min_obs: int = BETA_MIN_OBS_WEEKS,
+) -> pd.DataFrame:
+    """Beta de mercado por ETF: OLS sobre retornos simples semanales (USD) contra `benchmark`.
+
+    Devuelve beta (encogida hacia 1 con Blume, 2/3·β + 1/3), beta_ols, resid_vol (anualizada) y n_obs.
+    Con menos de `min_obs` semanas comunes el ETF queda en NaN y no entra al pool.
+    """
+    weekly = prices.sort_index().resample("W-FRI").last().pct_change(fill_method=None).tail(window_weeks)
+    market = weekly[benchmark]
+    rows: Dict[str, Dict[str, float]] = {}
+    for ticker in prices.columns:
+        pair = pd.concat([weekly[ticker], market], axis=1, keys=["r", "m"]).dropna()
+        n_obs = len(pair)
+        if n_obs < min_obs or float(pair["m"].var()) <= 0.0:
+            rows[ticker] = {"beta": np.nan, "beta_ols": np.nan, "resid_vol": np.nan, "n_obs": float(n_obs)}
+            continue
+        slope = float(pair["r"].cov(pair["m"]) / pair["m"].var())
+        residual = pair["r"] - (pair["r"].mean() - slope * pair["m"].mean()) - slope * pair["m"]
+        rows[ticker] = {
+            "beta": (2.0 / 3.0) * slope + 1.0 / 3.0,
+            "beta_ols": slope,
+            "resid_vol": float(residual.std(ddof=2) * math.sqrt(52.0)),
+            "n_obs": float(n_obs),
+        }
+    return pd.DataFrame.from_dict(rows, orient="index")[["beta", "beta_ols", "resid_vol", "n_obs"]]
+
+
+def beta_range_reachable(betas: np.ndarray, max_weight: float) -> Tuple[float, float]:
+    """(mínimo, máximo) de Σ wᵢβᵢ con Σw = 1 y 0 ≤ wᵢ ≤ max_weight (llenado voraz por beta)."""
+    ordered = np.sort(np.asarray(betas, dtype=float))
+    n_full = int(1.0 / max_weight)
+    remainder = 1.0 - n_full * max_weight
+
+    def fill(values: np.ndarray) -> float:
+        total = float(max_weight * values[:n_full].sum())
+        return total + (remainder * float(values[n_full]) if n_full < len(values) and remainder > 1e-12 else 0.0)
+
+    return fill(ordered), fill(ordered[::-1])
+
+
+def beta_band_text(lo: Optional[float], hi: Optional[float]) -> str:
+    return f"[{lo:.2f}, {'sin techo' if hi is None else f'{hi:.2f}'}]"
+
+
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 # EXCEPCIONES Y ESTRUCTURAS DE DATOS
 # ══════════════════════════════════════════════════════════════════════════════════════════════
@@ -375,6 +434,10 @@ class ProfileConfig:
     max_weight: float
     factor_targets: Dict[str, float]
     tail_penalty: float = 0.0
+    beta_port_lo: Optional[float] = None  # None en lo → sin banda de beta (solo pruebas)
+    beta_port_hi: Optional[float] = None  # None en hi → sin techo
+    beta_asset_min: Optional[float] = None
+    beta_asset_max: Optional[float] = None  # None → sin máximo
 
     @classmethod
     def from_registry(cls, name: str, registry: Mapping[str, Mapping[str, Any]]) -> "ProfileConfig":
@@ -382,7 +445,21 @@ class ProfileConfig:
             raise ValueError(f"Perfil '{name}' no definido. Opciones: {list(registry)}")
         spec = registry[name]
         targets = {factor: float(spec["targets"].get(factor, 0.0)) for factor in FACTORS}
-        return cls(name, float(spec["risk_aversion"]), float(spec["max_weight"]), targets, float(spec.get("tail_penalty", 0.0)))
+        for key in ("beta_port_lo", "beta_asset_min"):
+            if spec.get(key) is None:
+                raise ValueError(f"Perfil '{name}': {key} es obligatorio (None solo se acepta como 'sin techo' en hi/max).")
+        lo, hi = float(spec["beta_port_lo"]), spec.get("beta_port_hi")
+        a_min, a_max = float(spec["beta_asset_min"]), spec.get("beta_asset_max")
+        hi = None if hi is None else float(hi)
+        a_max = None if a_max is None else float(a_max)
+        if hi is not None and lo > hi:
+            raise ValueError(f"Perfil '{name}': beta_port_lo ({lo}) > beta_port_hi ({hi}).")
+        if a_max is not None and a_min > a_max:
+            raise ValueError(f"Perfil '{name}': beta_asset_min ({a_min}) > beta_asset_max ({a_max}).")
+        return cls(
+            name, float(spec["risk_aversion"]), float(spec["max_weight"]), targets, float(spec.get("tail_penalty", 0.0)),
+            lo, hi, a_min, a_max,
+        )
 
     def target_vector(self) -> np.ndarray:
         return np.array([self.factor_targets[factor] for factor in FACTORS], dtype=float)
@@ -410,6 +487,7 @@ class OptimizationResult:
     max_factor_violation: float
     status: str
     runtime_seconds: float
+    portfolio_beta: float = float("nan")
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
@@ -700,13 +778,83 @@ class RedundancyFilter:
         return kept, pd.DataFrame(dropped, columns=["Ticker", "Motivo", "Gemelo", "Correlación"])
 
 
+class BetaPoolFilter:
+    """Pool de candidatos por beta contra el benchmark (reemplaza los filtros defensivos por volatilidad).
+
+    1. Sin beta estimable (menos de BETA_MIN_OBS_WEEKS semanas) o fuera de [beta_asset_min, beta_asset_max]: fuera.
+    2. De los restantes se descarta solo el decil superior de vol. residual (RESID_VOL_PERCENTILE): los más erráticos.
+    Los descartados por vol. residual quedan en reserva para reponer el lado de la banda que el pool no alcance.
+    """
+
+    def __init__(self, profile: ProfileConfig, benchmark: str, resid_percentile: float = RESID_VOL_PERCENTILE) -> None:
+        self.profile = profile
+        self.benchmark = benchmark
+        self.resid_percentile = resid_percentile
+        self.logger = logging.getLogger("Beta")
+
+    def split(self, candidates: Sequence[ETFDescriptor], table: pd.DataFrame) -> Tuple[List[ETFDescriptor], List[ETFDescriptor], List[Dict[str, Any]]]:
+        """(pool, reserva por vol. residual, filas descartadas)."""
+        lo, hi = self.profile.beta_asset_min, self.profile.beta_asset_max
+        dropped: List[Dict[str, Any]] = []
+        eligible: List[ETFDescriptor] = []
+        for etf in candidates:
+            beta = float(table["beta"].get(etf.ticker, np.nan))
+            if etf.ticker == self.benchmark:
+                eligible.append(etf)
+            elif not math.isfinite(beta):
+                dropped.append({"Ticker": etf.ticker, "Motivo": f"Beta no estimable (< {BETA_MIN_OBS_WEEKS} semanas)", "Gemelo": "", "Correlación": np.nan})
+            elif (lo is not None and beta < lo) or (hi is not None and beta > hi):
+                dropped.append({"Ticker": etf.ticker, "Motivo": f"Beta {beta:.2f} fuera de {beta_band_text(lo, hi).replace('sin techo', 'sin máx.')}", "Gemelo": "", "Correlación": np.nan})
+            else:
+                eligible.append(etf)
+        resid = table.loc[[e.ticker for e in eligible if e.ticker != self.benchmark], "resid_vol"].dropna()
+        cut = float(resid.quantile(self.resid_percentile)) if len(resid) else float("inf")
+        pool: List[ETFDescriptor] = []
+        reserve: List[ETFDescriptor] = []
+        for etf in eligible:
+            value = float(table["resid_vol"].get(etf.ticker, np.nan))
+            if etf.ticker != self.benchmark and math.isfinite(value) and value > cut:
+                reserve.append(etf)
+            else:
+                pool.append(etf)
+        self.logger.info(
+            "Pool por beta %s: %d elegibles de %d | vol. residual > P%d (%.2f%%): %d en reserva",
+            beta_band_text(lo, hi), len(eligible), len(candidates), round(self.resid_percentile * 100), cut * 100 if math.isfinite(cut) else float("nan"), len(reserve),
+        )
+        return pool, reserve, dropped
+
+    def cover_band(
+        self, universe: List[ETFDescriptor], reserve: Sequence[ETFDescriptor], table: pd.DataFrame, max_weight: float,
+    ) -> Tuple[List[ETFDescriptor], List[Dict[str, Any]]]:
+        """Si el universo no alcanza la banda, repone desde la reserva candidatos del lado que falta."""
+        lo, hi = self.profile.beta_port_lo, self.profile.beta_port_hi
+        if lo is None:
+            return universe, []
+        cap = max(max_weight, 1.0 / max(len(universe), 1) + 1e-9)
+        added: List[Dict[str, Any]] = []
+        pending = list(reserve)
+        while pending:
+            reach_min, reach_max = beta_range_reachable(table.loc[[e.ticker for e in universe], "beta"].to_numpy(dtype=float), cap)
+            if lo > reach_max:
+                pick = max(pending, key=lambda e: table["beta"][e.ticker])
+            elif hi is not None and hi < reach_min:
+                pick = min(pending, key=lambda e: table["beta"][e.ticker])
+            else:
+                break
+            pending.remove(pick)
+            universe.append(pick)
+            added.append({"Ticker": pick.ticker, "beta": float(table["beta"][pick.ticker])})
+            self.logger.warning("Banda de beta %s no alcanzada: se repone %s (β=%.2f) desde la reserva.", beta_band_text(lo, hi), pick.ticker, table["beta"][pick.ticker])
+        return universe, added
+
+
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 # FASE 1 · MATRIZ DE CARGAS FACTORIALES B
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class FactorModelBuilder:
     FUNDAMENTAL_COLUMNS: Tuple[str, ...] = ("EarningsYield", "BookYield", "ROE", "ROIC", "RevenueGrowth", "EPSGrowth")
-    TECHNICAL_COLUMNS: Tuple[str, ...] = ("Momentum_12_1", "Volatilidad_252d")
+    TECHNICAL_COLUMNS: Tuple[str, ...] = ("Momentum_12_1",)
     STYLE_COLUMNS: Tuple[str, ...] = ("Beta_Value", "Beta_Quality")
 
     def __init__(self, fmp: FMPClient, prices: pd.DataFrame) -> None:
@@ -727,7 +875,6 @@ class FactorModelBuilder:
                 for column, value in self._aggregate_fundamentals(etf.ticker).items():
                     raw.loc[etf.ticker, column] = value
             raw.loc[etf.ticker, "Momentum_12_1"] = self._momentum(etf.ticker)
-            raw.loc[etf.ticker, "Volatilidad_252d"] = self._volatility(etf.ticker)
             if index % 10 == 0:
                 self.logger.info("Factores procesados: %d/%d", index, len(universe))
         holdings_ok = "etf_holdings" not in self._disabled_endpoints
@@ -781,7 +928,6 @@ class FactorModelBuilder:
                 "Growth": growth,
                 "Momentum": _percentile_score(raw["Momentum_12_1"]),
                 "Quality": quality,
-                "LowVol": _percentile_score(-raw["Volatilidad_252d"]),
             },
             index=raw.index,
         )
@@ -873,10 +1019,6 @@ class FactorModelBuilder:
         if len(series) <= MOMENTUM_LOOKBACK_DAYS:
             return float("nan")
         return float(series.iloc[-1 - MOMENTUM_SKIP_DAYS] / series.iloc[-1 - MOMENTUM_LOOKBACK_DAYS] - 1.0)
-
-    def _volatility(self, ticker: str) -> float:
-        daily = self.prices[ticker].dropna().pct_change().dropna().tail(VOLATILITY_LOOKBACK_DAYS)
-        return float(daily.std(ddof=1) * math.sqrt(252)) if len(daily) > 60 else float("nan")
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
@@ -1494,7 +1636,7 @@ class PortfolioOptimizer:
 
     def __init__(
         self, mu: pd.Series, covariance: pd.DataFrame, factor_matrix: pd.DataFrame, profile: ProfileConfig,
-        tail_model: Optional[ImpliedTailModel] = None,
+        tail_model: Optional[ImpliedTailModel] = None, betas: Optional[pd.Series] = None,
     ) -> None:
         self.logger = logging.getLogger("Optimizador")
         self.tail_model = tail_model
@@ -1508,14 +1650,54 @@ class PortfolioOptimizer:
         if self.max_weight > profile.max_weight:
             self.logger.warning("max_weight ajustado a %.4f para garantizar plena inversión.", self.max_weight)
         self.requested_targets = profile.target_vector()
+        self.betas: Optional[np.ndarray] = None
+        self.beta_lo: Optional[float] = None
+        self.beta_hi: Optional[float] = None
+        self.beta_band_requested: Tuple[Optional[float], Optional[float]] = (profile.beta_port_lo, profile.beta_port_hi)
+        self.beta_relaxed = False
+        if betas is not None and profile.beta_port_lo is not None:
+            self.betas = betas.loc[self.tickers].to_numpy(dtype=float)
+            self._resolve_beta_band(profile.beta_port_lo, profile.beta_port_hi)
         self.targets, self.target_relaxation, self.warm_start = self._feasible_targets()
+
+    def _resolve_beta_band(self, lo: float, hi: Optional[float]) -> None:
+        """Banda de beta como restricción dura; si el pool no la alcanza se relaja al borde alcanzable, con aviso."""
+        reach_min, reach_max = beta_range_reachable(self.betas, self.max_weight)
+        margin = 1e-6
+        if lo > reach_max - margin:
+            self.logger.warning("Banda de beta infactible: piso %.3f > beta máxima alcanzable %.3f; se relaja el piso.", lo, reach_max)
+            lo, self.beta_relaxed = reach_max - margin, True
+        if hi is not None and hi < reach_min + margin:
+            self.logger.warning("Banda de beta infactible: techo %.3f < beta mínima alcanzable %.3f; se relaja el techo.", hi, reach_min)
+            hi, self.beta_relaxed = reach_min + margin, True
+        if hi is not None and lo > hi:
+            lo = hi
+        self.beta_lo, self.beta_hi = lo, hi
+
+    def _beta_constraints(self) -> List[Dict[str, Any]]:
+        """Restricciones de la banda de beta para SLSQP (desigualdades ≥ 0)."""
+        if self.betas is None:
+            return []
+        tol, beta = self.CONSTRAINT_TOLERANCE, self.betas
+        constraints = [{"type": "ineq", "fun": lambda x: beta @ x - (self.beta_lo - tol), "jac": lambda x: beta}]
+        if self.beta_hi is not None:
+            constraints.append({"type": "ineq", "fun": lambda x: (self.beta_hi + tol) - beta @ x, "jac": lambda x: -beta})
+        return constraints
 
     def _feasible_targets(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         n_assets, n_factors = self.B.shape
+        a_ub, b_ub = np.hstack([-self.B.T, -np.eye(n_factors)]), -self.requested_targets
+        if self.betas is not None:  # la banda de beta es dura: sin variable de holgura
+            rows, rhs = [-self.betas], [-self.beta_lo]
+            if self.beta_hi is not None:
+                rows.append(self.betas)
+                rhs.append(self.beta_hi)
+            a_ub = np.vstack([a_ub, np.hstack([np.array(rows), np.zeros((len(rows), n_factors))])])
+            b_ub = np.concatenate([b_ub, rhs])
         result = linprog(
             c=np.concatenate([np.zeros(n_assets), np.ones(n_factors)]),
-            A_ub=np.hstack([-self.B.T, -np.eye(n_factors)]),
-            b_ub=-self.requested_targets,
+            A_ub=a_ub,
+            b_ub=b_ub,
             A_eq=np.concatenate([np.ones(n_assets), np.zeros(n_factors)])[None, :],
             b_eq=[1.0],
             bounds=[(0.0, self.max_weight)] * n_assets + [(0.0, None)] * n_factors,
@@ -1574,6 +1756,7 @@ class PortfolioOptimizer:
             constraints=[
                 {"type": "eq", "fun": lambda x: np.sum(x) - 1.0, "jac": lambda x: np.ones_like(x)},
                 {"type": "ineq", "fun": lambda x: self.B.T @ x - (self.targets - self.CONSTRAINT_TOLERANCE), "jac": lambda x: self.B.T},
+                *self._beta_constraints(),
             ],
             method="SLSQP", options={"maxiter": 500, "ftol": 1e-10},
         )
@@ -1587,9 +1770,14 @@ class PortfolioOptimizer:
     def _solve_cvxpy(self) -> Tuple[np.ndarray, str]:
         w = cp.Variable(len(self.tickers))
         sigma = cp.psd_wrap(self.sigma) if hasattr(cp, "psd_wrap") else self.sigma
+        constraints = [cp.sum(w) == 1, w >= 0, w <= self.max_weight, self.B.T @ w >= self.targets - self.CONSTRAINT_TOLERANCE]
+        if self.betas is not None:
+            constraints.append(self.betas @ w >= self.beta_lo - self.CONSTRAINT_TOLERANCE)
+            if self.beta_hi is not None:
+                constraints.append(self.betas @ w <= self.beta_hi + self.CONSTRAINT_TOLERANCE)
         problem = cp.Problem(
             cp.Maximize(self.mu @ w - 0.5 * self.risk_aversion * cp.quad_form(w, sigma)),
-            [cp.sum(w) == 1, w >= 0, w <= self.max_weight, self.B.T @ w >= self.targets - self.CONSTRAINT_TOLERANCE],
+            constraints,
         )
         try:
             problem.solve()
@@ -1603,6 +1791,7 @@ class PortfolioOptimizer:
         constraints = [
             {"type": "eq", "fun": lambda x: np.sum(x) - 1.0, "jac": lambda x: np.ones_like(x)},
             {"type": "ineq", "fun": lambda x: self.B.T @ x - (self.targets - self.CONSTRAINT_TOLERANCE), "jac": lambda x: self.B.T},
+            *self._beta_constraints(),
         ]
         result = minimize(
             fun=lambda x: -self.utility(x),
@@ -1635,15 +1824,24 @@ class PortfolioOptimizer:
         asset_of_var = np.repeat(np.arange(n_assets), bits)
         weight_of_var = np.tile(scale * 2.0 ** np.arange(bits), n_assets)
 
+        # La banda de beta entra como una columna más de B (exposición extra) con piso y techo propios.
+        loadings = np.hstack([self.B, self.betas[:, None]]) if self.betas is not None else self.B
+        n_factors = self.B.shape[1]
+
         def violation(exposure: np.ndarray) -> float:
-            return float(np.sum(np.maximum(0.0, self.targets - exposure) ** 2))
+            total = float(np.sum(np.maximum(0.0, self.targets - exposure[:n_factors]) ** 2))
+            if self.betas is not None:
+                total += max(0.0, self.beta_lo - exposure[n_factors]) ** 2
+                if self.beta_hi is not None:
+                    total += max(0.0, exposure[n_factors] - self.beta_hi) ** 2
+            return total
 
         strict_coefficient = SA_FACTOR_PENALTY * SA_FACTOR_PENALTY_MAX_MULT
 
         start_levels = np.clip(np.rint(self.warm_start / scale), 0, levels).astype(int)
         state = ((start_levels[:, None] >> np.arange(bits)) & 1).reshape(-1).astype(float)
         field = qubo @ state
-        exposure = self.B.T @ (encoder @ state)
+        exposure = loadings.T @ (encoder @ state)
         quadratic_energy = float(state @ qubo @ state)
         current_violation = violation(exposure)
         best_state = state.copy()
@@ -1653,7 +1851,7 @@ class PortfolioOptimizer:
         def flip_delta(j: int) -> Tuple[float, np.ndarray, float]:
             dx = 1.0 - 2.0 * state[j]
             delta_q = dx * (diagonal[j] + 2.0 * (field[j] - diagonal[j] * state[j]))
-            new_exposure = exposure + self.B[asset_of_var[j]] * weight_of_var[j] * dx
+            new_exposure = exposure + loadings[asset_of_var[j]] * weight_of_var[j] * dx
             new_violation = violation(new_exposure)
             return delta_q, new_exposure, new_violation
 
@@ -1687,7 +1885,13 @@ class PortfolioOptimizer:
 
     def _max_violation(self, weights: np.ndarray) -> float:
         factor_gap = float(np.max(np.maximum(0.0, self.targets - self.B.T @ weights)))
-        return max(abs(float(np.sum(weights)) - 1.0), factor_gap)
+        return max(abs(float(np.sum(weights)) - 1.0), factor_gap, self._beta_gap(weights))
+
+    def _beta_gap(self, weights: np.ndarray) -> float:
+        if self.betas is None:
+            return 0.0
+        beta = float(self.betas @ weights)
+        return max(0.0, self.beta_lo - beta, 0.0 if self.beta_hi is None else beta - self.beta_hi)
 
     def _build_result(self, method: str, weights: np.ndarray, status: str, runtime: float) -> OptimizationResult:
         clean = np.clip(weights, 0.0, None)
@@ -1704,6 +1908,7 @@ class PortfolioOptimizer:
             max_factor_violation=float(np.max(np.maximum(0.0, self.targets - exposure))),
             status=status,
             runtime_seconds=runtime,
+            portfolio_beta=float(self.betas @ clean) if self.betas is not None else float("nan"),
         )
 
 
@@ -1801,7 +2006,7 @@ class ConsoleReporter:
         )
 
     @staticmethod
-    def metrics_table(result: OptimizationResult, profile: ProfileConfig) -> pd.DataFrame:
+    def metrics_table(result: OptimizationResult, profile: ProfileConfig, optimizer: Optional["PortfolioOptimizer"] = None) -> pd.DataFrame:
         weights = result.weights.to_numpy(dtype=float)
         sharpe = (result.expected_return - RISK_FREE_RATE) / result.volatility if result.volatility > 0 else float("nan")
         rows = {
@@ -1815,6 +2020,14 @@ class ConsoleReporter:
             "Utilidad U(w)": f"{result.utility:.6f}",
             "ETFs activos": str(int((weights > 1e-4).sum())),
             "N efectivo (1/Σw²)": f"{1.0 / float(np.sum(weights**2)):.2f}",
+            **(
+                {
+                    f"Beta del portafolio (vs. {BENCHMARK_TICKER})": f"{result.portfolio_beta:.3f}",
+                    "Banda de beta solicitada": beta_band_text(*optimizer.beta_band_requested),
+                    **({"Banda de beta usada (RELAJADA)": beta_band_text(optimizer.beta_lo, optimizer.beta_hi)} if optimizer.beta_relaxed else {}),
+                }
+                if optimizer is not None and optimizer.betas is not None else {}
+            ),
             "Máx. violación factorial": f"{result.max_factor_violation:.2e}",
             "Estado": result.status,
             "Tiempo (s)": f"{result.runtime_seconds:.2f}",
@@ -1990,6 +2203,8 @@ class PipelineInputs:
     mu_table: pd.DataFrame
     covariance: pd.DataFrame
     returns: pd.DataFrame
+    betas: pd.Series
+    beta_table: pd.DataFrame
 
 
 class PassiveETFAllocationPipeline:
@@ -2013,7 +2228,13 @@ class PassiveETFAllocationPipeline:
         if BENCHMARK_TICKER not in prices.columns:
             raise RuntimeError(f"No se obtuvo historial para el benchmark {BENCHMARK_TICKER}.")
         returns = prices.pct_change(fill_method=None)
-        universe, dropped = RedundancyFilter(REDUNDANCY_CORRELATION_THRESHOLD, CORRELATION_LOOKBACK_DAYS, MAX_DYNAMIC_ETFS).apply(candidates, returns)
+        beta_table = market_beta(prices, BENCHMARK_TICKER, BETA_WINDOW_WEEKS, BETA_MIN_OBS_WEEKS)
+        beta_filter = BetaPoolFilter(self.profile, BENCHMARK_TICKER)
+        available = [etf for etf in candidates if etf.ticker in prices.columns]
+        pool, reserve, beta_dropped = beta_filter.split(available, beta_table)
+        universe, dropped = RedundancyFilter(REDUNDANCY_CORRELATION_THRESHOLD, CORRELATION_LOOKBACK_DAYS, MAX_DYNAMIC_ETFS).apply(pool, returns)
+        universe, _ = beta_filter.cover_band(universe, reserve, beta_table, self.profile.max_weight)
+        dropped = pd.concat([pd.DataFrame(beta_dropped, columns=dropped.columns), dropped], ignore_index=True)
         tickers = [etf.ticker for etf in universe]
         universe_frame = pd.DataFrame(
             {
@@ -2038,7 +2259,8 @@ class PassiveETFAllocationPipeline:
         ).build(moments, returns)
         mu_table = ExpectedReturnModel(BENCHMARK_TICKER).build(returns, moments)
         return PipelineInputs(
-            tickers, universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, covariance, returns
+            tickers, universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, covariance, returns,
+            beta_table.loc[tickers, "beta"], beta_table.loc[tickers],
         )
 
     def run(self) -> OptimizationResult:
@@ -2050,7 +2272,8 @@ class PassiveETFAllocationPipeline:
         self.logger.info("FASE 3 · Optimización cuadrática con restricciones factoriales")
         tail_model = ImpliedTailModel(moments.loc[tickers], covariance.loc[tickers, tickers])
         optimizer = PortfolioOptimizer(
-            mu_table["Mu_Base"], covariance, factor_matrix, self.profile, tail_model if USE_TAIL_PENALTY else None
+            mu_table["Mu_Base"], covariance, factor_matrix, self.profile, tail_model if USE_TAIL_PENALTY else None,
+            betas=inputs.betas,
         )
         result = optimizer.solve(SOLVER)
         mean_variance_result = result
@@ -2066,12 +2289,12 @@ class PassiveETFAllocationPipeline:
             tail_reporter.compute(mean_variance_result.weights, tail_model, mu_table["Mu_Base"])
             if result is not mean_variance_result else pd.DataFrame()
         )
-        self._print_reports(universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, result, optimizer, risk, comparison, tail_risk, tail_risk_base)
+        self._print_reports(universe_frame, dropped, raw_factors, factor_matrix, moments, mu_table, result, optimizer, risk, comparison, tail_risk, tail_risk_base, inputs.beta_table)
 
         self.logger.info("FASE 5 · Dashboard interactivo HTML")
         output = DashboardBuilder().build(DASHBOARD_FILE, self.profile, result, optimizer.targets, moments, mu_table, risk)
         self.logger.info("Dashboard generado: %s", output)
-        export_portfolio_json(self.profile, result, float(optimizer.max_weight))
+        export_portfolio_json(self.profile, result, float(optimizer.max_weight), optimizer)
         return result
 
     def _compare_solvers(self, optimizer: PortfolioOptimizer, primary: OptimizationResult) -> pd.DataFrame:
@@ -2110,17 +2333,19 @@ class PassiveETFAllocationPipeline:
         comparison: pd.DataFrame,
         tail_risk: pd.DataFrame,
         tail_risk_base: pd.DataFrame,
+        beta_table: pd.DataFrame,
     ) -> None:
         composition = universe_frame.groupby(["Fuente", "Categoría"]).size().rename("N° ETFs").to_frame()
         self.reporter.table("UNIVERSO HÍBRIDO · COMPOSICIÓN", composition)
         self.reporter.table("UNIVERSO HÍBRIDO · ETFs DESCARTADOS (réplicas / cupo)", dropped, show_index=False)
+        self.reporter.table("FASE 1 · BETAS DEL UNIVERSO (semanal, Blume, vs. benchmark)", beta_table, floatfmt=".3f")
         self.reporter.table("FASE 1 · MÉTRICAS CRUDAS (fundamentales agregados y técnicos)", raw_factors)
         self.reporter.table("FASE 1 · MATRIZ DE CARGAS FACTORIALES B (0-1)", factor_matrix, floatfmt=".3f")
         self.reporter.table("FASE 2 · MOMENTOS IMPLÍCITOS BKM (MFIV / MFIS / MFIK)", moments)
         self.reporter.table("FASE 2 · VECTOR μ (CAPM + HISTÓRICO)", mu_table)
         self.reporter.table("FASE 3 · PESOS ÓPTIMOS w* (activos)", self.reporter.allocation_table(result, universe_frame, moments, mu_table, risk))
         self.reporter.table("FASE 3 · EXPOSICIÓN FACTORIAL: DESEADA vs. LOGRADA", self.reporter.factor_table(result, optimizer.requested_targets, optimizer.targets))
-        self.reporter.table("FASE 3 · MÉTRICAS DEL PORTAFOLIO", self.reporter.metrics_table(result, self.profile))
+        self.reporter.table("FASE 3 · MÉTRICAS DEL PORTAFOLIO", self.reporter.metrics_table(result, self.profile, optimizer))
         horizon_title = f"RIESGO DE COLA A {OPTIONS_TARGET_DAYS} DÍAS (colas implícitas, Cornish-Fisher, pérdidas en positivo)"
         if not tail_risk.empty:
             self.reporter.table(f"FASE 3 · {horizon_title}", tail_risk, floatfmt=".4f")
@@ -2134,7 +2359,7 @@ class PassiveETFAllocationPipeline:
 # PUNTO DE ENTRADA
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, max_weight: float) -> None:
+def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, max_weight: float, optimizer: Optional["PortfolioOptimizer"] = None) -> None:
     """Contrato v1: portfolio_latest.json y una copia con marca de tiempo. Nunca aborta la corrida."""
     try:
         moment = pipeline_io.now_bogota()
@@ -2162,6 +2387,15 @@ def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, ma
                 "max_weight": float(max_weight),
                 "max_weight_cap": float(profile.max_weight),
                 "factor_targets": {name: float(value) for name, value in profile.factor_targets.items()},
+                "beta_port_lo": profile.beta_port_lo,
+                "beta_port_hi": profile.beta_port_hi,
+                "beta_band_used": (
+                    [optimizer.beta_lo, optimizer.beta_hi] if optimizer is not None and optimizer.betas is not None else None
+                ),
+                "beta_portfolio": _json_float(result.portfolio_beta),
+                "beta_asset_min": profile.beta_asset_min,
+                "beta_asset_max": profile.beta_asset_max,
+                "resid_vol_percentile": float(RESID_VOL_PERCENTILE),
                 "shrinkage": float(CORRELATION_SHRINKAGE),
                 "use_lw_shrinkage": bool(USE_LW_SHRINKAGE),
                 "covariance_halflife_days": int(COVARIANCE_HALFLIFE_DAYS),
@@ -2215,6 +2449,10 @@ def validate_configuration() -> None:
         raise ValueError("Se requiere OPTIONS_MIN_DAYS <= OPTIONS_TARGET_DAYS <= OPTIONS_MAX_DAYS.")
     if not 0.0 <= CORRELATION_SHRINKAGE <= 1.0 or not 0.0 <= HISTORICAL_MU_BLEND <= 1.0:
         raise ValueError("CORRELATION_SHRINKAGE y HISTORICAL_MU_BLEND deben estar en [0, 1].")
+    if not 0 < BETA_MIN_OBS_WEEKS <= BETA_WINDOW_WEEKS or not 0.0 < RESID_VOL_PERCENTILE <= 1.0:
+        raise ValueError("Se requiere 0 < BETA_MIN_OBS_WEEKS <= BETA_WINDOW_WEEKS y 0 < RESID_VOL_PERCENTILE <= 1.")
+    for name in PROFILES:
+        ProfileConfig.from_registry(name, PROFILES)  # valida None (solo 'sin techo') y orden lo ≤ hi
 
 
 def main() -> int:

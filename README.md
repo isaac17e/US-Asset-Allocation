@@ -25,7 +25,7 @@ A pipeline orchestrated by the `PassiveETFAllocationPipeline` class, organized i
 - Downloads adjusted prices (3 years) and **removes replicas**: a dynamic ETF is dropped if its correlation with one already included is ≥ 0.985.
 
 ### Phase 1 · Factor loading matrix **B**
-Each ETF gets a score between 0 and 1 on five factors:
+Each ETF gets a score between 0 and 1 on four factors:
 
 | Factor | How it is measured |
 |---|---|
@@ -33,7 +33,6 @@ Each ETF gets a score between 0 and 1 on five factors:
 | Growth | Revenue and EPS growth of the holdings |
 | Momentum | 12-1 month return |
 | Quality | ROE and ROIC of the holdings |
-| LowVol | 252-day realized volatility (inverted) |
 
 Fundamentals are aggregated by holding weight and converted into percentiles within the universe. Missing data leaves the factor neutral (0.5).
 
@@ -63,11 +62,13 @@ s.t. Σw = 1,   0 ≤ w ≤ w_max,   Bᵀw ≥ factor targets
 
 Parameters depend on the selected profile:
 
-| Profile | λ | γ (tail) | w_max | Minimum targets |
-|---|---|---|---|---|
-| Conservador (Conservative) | 8 | 0.25 | 15% | Value 0.45 · Quality 0.55 · LowVol 0.70 |
-| Crecimiento (Growth) | 4 | 0.15 | 20% | Growth 0.60 · Momentum 0.45 · Quality 0.55 |
-| Momentum/Agresivo (Aggressive) | 2 | 0.10 | 25% | Growth 0.55 · Momentum 0.70 |
+| Profile | λ | γ (tail) | w_max | Minimum targets | Portfolio beta band (vs. SPY) | ETF beta range |
+|---|---|---|---|---|---|---|
+| Conservador (Conservative) | 8 | 0.25 | 15% | Value 0.45 · Quality 0.55 | 0.60 – 0.80 | 0.20 – 1.30 |
+| Crecimiento (Growth) | 4 | 0.15 | 20% | Growth 0.60 · Momentum 0.45 · Quality 0.55 | 0.80 – 0.95 | 0.40 – 1.50 |
+| Momentum/Agresivo (Aggressive) | 2 | 0.10 | 25% | Growth 0.55 · Momentum 0.70 | ≥ 0.95 (no ceiling) | ≥ 0.50 (no maximum) |
+
+**Market risk is set by beta, not by volatility.** `market_beta()` estimates each ETF's beta against SPY with OLS on weekly simple USD returns (104 weeks, minimum 52), shrunk toward 1 (Blume: ⅔·β + ⅓). The ETF beta range filters the candidate pool; of the remaining ETFs only the 15% with the highest residual volatility are dropped (`RESID_VOL_PERCENTILE`). The portfolio band `Σ wᵢβᵢ ∈ [lo, hi]` is a hard constraint in every solver. If the pool cannot reach it, candidates from the missing side are restored from the residual-volatility reserve; if it is still unreachable the band is relaxed with a warning. There is no low-volatility factor, so conservative portfolios are not forced into low-vol assets.
 
 **Tail penalty** (`USE_TAIL_PENALTY = True`; set it to `False` to get the plain mean-variance optimizer above). When enabled, the utility becomes `μᵀw − ½·λ·wᵀΣw − γ·σ_p·max(0, ES_CF − ES_Gaussian)` (smoothed with a softplus), where the expected shortfall (95%) comes from the portfolio's skewness and excess kurtosis. It is one-sided: it only penalizes tails fatter than Gaussian and does not reward thinner ones. These are built by `ImpliedTailModel`: each asset is simulated with its implied MFIS/MFIK (Cornish-Fisher marginals) and the dependence of Σ (Gaussian copula). The problem is no longer convex, so it is solved with SLSQP starting from the mean-variance solution (`cvxpy`/`qubo_sa` do not apply); the solver comparison then shows the penalized portfolio next to the plain ones. The γ values (0.25 / 0.15 / 0.10) were chosen from the sweep below, where the gain in CVaR per point of expected return given up starts to diminish. `python scripts/sweep_tail_penalty.py` runs phases 0-2 once and sweeps γ per profile with real data (E[R], σ, tail term vs. variance term, CVaR, skewness, weight distance to γ = 0). In the sweep of 2026-10-07 (74 ETFs, Polygon options) every γ > 0 lowered the 60-day CVaR95 (Crecimiento: 11.8% → 9.0% at γ = 0.5 and 7.3% at γ = 4) at the cost of expected return (15.2% → 13.7% and 11.8%), and it rotated most of the portfolio (L1 distance to γ = 0 above 0.8 of a maximum of 2). A finer sweep (γ = 0.1, 0.25) showed that small γ already removes most of the tail: Conservador γ = 0.25 lowers CVaR95 from 5.9% to 4.9% for 0.1 points of return; Crecimiento γ = 0.25 lowers it from 11.7% to 9.8% for 0.75 points.
 

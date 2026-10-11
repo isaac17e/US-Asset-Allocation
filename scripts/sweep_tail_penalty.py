@@ -59,11 +59,11 @@ def main() -> None:
     rows = []
     for name in names:
         profile = mgr.ProfileConfig.from_registry(name, mgr.PROFILES)
-        optimizer = mgr.PortfolioOptimizer(mu, inputs.covariance, inputs.factor_matrix, profile, model)
+        optimizer = mgr.PortfolioOptimizer(mu, inputs.covariance, inputs.factor_matrix, profile, model, betas=inputs.betas)
         base = optimizer.solve(mgr.SOLVER)
         for gamma in gammas:
             tuned = dataclasses.replace(profile, tail_penalty=gamma)
-            tail_optimizer = mgr.PortfolioOptimizer(mu, inputs.covariance, inputs.factor_matrix, tuned, model)
+            tail_optimizer = mgr.PortfolioOptimizer(mu, inputs.covariance, inputs.factor_matrix, tuned, model, betas=inputs.betas)
             result = tail_optimizer.solve_with_tail(base) if gamma > 0 else base
             w = result.weights.to_numpy(dtype=float)
             excess = model.excess_tail(w, tickers)[0]
