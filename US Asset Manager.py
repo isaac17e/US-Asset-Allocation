@@ -12,7 +12,7 @@ import sys
 import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
-from typing import Any, Callable, Dict, List, Literal, Mapping, Optional, Sequence, Tuple
+from typing import Any, Callable, Collection, Dict, List, Literal, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -79,7 +79,17 @@ POLYGON_BASE_URL: str = "https://api.polygon.io"
 # PARÁMETROS EDITABLES · PERFIL, SOLVER Y SUPUESTOS DE MERCADO
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-INVESTMENT_PROFILE: Literal["Conservador", "Crecimiento", "Momentum/Agresivo"] = "Crecimiento"
+# Perfil canónico del pipeline (conservador|moderado|agresivo) → nombre interno de PROFILES.
+# Se elige con --risk-profile o la variable RISK_PROFILE (la CLI gana); sin ninguno, "moderado" (Crecimiento).
+RISK_PROFILE_TO_INVESTMENT_PROFILE: Dict[str, str] = {
+    "conservador": "Conservador",
+    "moderado": "Crecimiento",
+    "agresivo": "Momentum/Agresivo",
+}
+INVESTMENT_PROFILE_TO_RISK_PROFILE: Dict[str, str] = {v: k for k, v in RISK_PROFILE_TO_INVESTMENT_PROFILE.items()}
+INVESTMENT_PROFILE: Literal["Conservador", "Crecimiento", "Momentum/Agresivo"] = RISK_PROFILE_TO_INVESTMENT_PROFILE[
+    pipeline_io.resolve_risk_profile("moderado")
+]  # type: ignore[assignment]
 SOLVER: Literal["cvxpy", "scipy", "qubo_sa"] = "cvxpy"
 RUN_SOLVER_COMPARISON: bool = True
 TAIL_RISK_CONFIDENCE_LEVELS: Tuple[float, ...] = (0.95, 0.99)  # VaR/CVaR Cornish-Fisher del portafolio final
@@ -208,7 +218,8 @@ LOG_LEVEL: str = "INFO"
 # El riesgo de mercado del perfil lo fija la BETA contra BENCHMARK_TICKER, no la volatilidad:
 #   · beta_port_lo / beta_port_hi: banda de Σ wᵢβᵢ del portafolio (restricción del optimizador). hi=None → sin techo.
 #   · beta_asset_min / beta_asset_max: rango de beta individual para entrar al pool. max=None → sin máximo.
-# β = beta OLS semanal en USD contra SPY, encogida hacia 1 (Blume: 2/3·β + 1/3). Ver market_beta().
+# β = beta OLS semanal en USD contra SPY, encogida hacia 1 (Blume: 2/3·β + 1/3), salvo los ETF de
+# RAW_BETA_TICKERS (efectivo y materias primas), que usan la beta OLS cruda. Ver market_beta().
 BETA_WINDOW_WEEKS: int = 104
 BETA_MIN_OBS_WEEKS: int = 52
 RESID_VOL_PERCENTILE: float = 0.85  # del pool se excluye solo el 15% más errático (vol. residual vs. SPY)
@@ -297,6 +308,18 @@ MASTER_ETF_LIST: Dict[str, Tuple[str, str]] = {
     "VNQ": ("Real Estate", "Real Estate"),
 }
 
+# ETF cuya beta de mercado se usa CRUDA (OLS) en lugar de la encogida por Blume (2/3·β + 1/3): el
+# encogimiento hacia 1 infla la beta de efectivo/T-bills (β≈0 → 0.33) y de materias primas (oro, petróleo),
+# que no son renta variable. Efectivo / letras / Tesoro corto + materias primas conocidas, unidos a todo
+# ticker de MASTER_ETF_LIST con clase "Commodity" (y, en la corrida, a los candidatos dinámicos "Commodity").
+RAW_BETA_TICKERS: frozenset = frozenset(
+    {
+        "SGOV", "BIL", "SHV", "SHY", "BILS", "TFLO", "USFR", "GBIL",  # efectivo / T-bills / Tesoro corto
+        "GLD", "IAU", "SLV", "PPLT", "UNG", "USO", "DBC", "DBA", "PDBC", "GSG", "BNO", "CPER",  # materias primas
+    }
+    | {ticker for ticker, (_category, asset_class) in MASTER_ETF_LIST.items() if asset_class == "Commodity"}
+)
+
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 # UTILIDADES GENERALES
@@ -376,30 +399,36 @@ def _historical_betas(returns: pd.DataFrame, benchmark: pd.Series) -> pd.Series:
 
 def market_beta(
     prices: pd.DataFrame, benchmark: str, window_weeks: int = BETA_WINDOW_WEEKS, min_obs: int = BETA_MIN_OBS_WEEKS,
+    raw_beta_tickers: Optional[Collection[str]] = None,
 ) -> pd.DataFrame:
     """Beta de mercado por ETF: OLS sobre retornos simples semanales (USD) contra `benchmark`.
 
-    Devuelve beta (encogida hacia 1 con Blume, 2/3·β + 1/3), beta_ols, resid_vol (anualizada) y n_obs.
+    Devuelve beta, beta_ols, beta_source ("raw" | "blume"), resid_vol (anualizada) y n_obs. `beta` es la
+    beta OLS cruda para los tickers de `raw_beta_tickers` (por defecto RAW_BETA_TICKERS: efectivo y materias
+    primas, que Blume inflaría hacia 1) y la encogida hacia 1 con Blume (2/3·β + 1/3) para el resto.
     Con menos de `min_obs` semanas comunes el ETF queda en NaN y no entra al pool.
     """
+    raw_set = RAW_BETA_TICKERS if raw_beta_tickers is None else frozenset(raw_beta_tickers)
     weekly = prices.sort_index().resample("W-FRI").last().pct_change(fill_method=None).tail(window_weeks)
     market = weekly[benchmark]
     rows: Dict[str, Dict[str, float]] = {}
     for ticker in prices.columns:
         pair = pd.concat([weekly[ticker], market], axis=1, keys=["r", "m"]).dropna()
         n_obs = len(pair)
+        source = "raw" if ticker in raw_set else "blume"
         if n_obs < min_obs or float(pair["m"].var()) <= 0.0:
-            rows[ticker] = {"beta": np.nan, "beta_ols": np.nan, "resid_vol": np.nan, "n_obs": float(n_obs)}
+            rows[ticker] = {"beta": np.nan, "beta_ols": np.nan, "beta_source": source, "resid_vol": np.nan, "n_obs": float(n_obs)}
             continue
         slope = float(pair["r"].cov(pair["m"]) / pair["m"].var())
         residual = pair["r"] - (pair["r"].mean() - slope * pair["m"].mean()) - slope * pair["m"]
         rows[ticker] = {
-            "beta": (2.0 / 3.0) * slope + 1.0 / 3.0,
+            "beta": slope if source == "raw" else (2.0 / 3.0) * slope + 1.0 / 3.0,
             "beta_ols": slope,
+            "beta_source": source,
             "resid_vol": float(residual.std(ddof=2) * math.sqrt(52.0)),
             "n_obs": float(n_obs),
         }
-    return pd.DataFrame.from_dict(rows, orient="index")[["beta", "beta_ols", "resid_vol", "n_obs"]]
+    return pd.DataFrame.from_dict(rows, orient="index")[["beta", "beta_ols", "beta_source", "resid_vol", "n_obs"]]
 
 
 def beta_range_reachable(betas: np.ndarray, max_weight: float) -> Tuple[float, float]:
@@ -2228,7 +2257,8 @@ class PassiveETFAllocationPipeline:
         if BENCHMARK_TICKER not in prices.columns:
             raise RuntimeError(f"No se obtuvo historial para el benchmark {BENCHMARK_TICKER}.")
         returns = prices.pct_change(fill_method=None)
-        beta_table = market_beta(prices, BENCHMARK_TICKER, BETA_WINDOW_WEEKS, BETA_MIN_OBS_WEEKS)
+        raw_betas = RAW_BETA_TICKERS | {e.ticker for e in candidates if e.asset_class == "Commodity"}
+        beta_table = market_beta(prices, BENCHMARK_TICKER, BETA_WINDOW_WEEKS, BETA_MIN_OBS_WEEKS, raw_betas)
         beta_filter = BetaPoolFilter(self.profile, BENCHMARK_TICKER)
         available = [etf for etf in candidates if etf.ticker in prices.columns]
         pool, reserve, beta_dropped = beta_filter.split(available, beta_table)
@@ -2294,7 +2324,7 @@ class PassiveETFAllocationPipeline:
         self.logger.info("FASE 5 · Dashboard interactivo HTML")
         output = DashboardBuilder().build(DASHBOARD_FILE, self.profile, result, optimizer.targets, moments, mu_table, risk)
         self.logger.info("Dashboard generado: %s", output)
-        export_portfolio_json(self.profile, result, float(optimizer.max_weight), optimizer)
+        export_portfolio_json(self.profile, result, float(optimizer.max_weight), optimizer, inputs.beta_table["beta_source"].to_dict())
         return result
 
     def _compare_solvers(self, optimizer: PortfolioOptimizer, primary: OptimizationResult) -> pd.DataFrame:
@@ -2338,7 +2368,7 @@ class PassiveETFAllocationPipeline:
         composition = universe_frame.groupby(["Fuente", "Categoría"]).size().rename("N° ETFs").to_frame()
         self.reporter.table("UNIVERSO HÍBRIDO · COMPOSICIÓN", composition)
         self.reporter.table("UNIVERSO HÍBRIDO · ETFs DESCARTADOS (réplicas / cupo)", dropped, show_index=False)
-        self.reporter.table("FASE 1 · BETAS DEL UNIVERSO (semanal, Blume, vs. benchmark)", beta_table, floatfmt=".3f")
+        self.reporter.table("FASE 1 · BETAS DEL UNIVERSO (semanal, Blume salvo efectivo/materias primas, vs. benchmark)", beta_table, floatfmt=".3f")
         self.reporter.table("FASE 1 · MÉTRICAS CRUDAS (fundamentales agregados y técnicos)", raw_factors)
         self.reporter.table("FASE 1 · MATRIZ DE CARGAS FACTORIALES B (0-1)", factor_matrix, floatfmt=".3f")
         self.reporter.table("FASE 2 · MOMENTOS IMPLÍCITOS BKM (MFIV / MFIS / MFIK)", moments)
@@ -2359,7 +2389,10 @@ class PassiveETFAllocationPipeline:
 # PUNTO DE ENTRADA
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, max_weight: float, optimizer: Optional["PortfolioOptimizer"] = None) -> None:
+def export_portfolio_json(
+    profile: ProfileConfig, result: OptimizationResult, max_weight: float, optimizer: Optional["PortfolioOptimizer"] = None,
+    beta_sources: Optional[Mapping[str, str]] = None,
+) -> None:
     """Contrato v1: portfolio_latest.json y una copia con marca de tiempo. Nunca aborta la corrida."""
     try:
         moment = pipeline_io.now_bogota()
@@ -2375,7 +2408,8 @@ def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, ma
             "schema_version": 1,
             "source_repo": "US-Asset-Allocation",
             "optimizer": "us_asset_manager",
-            "risk_profile": profile.name or None,
+            "risk_profile": INVESTMENT_PROFILE_TO_RISK_PROFILE.get(profile.name),
+            "investment_profile": profile.name or None,
             "run_ts": pipeline_io.iso_bogota(moment),
             "horizon_days": horizon_days,
             "horizon_end": (moment.date() + timedelta(days=horizon_days)).isoformat(),
@@ -2393,6 +2427,9 @@ def export_portfolio_json(profile: ProfileConfig, result: OptimizationResult, ma
                     [optimizer.beta_lo, optimizer.beta_hi] if optimizer is not None and optimizer.betas is not None else None
                 ),
                 "beta_portfolio": _json_float(result.portfolio_beta),
+                "beta_source": (
+                    {t: str(beta_sources[t]) for t in tickers if t in beta_sources} if beta_sources is not None else None
+                ),
                 "beta_asset_min": profile.beta_asset_min,
                 "beta_asset_max": profile.beta_asset_max,
                 "resid_vol_percentile": float(RESID_VOL_PERCENTILE),

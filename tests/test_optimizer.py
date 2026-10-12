@@ -2,9 +2,13 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import numpy as np
 import pandas as pd
@@ -311,6 +315,118 @@ class HorizonAlignmentTests(unittest.TestCase):
         self.assertLess(abs(row["MFIS"]), abs(float(pd.Series(daily).skew())) + 1e-9)
         self.assertAlmostEqual(row["MFIK"] - 3.0, float(daily.kurt()) / mgr.OPTIONS_TARGET_DAYS * (365.0 / 252.0), delta=0.05)
         self.assertTrue(np.isnan(row["DTE bajo"]))
+
+
+def _reload_manager():
+    spec = importlib.util.spec_from_file_location("us_asset_manager_reloaded", ROOT / "US Asset Manager.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["us_asset_manager_reloaded"] = module
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.modules.pop("us_asset_manager_reloaded", None)
+    return module
+
+
+class RiskProfileSelectionTests(unittest.TestCase):
+    def _profile(self, argv, env):
+        with mock_patch(sys, "argv", ["prog", *argv]), mock.patch.dict("os.environ", env, clear=False):
+            if "RISK_PROFILE" not in env:
+                os.environ.pop("RISK_PROFILE", None)
+            return _reload_manager().INVESTMENT_PROFILE
+
+    def test_default_keeps_crecimiento(self):
+        self.assertEqual(self._profile([], {}), "Crecimiento")
+
+    def test_env_maps_to_internal_names(self):
+        self.assertEqual(self._profile([], {"RISK_PROFILE": "conservador"}), "Conservador")
+        self.assertEqual(self._profile([], {"RISK_PROFILE": "moderado"}), "Crecimiento")
+        self.assertEqual(self._profile([], {"RISK_PROFILE": "agresivo"}), "Momentum/Agresivo")
+
+    def test_cli_overrides_env(self):
+        self.assertEqual(self._profile(["--risk-profile", "agresivo"], {"RISK_PROFILE": "conservador"}), "Momentum/Agresivo")
+
+    def test_invalid_value_fails_clearly(self):
+        with self.assertRaisesRegex(ValueError, "invalid risk profile"):
+            self._profile(["--risk-profile=otro"], {})
+
+    def test_mapping_covers_every_internal_profile(self):
+        self.assertEqual(set(mgr.RISK_PROFILE_TO_INVESTMENT_PROFILE.values()), set(mgr.PROFILES))
+        for canonical, internal in mgr.RISK_PROFILE_TO_INVESTMENT_PROFILE.items():
+            self.assertEqual(mgr.INVESTMENT_PROFILE_TO_RISK_PROFILE[internal], canonical)
+
+
+class ExportProfileTests(unittest.TestCase):
+    def _export(self, profile_name, beta_sources=None):
+        tickers = ["AAA", "BBB"]
+        profile = mgr.ProfileConfig.from_registry(profile_name, mgr.PROFILES) if profile_name in mgr.PROFILES else _profile()
+        result = mgr.OptimizationResult(
+            "test", pd.Series([0.6, 0.4], index=tickers), 0.08, 0.15, 0.5,
+            pd.Series(dtype=float), 0.0, "optimal", 0.0, portfolio_beta=0.9,
+        )
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict("os.environ", {"PORTFOLIO_OUT_DIR": tmp}):
+            mgr.export_portfolio_json(profile, result, 0.5, None, beta_sources)
+            return json.loads((Path(tmp) / "portfolio_latest.json").read_text(encoding="utf-8"))
+
+    def test_risk_profile_is_canonical_and_internal_name_is_kept(self):
+        for internal, canonical in (("Conservador", "conservador"), ("Crecimiento", "moderado"), ("Momentum/Agresivo", "agresivo")):
+            payload = self._export(internal)
+            self.assertEqual(payload["risk_profile"], canonical)
+            self.assertEqual(payload["investment_profile"], internal)
+
+    def test_unknown_profile_name_gives_null_risk_profile(self):
+        payload = self._export("test")
+        self.assertIsNone(payload["risk_profile"])
+        self.assertEqual(payload["investment_profile"], "test")
+
+    def test_beta_source_is_exported_per_asset(self):
+        payload = self._export("Crecimiento", {"AAA": "blume", "BBB": "raw", "ZZZ": "raw"})
+        self.assertEqual(payload["params"]["beta_source"], {"AAA": "blume", "BBB": "raw"})
+        self.assertIsNone(self._export("Crecimiento")["params"]["beta_source"])
+
+
+class RawBetaTests(unittest.TestCase):
+    def _prices(self, tickers, n=130, seed=3):
+        rng = np.random.default_rng(seed)
+        market = rng.normal(0.002, 0.02, n)
+        data = {"SPY": market}
+        for t in tickers:
+            data[t] = 0.1 * market + rng.normal(0, 0.005, n)  # beta baja, cercana a 0.1
+        weekly_returns = pd.DataFrame(data)
+        index = pd.date_range("2023-01-06", periods=n, freq="W-FRI")
+        return (1.0 + weekly_returns).cumprod().set_index(index)
+
+    def test_raw_set_contains_documented_cash_and_commodities(self):
+        required = {"SGOV", "BIL", "SHV", "SHY", "BILS", "TFLO", "USFR", "GBIL", "GLD", "IAU", "SLV", "PPLT",
+                    "UNG", "USO", "DBC", "DBA", "PDBC", "GSG", "BNO", "CPER"}
+        self.assertTrue(required <= mgr.RAW_BETA_TICKERS)
+        commodities = {t for t, (_c, cls) in mgr.MASTER_ETF_LIST.items() if cls == "Commodity"}
+        self.assertTrue(commodities <= mgr.RAW_BETA_TICKERS)
+        self.assertNotIn("SPY", mgr.RAW_BETA_TICKERS)
+
+    def test_raw_tickers_keep_ols_and_others_use_blume(self):
+        prices = self._prices(["SGOV", "GLD", "XLK"])
+        table = mgr.market_beta(prices, "SPY", 104, 52)
+        for ticker in ("SGOV", "GLD"):
+            self.assertEqual(table.loc[ticker, "beta_source"], "raw")
+            self.assertAlmostEqual(table.loc[ticker, "beta"], table.loc[ticker, "beta_ols"], places=12)
+        blume = table.loc["XLK"]
+        self.assertEqual(blume["beta_source"], "blume")
+        self.assertAlmostEqual(blume["beta"], 2.0 / 3.0 * blume["beta_ols"] + 1.0 / 3.0, places=12)
+        self.assertLess(table.loc["SGOV", "beta"], 0.3)   # sin Blume no se infla hacia 0.33+
+        self.assertGreater(blume["beta"], 0.33)
+
+    def test_extra_raw_tickers_override_the_default_set(self):
+        prices = self._prices(["XLK", "GLD"])
+        table = mgr.market_beta(prices, "SPY", 104, 52, raw_beta_tickers={"XLK"})
+        self.assertEqual(table.loc["XLK", "beta_source"], "raw")
+        self.assertEqual(table.loc["GLD", "beta_source"], "blume")
+
+    def test_insufficient_history_is_nan_but_still_labelled(self):
+        prices = self._prices(["BIL"], n=30)
+        table = mgr.market_beta(prices, "SPY", 104, 52)
+        self.assertTrue(np.isnan(table.loc["BIL", "beta"]))
+        self.assertEqual(table.loc["BIL", "beta_source"], "raw")
 
 
 class mock_patch:

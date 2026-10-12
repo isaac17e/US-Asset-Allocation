@@ -61,6 +61,39 @@ class RiskFreeRateTests(unittest.TestCase):
         self.assertIn('"risk_free_rate": float(RISK_FREE_RATE),', source)
 
 
+class RiskProfileTests(unittest.TestCase):
+    def test_default_without_env_or_cli(self) -> None:
+        self.assertEqual(pipeline_io.resolve_risk_profile("moderado", argv=[], env={}), "moderado")
+        self.assertEqual(pipeline_io.resolve_risk_profile("moderado", argv=[], env={"RISK_PROFILE": " "}), "moderado")
+
+    def test_env_is_used_and_normalized(self) -> None:
+        env = {"RISK_PROFILE": " Agresivo "}
+        self.assertEqual(pipeline_io.resolve_risk_profile("moderado", argv=[], env=env), "agresivo")
+
+    def test_cli_beats_env_in_both_spellings(self) -> None:
+        env = {"RISK_PROFILE": "agresivo"}
+        self.assertEqual(pipeline_io.resolve_risk_profile("moderado", argv=["--risk-profile", "conservador"], env=env), "conservador")
+        self.assertEqual(pipeline_io.resolve_risk_profile("moderado", argv=["--risk-profile=Conservador"], env=env), "conservador")
+
+    def test_unrelated_argv_is_ignored(self) -> None:
+        argv = ["discover", "-s", "tests", "-v"]
+        self.assertEqual(pipeline_io.resolve_risk_profile("moderado", argv=argv, env={}), "moderado")
+
+    def test_invalid_values_raise_a_clear_error(self) -> None:
+        with self.assertRaisesRegex(ValueError, "invalid risk profile.*conservador, moderado, agresivo"):
+            pipeline_io.resolve_risk_profile("moderado", argv=[], env={"RISK_PROFILE": "growth"})
+        with self.assertRaisesRegex(ValueError, "invalid risk profile"):
+            pipeline_io.resolve_risk_profile("moderado", argv=["--risk-profile=x"], env={})
+        with self.assertRaisesRegex(ValueError, "needs a value"):
+            pipeline_io.resolve_risk_profile("moderado", argv=["--risk-profile"], env={})
+
+    def test_reads_sys_argv_and_os_environ_by_default(self) -> None:
+        with mock.patch.object(sys, "argv", ["prog", "--risk-profile", "agresivo"]), mock.patch.dict(os.environ, {"RISK_PROFILE": "conservador"}):
+            self.assertEqual(pipeline_io.resolve_risk_profile("moderado"), "agresivo")
+        with mock.patch.object(sys, "argv", ["prog"]), mock.patch.dict(os.environ, {"RISK_PROFILE": "conservador"}):
+            self.assertEqual(pipeline_io.resolve_risk_profile("moderado"), "conservador")
+
+
 class WeightTests(unittest.TestCase):
     def test_drops_dust_renormalizes_and_orders(self) -> None:
         tickers, weights = pipeline_io.normalize_weights(

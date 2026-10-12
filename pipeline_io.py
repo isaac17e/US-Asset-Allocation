@@ -15,10 +15,11 @@ import sys
 from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 from zoneinfo import ZoneInfo
 
 BOGOTA = ZoneInfo("America/Bogota")
+RISK_PROFILE_NAMES = ("conservador", "moderado", "agresivo")
 _WEIGHT_FLOOR = Decimal("1e-6")
 
 
@@ -65,6 +66,44 @@ def resolve_risk_free_rate(default: float, env: Mapping[str, str] | None = None)
             "(annual decimal: 0.052 is 5.2%)."
         )
     return rate
+
+
+def _cli_risk_profile(argv: Sequence[str]) -> str | None:
+    for i, arg in enumerate(argv):
+        if arg == "--risk-profile":
+            if i + 1 >= len(argv) or str(argv[i + 1]).startswith("-"):
+                raise ValueError("--risk-profile needs a value: conservador, moderado or agresivo")
+            return argv[i + 1]
+        if arg.startswith("--risk-profile="):
+            return arg.split("=", 1)[1]
+    return None
+
+
+def resolve_risk_profile(
+    default: str,
+    allowed: Sequence[str] = RISK_PROFILE_NAMES,
+    argv: Sequence[str] | None = None,
+    env: Mapping[str, str] | None = None,
+) -> str:
+    """Profile name: ``--risk-profile`` beats ``RISK_PROFILE``, and both beat ``default``.
+
+    Same convention as AM-PM-Architecture. Case and surrounding spaces are ignored.
+    Only ``--risk-profile`` is looked for, so unrelated argv (unittest, pytest) is safe.
+    A name outside ``allowed`` raises ``ValueError``.
+    """
+    chosen = _cli_risk_profile(sys.argv[1:] if argv is None else argv)
+    if chosen is None:
+        chosen = (os.environ if env is None else env).get("RISK_PROFILE")
+    if chosen is None or not str(chosen).strip():
+        chosen = default
+    name = str(chosen).strip().lower()
+    allowed = tuple(allowed)
+    if name not in allowed:
+        raise ValueError(
+            f"invalid risk profile: {chosen!r}. Use one of: {', '.join(allowed)} "
+            "(--risk-profile or RISK_PROFILE)."
+        )
+    return name
 
 
 def normalize_weights(
