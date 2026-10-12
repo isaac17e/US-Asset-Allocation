@@ -41,12 +41,6 @@
     "ast_hash": "fff04abef3f9f9c3bc9a9c9d4a8ce312",
     "semantic_hash": ""
   },
-  "CLAUDE.md": {
-    "mtime": 1791469775.7243981,
-    "seen": 1791790054.777534,
-    "ast_hash": "86a8f8b632925b2ac06771bcf6593fb8",
-    "semantic_hash": ""
-  },
   "fmp_client.py": {
     "mtime": 1791383562.7167406,
     "seen": 1791790054.777527,
@@ -75,12 +69,6 @@
     "mtime": 1791763865.505373,
     "seen": 1791790054.7775302,
     "ast_hash": "bd5af4e11009f1bad9f0f4f9e3e9ac83",
-    "semantic_hash": ""
-  },
-  "AGENTS.md": {
-    "mtime": 1791469785.3856559,
-    "seen": 1791790054.7775328,
-    "ast_hash": "86a8f8b632925b2ac06771bcf6593fb8",
     "semantic_hash": ""
   }
 }
