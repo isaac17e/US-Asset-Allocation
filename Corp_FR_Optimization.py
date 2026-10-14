@@ -24,7 +24,6 @@ except ImportError:
 FMP_API_KEY = os.getenv("FMP_API_KEY", "")
 FRED_API_KEY = os.getenv("FRED_API_KEY", "")
 FMP_BASE_URL = "https://financialmodelingprep.com/stable"
-FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
 
 # --- Endpoints FMP -----------------------------------------------------------
 FMP_EP_SCREENER = "company-screener"
@@ -35,7 +34,6 @@ FMP_EP_CASHFLOW = "cash-flow-statement"
 # --- Red y límites de peticiones ---------------------------------------------
 REQUEST_TIMEOUT_SEC = 20          # timeout por petición HTTP
 MAX_RETRIES = 4                   # reintentos ante 429 / 5xx / errores de red
-BACKOFF_BASE_SEC = 2.0            # backoff exponencial: 2, 4, 8, 16 s
 MIN_SECONDS_BETWEEN_CALLS = 0.25  # ~240 llamadas/min (ajusta a tu plan de FMP)
 
 # --- Curva libre de riesgo (FRED) --------------------------------------------
@@ -136,7 +134,6 @@ TENOR_WINDOW_YEARS = 1.0                   # ± años alrededor de cada tenor
 # --- Salidas -----------------------------------------------------------------
 HTML_OUTPUT_PATH = "reporte_portafolio_renta_fija.html"
 OPEN_HTML_IN_BROWSER = True
-PLOTLY_CDN = "https://cdn.plot.ly/plotly-2.35.2.min.js"
 LOG_LEVEL = "INFO"
 # =============================================================================
 # ████  FIN DEL BLOQUE DE CONFIGURACIÓN  ████
@@ -144,7 +141,6 @@ LOG_LEVEL = "INFO"
 
 
 import html
-import json
 import logging
 import math
 import sys
@@ -157,22 +153,16 @@ from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
-import requests
-from scipy.interpolate import CubicSpline, PchipInterpolator, interp1d
+import plotly.graph_objects as go
+from fredapi import Fred
+from scipy.interpolate import CubicSpline, PchipInterpolator
 
 import pipeline_io
 from fmp_client import APIAuthorizationError, APIError
 from fmp_client import FMPClient as _FMPTransport
 
-try:  # fredapi es la vía preferida; si no está instalada se usa requests.
-    from fredapi import Fred
-
-    _HAS_FREDAPI = True
-except ImportError:  # pragma: no cover
-    _HAS_FREDAPI = False
-
 logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL.upper(), logging.INFO),
+    level=LOG_LEVEL.upper(),
     format="%(asctime)s | %(levelname)-7s | %(message)s",
     datefmt="%H:%M:%S",
 )
@@ -203,21 +193,6 @@ def _banner(title: str, char: str = "=") -> None:
 
 def _fmt_pct(x: float, d: int = 2) -> str:
     return "n/d" if pd.isna(x) else f"{x * 100:.{d}f}%"
-
-
-def _json_safe(obj: Any) -> Any:
-    """Serializa numpy/pandas/NaN a tipos JSON válidos (NaN -> null)."""
-    if isinstance(obj, dict):
-        return {str(k): _json_safe(v) for k, v in obj.items()}
-    if isinstance(obj, (list, tuple, np.ndarray, pd.Series, pd.Index)):
-        return [_json_safe(v) for v in list(obj)]
-    if isinstance(obj, (np.integer,)):
-        return int(obj)
-    if isinstance(obj, (float, np.floating)):
-        return None if (math.isnan(obj) or math.isinf(obj)) else float(obj)
-    if isinstance(obj, (pd.Timestamp, datetime, date)):
-        return obj.isoformat()
-    return obj
 
 
 RATING_SCALE = [
@@ -332,7 +307,7 @@ class RiskFreeCurve:
         else:
             if m != "linear":
                 log.warning("Pocos nodos para '%s'; se usa interpolación lineal.", m)
-            self._f = interp1d(self.tenors, self.yields_pct, kind="linear")
+            self._f = lambda t: np.interp(t, self.tenors, self.yields_pct)
 
     def rate_pct(self, t: float) -> float:
         """Rf en % para la madurez t (años). Fuera de rango: extrapolación plana."""
@@ -348,60 +323,25 @@ class RiskFreeCurve:
         return max(self.obs_dates.values()) if self.obs_dates else "n/d"
 
 
-def _fred_last_value_fredapi(fred: "Fred", series_id: str, start: str) -> tuple[float, str]:
-    s = fred.get_series(series_id, observation_start=start).dropna()
-    if s.empty:
-        return float("nan"), ""
-    return float(s.iloc[-1]), s.index[-1].strftime("%Y-%m-%d")
-
-
-def _fred_last_value_requests(series_id: str, start: str) -> tuple[float, str]:
-    params = {
-        "series_id": series_id, "api_key": FRED_API_KEY, "file_type": "json",
-        "observation_start": start, "sort_order": "desc",
-    }
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            r = requests.get(FRED_BASE_URL, params=params, timeout=REQUEST_TIMEOUT_SEC)
-            if r.status_code == 429 or r.status_code >= 500:
-                time.sleep(BACKOFF_BASE_SEC * 2 ** (attempt - 1))
-                continue
-            r.raise_for_status()
-            for obs in r.json().get("observations", []):
-                v = _to_float(obs.get("value"))
-                if not math.isnan(v):
-                    return v, obs.get("date", "")
-            return float("nan"), ""
-        except (requests.RequestException, ValueError) as exc:
-            log.warning("FRED %s: %s (intento %d)", series_id, exc, attempt)
-            time.sleep(BACKOFF_BASE_SEC * 2 ** (attempt - 1))
-    return float("nan"), ""
-
-
 def build_risk_free_curve() -> RiskFreeCurve:
     """Descarga el último dato de cada nodo CMT y construye la curva."""
     start = (date.today() - timedelta(days=FRED_LOOKBACK_DAYS)).isoformat()
-    fred = Fred(api_key=FRED_API_KEY) if _HAS_FREDAPI else None
-    if not _HAS_FREDAPI:
-        log.warning("fredapi no instalado: se usa la API REST de FRED con requests.")
+    fred = Fred(api_key=FRED_API_KEY)
 
     tenors, ylds, dates = [], [], {}
     for tenor, sid in TREASURY_SERIES.items():
         try:
-            if fred is not None:
-                val, dt = _fred_last_value_fredapi(fred, sid, start)
-            else:
-                val, dt = _fred_last_value_requests(sid, start)
+            obs = fred.get_series(sid, observation_start=start).dropna()
         except Exception as exc:  # fredapi lanza ValueError genéricos
             log.warning("FRED %s: %s", sid, exc)
-            val, dt = float("nan"), ""
-        if math.isnan(val):
+            obs = pd.Series(dtype=float)
+        if obs.empty:
             log.warning("FRED %s sin dato válido en los últimos %d días; nodo omitido.",
                         sid, FRED_LOOKBACK_DAYS)
             continue
         tenors.append(tenor)
-        ylds.append(val)
-        dates[tenor] = dt
+        ylds.append(float(obs.iloc[-1]))
+        dates[tenor] = obs.index[-1].strftime("%Y-%m-%d")
 
     if len(tenors) < 3:
         raise RuntimeError("Curva libre de riesgo insuficiente (<3 nodos). Revisa FRED_API_KEY.")
@@ -471,7 +411,7 @@ def _latest(records: list[dict]) -> Optional[dict]:
     """Último registro por fecha (FMP suele entregarlos del más reciente al más antiguo)."""
     if not records:
         return None
-    return sorted(records, key=lambda r: str(r.get("date", "")), reverse=True)[0]
+    return max(records, key=lambda r: str(r.get("date", "")))
 
 
 def stage_solvency(fmp: FMPClient, universe: pd.DataFrame) -> pd.DataFrame:
@@ -542,10 +482,10 @@ def fcf_metrics(fcf: list[float], years: int = FCF_CAGR_YEARS) -> tuple[float, b
     `fcf` debe venir en orden cronológico ascendente. El CAGR solo está definido
     si FCF_{t-n} > 0 y FCF_t > 0; en caso contrario es NaN.
     """
-    window = [v for v in fcf[-(years + 1):]]
-    if len(window) < years + 1 or any(math.isnan(v) for v in window):
+    window = fcf[-(years + 1):]
+    if len(window) < years + 1 or np.isnan(window).any():
         return float("nan"), False
-    increasing = all(b > a for a, b in zip(window[:-1], window[1:]))
+    increasing = bool((np.diff(window) > 0).all())
     base, last = window[0], window[-1]
     cagr = (last / base) ** (1.0 / years) - 1.0 if (base > 0 and last > 0) else float("nan")
     return cagr, increasing
@@ -559,13 +499,10 @@ def stage_fcf(fmp: FMPClient, df: pd.DataFrame) -> pd.DataFrame:
             log.info("FCF: %d/%d", i, len(df))
         recs = fmp.get_records(FMP_EP_CASHFLOW, symbol=row.symbol,
                                period=FUNDAMENTALS_PERIOD, limit=FCF_HISTORY_YEARS)
-        recs = sorted(recs, key=lambda r: str(r.get("date", "")))  # ascendente
-        series = []
-        for r in recs:
-            f = _to_float(r.get("freeCashFlow"))
-            if math.isnan(f):  # respaldo: CFO + CapEx (CapEx viene negativo en FMP)
-                f = _to_float(r.get("operatingCashFlow")) + _to_float(r.get("capitalExpenditure"))
-            series.append(f)
+        cf = pd.DataFrame(recs, columns=["date", "freeCashFlow", "operatingCashFlow", "capitalExpenditure"])
+        cf = cf.sort_values("date").drop(columns="date").apply(pd.to_numeric, errors="coerce")  # ascendente
+        # respaldo: CFO + CapEx (CapEx viene negativo en FMP)
+        series = cf["freeCashFlow"].fillna(cf["operatingCashFlow"] + cf["capitalExpenditure"]).tolist()
         cagr, inc = fcf_metrics(series)
         rows.append({**row._asdict(), "fcfCAGR": cagr, "fcfIncreasing": inc,
                      "fcfLatest": series[-1] if series else float("nan"),
@@ -648,7 +585,7 @@ def stage_scoring(df: pd.DataFrame) -> pd.DataFrame:
                             + w["fcf"] * df["Z_FCF"]
                             + w["rating"] * df["Z_Rating"])
     df = df.sort_values("CompositeScore", ascending=False).reset_index(drop=True)
-    df.insert(0, "Rank", np.arange(1, len(df) + 1))
+    df.insert(0, "Rank", df.index + 1)
     return df
 
 
@@ -666,7 +603,7 @@ def select_ratings(ranked: pd.DataFrame) -> pd.DataFrame:
         log.warning("RATING_SELECTION contiene ratings no IG o inválidos (se ignoran): %s",
                     ", ".join(unknown))
     df = ranked[ranked["rating"].isin(sel)].reset_index(drop=True)
-    df["Rank"] = np.arange(1, len(df) + 1)
+    df["Rank"] = df.index + 1
     return df
 
 
@@ -814,22 +751,21 @@ def print_weights(top: pd.DataFrame, summary: pd.DataFrame) -> None:
           f"{'n/a' if MAX_SINGLE_ISSUER_WEIGHT is None else f'{MAX_SINGLE_ISSUER_WEIGHT:.0%}'}")
 
     _banner("MÉTRICAS DEL PORTAFOLIO", "-")
-    fmt = summary.copy().astype(object)
-    for idx in fmt.index:
-        for c in fmt.columns:
-            v = summary.loc[idx, c]
-            if "CAGR" in idx or "Peso" in idx or "Yield" in idx:
-                fmt.loc[idx, c] = _fmt_pct(v)
-            else:
-                fmt.loc[idx, c] = f"{v:,.2f}"
+    is_pct = summary.index.str.contains("CAGR|Peso|Yield")
+    fmt = summary.astype(object)
+    fmt[is_pct] = summary[is_pct].map(_fmt_pct)
+    fmt[~is_pct] = summary[~is_pct].map("{:,.2f}".format)
     print(fmt.to_string())
+
+
+def _overlay_pivot(overlay: pd.DataFrame, col: str) -> pd.DataFrame:
+    """Emisor × tenor para una columna del overlay, en el orden del ranking."""
+    return overlay.pivot_table(index="symbol", columns="tenor", values=col, sort=False)
 
 
 def print_overlay(overlay: pd.DataFrame) -> None:
     _banner("FASE 6 · BENCHMARK OVERLAY — YIELD TARGET MÍNIMO POR EMISOR")
-    rf = overlay.pivot_table(index="symbol", columns="tenor", values="Rf", sort=False)
-    sp = overlay.pivot_table(index="symbol", columns="tenor", values="MinSpread_bps", sort=False)
-    yt = overlay.pivot_table(index="symbol", columns="tenor", values="YieldTarget", sort=False)
+    rf, sp, yt = (_overlay_pivot(overlay, c) for c in ("Rf", "MinSpread_bps", "YieldTarget"))
     view = pd.DataFrame(index=yt.index)
     view.insert(0, "Rating", overlay.drop_duplicates("symbol").set_index("symbol")["rating"])
     for t in BENCHMARK_TENORS:
@@ -874,8 +810,7 @@ def print_refinitiv_instructions(top: pd.DataFrame, overlay: pd.DataFrame) -> No
 """)
     print(" CHECKLIST POR EMISOR")
     print(" " + "-" * 94)
-    yt = overlay.pivot_table(index="symbol", columns="tenor", values="YieldTarget", sort=False)
-    sp = overlay.pivot_table(index="symbol", columns="tenor", values="MinSpread_bps", sort=False)
+    yt, sp = _overlay_pivot(overlay, "YieldTarget"), _overlay_pivot(overlay, "MinSpread_bps")
     for r in top.itertuples(index=False):
         targets = " | ".join(f"{t:g}Y: YTW≥{yt.loc[r.symbol, t] * 100:.2f}% OAS≥{sp.loc[r.symbol, t]:.0f}pb"
                              for t in BENCHMARK_TENORS)
@@ -886,38 +821,61 @@ def print_refinitiv_instructions(top: pd.DataFrame, overlay: pd.DataFrame) -> No
 # =============================================================================
 # SALIDAS: HTML INTERACTIVO
 # =============================================================================
+def _figure(traces: list, height: int = 380, **layout: Any) -> go.Figure:
+    """Figura con el estilo común del reporte (plantilla, márgenes y leyenda horizontal)."""
+    layout = {"margin": {"l": 55, "r": 20, "t": 10, "b": 50}, "legend": {"orientation": "h", "y": -0.2}, **layout}
+    return go.Figure(traces, layout=go.Layout(template="plotly_white", height=height, **layout))
+
+
 def build_html_report(curve: RiskFreeCurve, funnel: list[tuple[str, int]],
                       top: pd.DataFrame, overlay: pd.DataFrame,
                       summary: pd.DataFrame, fmp_calls: int) -> Path:
-    """Genera un único HTML autocontenido (Plotly.js vía CDN) con los gráficos."""
+    """Genera un único HTML con los gráficos (Plotly; plotly.js vía CDN) y las tablas."""
     grid = np.linspace(curve.tenors.min(), curve.tenors.max(), 300)
     syms = top["symbol"].tolist()
-    yt = overlay.pivot_table(index="symbol", columns="tenor", values="YieldTarget", sort=False).reindex(syms)
+    yt = _overlay_pivot(overlay, "YieldTarget").reindex(syms)[BENCHMARK_TENORS]
+    w = SCORE_WEIGHTS
 
-    data = {
-        "curve": {
-            "nodes_x": curve.tenors, "nodes_y": curve.yields_pct,
-            "nodes_lbl": [TREASURY_SERIES[t] for t in curve.tenors],
-            "grid_x": grid, "grid_y": [curve.rate_pct(t) for t in grid],
-            "bench_x": BENCHMARK_TENORS, "bench_y": [curve.rate_pct(t) for t in BENCHMARK_TENORS],
-        },
-        "funnel": {"stage": [f[0] for f in funnel], "n": [f[1] for f in funnel]},
-        "w": SCORE_WEIGHTS,
-        "top": {
-            "sym": syms, "name": top["companyName"].astype(str).tolist(),
-            "rating": top["rating"].tolist(), "score": top["CompositeScore"],
-            "zc": top["Z_Coverage"], "zd": top["Z_Debt"], "zf": top["Z_FCF"], "zr": top["Z_Rating"],
-            "cov": top["interestCoverage"], "lev": top["debtToEbitda"],
-            "mcap": top["marketCap"] / 1e9,
-            "we": top["W_Equal"] * 100, "ws": top["W_Score"] * 100,
-        },
-        "overlay": {
-            "tenors": [f"{t:g}Y" for t in BENCHMARK_TENORS],
-            "z": [[_json_safe(v * 100) for v in yt[t].tolist()] for t in BENCHMARK_TENORS],
-            "rf": [curve.rate_pct(t) for t in BENCHMARK_TENORS],
-        },
-    }
-    payload = json.dumps(_json_safe(data))
+    score_parts = [("Z_Coverage", "coverage", "Cobertura"), ("Z_Debt", "debt", "Deuda (inv.)"),
+                   ("Z_FCF", "fcf", "FCF"), ("Z_Rating", "rating", "Rating")]
+    figs = [
+        _figure([
+            go.Scatter(x=grid, y=[curve.rate_pct(t) for t in grid], mode="lines", name="Interpolada",
+                       line_width=2.5),
+            go.Scatter(x=curve.tenors, y=curve.yields_pct, text=[TREASURY_SERIES[t] for t in curve.tenors],
+                       mode="markers", name="Nodos FRED", marker_size=8,
+                       hovertemplate="%{text}<br>%{x:.2f}a: %{y:.3f}%<extra></extra>"),
+            go.Scatter(x=BENCHMARK_TENORS, y=[curve.rate_pct(t) for t in BENCHMARK_TENORS], mode="markers",
+                       name="Benchmark", marker={"size": 12, "symbol": "diamond"},
+                       hovertemplate="Rf %{x}Y: %{y:.3f}%<extra></extra>"),
+        ], xaxis_title="Madurez (años)", yaxis_title="Yield (%)"),
+        _figure([go.Funnel(y=[f[0] for f in funnel], x=[f[1] for f in funnel], textinfo="value+percent initial")],
+                margin={"l": 220, "r": 20, "t": 10, "b": 30}),
+        _figure([go.Bar(x=syms, y=top[col] * w[key], name=f"{w[key]:.2f}·Z {label}") for col, key, label in score_parts]
+                + [go.Scatter(x=syms, y=top["CompositeScore"], mode="markers", name="Composite",
+                              marker={"size": 11, "symbol": "line-ew-open", "line_width": 3},
+                              text=top["companyName"].astype(str),
+                              hovertemplate="%{text}<br>Score %{y:.3f}<extra></extra>")],
+                barmode="relative", yaxis_title="Contribución (Z)"),
+        _figure([go.Scatter(x=top["debtToEbitda"], y=top["interestCoverage"], text=syms,
+                            mode="markers+text", textposition="top center", customdata=top["rating"],
+                            marker={"size": np.maximum(8, np.sqrt(top["marketCap"] / 1e9) * 2.2),
+                                    "color": top["CompositeScore"], "colorscale": "Viridis",
+                                    "showscale": True, "colorbar": {"title": "Score"}, "opacity": 0.8},
+                            hovertemplate="%{text} (%{customdata})<br>D/EBITDA %{x:.2f}x"
+                                          "<br>Cobertura %{y:.1f}x<extra></extra>")],
+                xaxis_title="Deuda / EBITDA (x)", yaxis={"title": "EBITDA / Intereses (x)", "type": "log"}),
+        _figure([go.Bar(x=syms, y=top["W_Equal"] * 100, name="Equal Weight"),
+                 go.Bar(x=syms, y=top["W_Score"] * 100, name="Credit-Score Weight")],
+                barmode="group", yaxis_title="Peso (%)"),
+        _figure([go.Heatmap(x=syms, y=[f"{t:g}Y" for t in BENCHMARK_TENORS], z=(yt * 100).T.to_numpy(),
+                            colorscale="Blues", texttemplate="%{z:.2f}", colorbar={"title": "%"},
+                            hovertemplate="%{x} · %{y}<br>Target %{z:.3f}%<extra></extra>")],
+                height=320, margin={"l": 50, "r": 20, "t": 10, "b": 40}),
+    ]
+    # plotly.js se incluye una sola vez (vía CDN) en el primer gráfico del documento
+    plots = [f.to_html(full_html=False, include_plotlyjs="cdn" if i == 0 else False,
+                       config={"displaylogo": False, "responsive": True}) for i, f in enumerate(figs)]
 
     summ_html = summary.map(lambda v: f"{v:,.4f}" if isinstance(v, (float, int)) else v).to_html(
         classes="tbl", border=0)
@@ -933,12 +891,8 @@ def build_html_report(curve: RiskFreeCurve, funnel: list[tuple[str, int]],
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Portafolio IG Renta Fija</title>
-<script src="{PLOTLY_CDN}"></script>
 <style>
-:root {{ --bg:#f6f7f9; --card:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#e3e6eb; --accent:#1f5fa8; }}
-@media (prefers-color-scheme: dark) {{
-  :root {{ --bg:#11151b; --card:#1a2029; --ink:#e7ecf2; --muted:#9aa6b5; --line:#2a323d; --accent:#6fa8ff; }}
-}}
+:root {{ --bg:#f6f7f9; --card:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#e3e6eb; }}
 * {{ box-sizing:border-box; }}
 body {{ margin:0; background:var(--bg); color:var(--ink);
        font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }}
@@ -949,7 +903,6 @@ main {{ max-width:1200px; margin:0 auto; padding:8px 16px 40px;
 .card {{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; min-width:0; }}
 .card.wide {{ grid-column:1/-1; }} .card h2 {{ margin:0 0 6px; font-size:15px; }}
 .note {{ color:var(--muted); font-size:12px; margin:4px 0 0; }}
-.plot {{ width:100%; height:380px; }}
 .tblwrap {{ overflow-x:auto; }}
 table.tbl {{ border-collapse:collapse; width:100%; font-size:12.5px; }}
 table.tbl th, table.tbl td {{ padding:6px 8px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }}
@@ -962,69 +915,20 @@ table.tbl th:first-child, table.tbl td:first-child {{ text-align:left; }}
   generado {generated} · {fmp_calls} llamadas a FMP</div>
 </header>
 <main>
-  <section class="card"><h2>Curva libre de riesgo (UST CMT)</h2><div id="c_curve" class="plot"></div>
+  <section class="card"><h2>Curva libre de riesgo (UST CMT)</h2>{plots[0]}
     <p class="note">Nodos FRED e interpolación {html.escape(curve.method)}; diamantes = tenores benchmark.</p></section>
-  <section class="card"><h2>Embudo de screening</h2><div id="c_funnel" class="plot"></div></section>
-  <section class="card wide"><h2>Composite Credit Score y contribución de Z-scores</h2><div id="c_score" class="plot"></div></section>
-  <section class="card"><h2>Cobertura vs. apalancamiento</h2><div id="c_scatter" class="plot"></div>
+  <section class="card"><h2>Embudo de screening</h2>{plots[1]}</section>
+  <section class="card wide"><h2>Composite Credit Score y contribución de Z-scores</h2>{plots[2]}</section>
+  <section class="card"><h2>Cobertura vs. apalancamiento</h2>{plots[3]}
     <p class="note">Tamaño = market cap (USD bn); color = Composite Score.</p></section>
-  <section class="card"><h2>Pesos: Equal vs. Credit-Score</h2><div id="c_weights" class="plot"></div></section>
-  <section class="card wide"><h2>Yield Target mínimo por emisor y tenor (%)</h2><div id="c_overlay" class="plot" style="height:320px"></div></section>
+  <section class="card"><h2>Pesos: Equal vs. Credit-Score</h2>{plots[4]}</section>
+  <section class="card wide"><h2>Yield Target mínimo por emisor y tenor (%)</h2>{plots[5]}</section>
   <section class="card wide"><h2>Emisores seleccionados</h2><div class="tblwrap">{tbl_html}</div>
     <p class="note">Si la fuente es "Sintético", el rating es el peor entre cobertura EBIT/Intereses (tabla Damodaran) y Deuda/EBITDA, con techo {html.escape(SYNTHETIC_MAX_RATING)}; no es de agencia.</p></section>
   <section class="card wide"><h2>Métricas del portafolio</h2><div class="tblwrap">{summ_html}</div></section>
 </main>
-<script>
-const D = {payload};
-const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-const ink = dark ? '#e7ecf2' : '#1b2430', grid = dark ? '#2a323d' : '#e3e6eb';
-const base = (extra) => Object.assign({{
-  paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{{color:ink, size:12}},
-  margin:{{l:55,r:20,t:10,b:50}}, xaxis:{{gridcolor:grid, zeroline:false}},
-  yaxis:{{gridcolor:grid, zeroline:false}}, legend:{{orientation:'h', y:-0.2}}, hovermode:'closest'
-}}, extra || {{}});
-const cfg = {{responsive:true, displaylogo:false}};
-
-Plotly.newPlot('c_curve', [
-  {{x:D.curve.grid_x, y:D.curve.grid_y, mode:'lines', name:'Interpolada', line:{{width:2.5}}}},
-  {{x:D.curve.nodes_x, y:D.curve.nodes_y, text:D.curve.nodes_lbl, mode:'markers', name:'Nodos FRED',
-    marker:{{size:8}}, hovertemplate:'%{{text}}<br>%{{x:.2f}}a: %{{y:.3f}}%<extra></extra>'}},
-  {{x:D.curve.bench_x, y:D.curve.bench_y, mode:'markers', name:'Benchmark',
-    marker:{{size:12, symbol:'diamond'}}, hovertemplate:'Rf %{{x}}Y: %{{y:.3f}}%<extra></extra>'}}
-], base({{xaxis:{{title:'Madurez (años)', gridcolor:grid}}, yaxis:{{title:'Yield (%)', gridcolor:grid}}}}), cfg);
-
-Plotly.newPlot('c_funnel', [{{type:'funnel', y:D.funnel.stage, x:D.funnel.n, textinfo:'value+percent initial'}}],
-  base({{margin:{{l:220,r:20,t:10,b:30}}}}), cfg);
-
-Plotly.newPlot('c_score', [
-  {{x:D.top.sym, y:D.top.zc.map(v=>v*D.w.coverage), type:'bar', name:D.w.coverage.toFixed(2)+'·Z Cobertura'}},
-  {{x:D.top.sym, y:D.top.zd.map(v=>v*D.w.debt), type:'bar', name:D.w.debt.toFixed(2)+'·Z Deuda (inv.)'}},
-  {{x:D.top.sym, y:D.top.zf.map(v=>v*D.w.fcf), type:'bar', name:D.w.fcf.toFixed(2)+'·Z FCF'}},
-  {{x:D.top.sym, y:D.top.zr.map(v=>v*D.w.rating), type:'bar', name:D.w.rating.toFixed(2)+'·Z Rating'}},
-  {{x:D.top.sym, y:D.top.score, mode:'markers', name:'Composite', marker:{{size:11, symbol:'line-ew-open', line:{{width:3}}}},
-    text:D.top.name, hovertemplate:'%{{text}}<br>Score %{{y:.3f}}<extra></extra>'}}
-], base({{barmode:'relative', yaxis:{{title:'Contribución (Z)', gridcolor:grid}}}}), cfg);
-
-Plotly.newPlot('c_scatter', [{{
-  x:D.top.lev, y:D.top.cov, text:D.top.sym, mode:'markers+text', textposition:'top center',
-  marker:{{size:D.top.mcap.map(v=>Math.max(8, Math.sqrt(v)*2.2)), color:D.top.score,
-    colorscale:'Viridis', showscale:true, colorbar:{{title:'Score'}}, opacity:0.8}},
-  customdata:D.top.rating,
-  hovertemplate:'%{{text}} (%{{customdata}})<br>D/EBITDA %{{x:.2f}}x<br>Cobertura %{{y:.1f}}x<extra></extra>'
-}}], base({{xaxis:{{title:'Deuda / EBITDA (x)', gridcolor:grid}},
-          yaxis:{{title:'EBITDA / Intereses (x)', type:'log', gridcolor:grid}}}}), cfg);
-
-Plotly.newPlot('c_weights', [
-  {{x:D.top.sym, y:D.top.we, type:'bar', name:'Equal Weight'}},
-  {{x:D.top.sym, y:D.top.ws, type:'bar', name:'Credit-Score Weight'}}
-], base({{barmode:'group', yaxis:{{title:'Peso (%)', gridcolor:grid}}}}), cfg);
-
-Plotly.newPlot('c_overlay', [{{
-  type:'heatmap', x:D.top.sym, y:D.overlay.tenors, z:D.overlay.z, colorscale:'Blues',
-  texttemplate:'%{{z:.2f}}', hovertemplate:'%{{x}} · %{{y}}<br>Target %{{z:.3f}}%<extra></extra>',
-  colorbar:{{title:'%'}}
-}}], base({{margin:{{l:50,r:20,t:10,b:40}}}}), cfg);
-</script></body></html>"""
+<script>window.dispatchEvent(new Event('resize'));</script>  <!-- re-mide los gráficos con la página completa -->
+</body></html>"""
 
     path = Path(HTML_OUTPUT_PATH).resolve()
     path.write_text(doc, encoding="utf-8")
@@ -1052,51 +956,24 @@ def _abort_if_empty(df: pd.DataFrame, stage: str, funnel: list) -> None:
         sys.exit(2)
 
 
-def _json_text(value: Any) -> str:
-    if value is None or bool(pd.isna(value)):
-        return ""
-    return str(value)
-
-
-def _json_score(value: Any) -> Optional[float]:
-    if value is None or bool(pd.isna(value)):
-        return None
-    try:
-        number = float(value)
-    except (TypeError, ValueError):
-        return None
-    return number if math.isfinite(number) else None
-
-
 def export_universe_json(top: pd.DataFrame) -> None:
     """Contrato v1: corp_fr_latest.json y una copia con marca de tiempo. Nunca aborta la corrida."""
     try:
         moment = pipeline_io.now_bogota()
-        tickers: list[str] = []
-        details: list[dict[str, Any]] = []
-        for position, row in enumerate(top.to_dict(orient="records"), start=1):
-            ticker = str(row.get("symbol", "")).strip()
-            if not ticker or ticker.lower() == "nan":
-                continue
-            tickers.append(ticker)
-            try:
-                rank = int(row.get("Rank", position))
-            except (TypeError, ValueError):
-                rank = position
-            details.append({
-                "ticker": ticker,
-                "rank": rank,
-                "name": _json_text(row.get("companyName")),
-                "sector": _json_text(row.get("sector")),
-                "score": _json_score(row.get("CompositeScore")),
-            })
+        cols = {"symbol": "ticker", "Rank": "rank", "companyName": "name", "sector": "sector",
+                "CompositeScore": "score"}
+        df = top.reindex(columns=list(cols)).rename(columns=cols)
+        df["ticker"] = df["ticker"].astype(str).str.strip()
+        df = df[~df["ticker"].str.lower().isin(["", "nan"])]
+        df[["name", "sector"]] = df[["name", "sector"]].fillna("").astype(str)
+        df["score"] = df["score"].where(np.isfinite(df["score"]))  # NaN/inf -> null
         payload = {
             "schema_version": 1,
             "source_repo": "US-Asset-Allocation",
             "source": "Corp_FR_Optimization",
             "run_ts": pipeline_io.iso_bogota(moment),
-            "tickers": tickers,
-            "details": details,
+            "tickers": df["ticker"].tolist(),
+            "details": df.astype(object).where(df.notna(), None).to_dict("records"),
         }
         out_dir = os.getenv("UNIVERSE_OUT_DIR", "/workspace/pipeline/universe")
         written = pipeline_io.write_json_files(
@@ -1175,10 +1052,7 @@ def run_pipeline() -> None:
     print(f"  Reporte interactivo: {path}")
     print(f"  Llamadas FMP: {fmp.n_calls} (fallidas: {fmp.n_failures}) · Tiempo: {time.time() - t0:,.1f}s")
     if OPEN_HTML_IN_BROWSER:
-        try:
-            webbrowser.open(path.as_uri())
-        except Exception:  # entornos sin navegador
-            pass
+        webbrowser.open(path.as_uri())  # sin navegador (contenedor) devuelve False, no lanza
 
 
 if __name__ == "__main__":

@@ -21,8 +21,10 @@ import requests
 from plotly.subplots import make_subplots
 from scipy import stats
 from scipy.stats import norm
+from scipy.integrate import trapezoid
 from scipy.interpolate import CubicSpline
-from scipy.optimize import brentq, linprog, minimize
+from scipy.optimize import Bounds, LinearConstraint, brentq, linprog, minimize
+from scipy.special import expit
 
 import pipeline_io
 from fmp_client import APIAuthorizationError, APIError, BaseHTTPClient
@@ -621,6 +623,7 @@ class UniverseBuilder:
         "dimensional", "avantis", "pacer", "ark", "sprott", "abrdn", "goldman sachs", "xtrackers",
         "janus henderson", "capital group", "amplify", "roundhill", "defiance", "simplify", "neos",
     )
+    ISSUER_PATTERN: re.Pattern = re.compile(rf"\b(?:{'|'.join(map(re.escape, ISSUER_TOKENS))})\b")
     STOPWORDS: frozenset = frozenset({"etf", "fund", "trust", "shares", "portfolio", "index", "the", "inc", "llc", "core", "ucits", "usd"})
     LEVERAGE_PATTERN: re.Pattern = re.compile(
         r"(\b-?[123](\.\d)?x\b|\bultra(pro)?\b|\binverse\b|\bbear\b|\bbull\b|\bleveraged\b|\bdaily\b|\bvix\b|"
@@ -706,10 +709,7 @@ class UniverseBuilder:
 
     @classmethod
     def _name_key(cls, name: str) -> str:
-        text = name.lower()
-        for issuer in cls.ISSUER_TOKENS:
-            text = re.sub(rf"\b{re.escape(issuer)}\b", " ", text)
-        tokens = re.findall(r"[a-z0-9&]+", text)
+        tokens = re.findall(r"[a-z0-9&]+", cls.ISSUER_PATTERN.sub(" ", name.lower()))
         return " ".join(token for token in tokens if token not in cls.STOPWORDS)
 
     @staticmethod
@@ -992,13 +992,9 @@ class FactorModelBuilder:
         if not rows:
             return {}
         frame = pd.DataFrame(rows)
-        weight_array = np.asarray(weights, dtype=float)
-        aggregated: Dict[str, float] = {}
-        for column in frame.columns:
-            values = frame[column].to_numpy(dtype=float)
-            mask = np.isfinite(values)
-            aggregated[column] = float(np.average(values[mask], weights=weight_array[mask])) if mask.any() else float("nan")
-        return aggregated
+        weight = pd.Series(weights, index=frame.index, dtype=float)
+        # promedio ponderado por columna ignorando NaN (NaN si la columna no tiene ningún dato)
+        return (frame.mul(weight, axis=0).sum(min_count=1) / frame.notna().mul(weight, axis=0).sum()).to_dict()
 
     def _safe_fetch(self, fetcher: Callable[[str], Dict[str, Any]], symbol: str) -> Dict[str, Any]:
         endpoint = fetcher.__name__
@@ -1055,12 +1051,6 @@ class FactorModelBuilder:
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class BKMEstimator:
-    @staticmethod
-    def _trapezoid(y: np.ndarray, x: np.ndarray) -> float:
-        if len(x) < 2:
-            return 0.0
-        return float(np.sum(0.5 * (y[1:] + y[:-1]) * np.diff(x)))
-
     @staticmethod
     def _bs_price(
         spot: float, strike: float, rate: float, carry: float, maturity: float, vol: float, side: str
@@ -1218,9 +1208,9 @@ class BKMEstimator:
         kp, p = cls._anchor_at_spot(kp_fine, p_fine, spot, side="put")
         log_c = np.log(kc / spot)
         log_p = np.log(spot / kp)
-        v = cls._trapezoid(2.0 * (1.0 - log_c) / kc**2 * c, kc) + cls._trapezoid(2.0 * (1.0 + log_p) / kp**2 * p, kp)
-        w = cls._trapezoid((6.0 * log_c - 3.0 * log_c**2) / kc**2 * c, kc) - cls._trapezoid((6.0 * log_p + 3.0 * log_p**2) / kp**2 * p, kp)
-        x = cls._trapezoid((12.0 * log_c**2 - 4.0 * log_c**3) / kc**2 * c, kc) + cls._trapezoid((12.0 * log_p**2 + 4.0 * log_p**3) / kp**2 * p, kp)
+        v = trapezoid(2.0 * (1.0 - log_c) / kc**2 * c, kc) + trapezoid(2.0 * (1.0 + log_p) / kp**2 * p, kp)
+        w = trapezoid((6.0 * log_c - 3.0 * log_c**2) / kc**2 * c, kc) - trapezoid((6.0 * log_p + 3.0 * log_p**2) / kp**2 * p, kp)
+        x = trapezoid((12.0 * log_c**2 - 4.0 * log_c**3) / kc**2 * c, kc) + trapezoid((12.0 * log_p**2 + 4.0 * log_p**3) / kp**2 * p, kp)
         growth = math.exp(rate * maturity_years)
         mu = growth - 1.0 - growth * v / 2.0 - growth * w / 6.0 - growth * x / 24.0
         variance = growth * v - mu**2
@@ -1651,8 +1641,8 @@ class ImpliedTailModel:
         raw_excess = -es - norm.pdf(norm.ppf(alpha)) / alpha
         scale = TAIL_PENALTY_SMOOTHING
         z = raw_excess / scale
-        excess_std = float(scale * (max(z, 0.0) + math.log1p(math.exp(-abs(z)))))  # softplus estable
-        slope = 1.0 / (1.0 + math.exp(-z)) if z > -700 else 0.0                    # d softplus / d raw
+        excess_std = float(scale * np.logaddexp(0.0, z))  # softplus estable
+        slope = float(expit(z))                           # d softplus / d raw
         sigma_p = float(math.sqrt(max(full @ self.sigma @ full, 1e-18)))
         d_sigma = (self.sigma @ full) / sigma_p
         d_excess = -slope * (d_es_ds * grad["d_skew_dw"] + d_es_dk * grad["d_exkurt_dw"])
@@ -1703,14 +1693,12 @@ class PortfolioOptimizer:
             lo = hi
         self.beta_lo, self.beta_hi = lo, hi
 
-    def _beta_constraints(self) -> List[Dict[str, Any]]:
-        """Restricciones de la banda de beta para SLSQP (desigualdades ≥ 0)."""
-        if self.betas is None:
-            return []
-        tol, beta = self.CONSTRAINT_TOLERANCE, self.betas
-        constraints = [{"type": "ineq", "fun": lambda x: beta @ x - (self.beta_lo - tol), "jac": lambda x: beta}]
-        if self.beta_hi is not None:
-            constraints.append({"type": "ineq", "fun": lambda x: (self.beta_hi + tol) - beta @ x, "jac": lambda x: -beta})
+    def _slsqp_constraints(self) -> List[LinearConstraint]:
+        """Presupuesto, targets factoriales y banda de beta como restricciones lineales de SLSQP."""
+        tol = self.CONSTRAINT_TOLERANCE
+        constraints = [LinearConstraint(np.ones(len(self.tickers)), 1.0, 1.0), LinearConstraint(self.B.T, self.targets - tol, np.inf)]
+        if self.betas is not None:
+            constraints.append(LinearConstraint(self.betas, self.beta_lo - tol, np.inf if self.beta_hi is None else self.beta_hi + tol))
         return constraints
 
     def _feasible_targets(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -1781,12 +1769,7 @@ class PortfolioOptimizer:
 
         result = minimize(
             fun=objective, x0=base.weights.to_numpy(dtype=float), jac=gradient,
-            bounds=[(0.0, self.max_weight)] * len(tickers),
-            constraints=[
-                {"type": "eq", "fun": lambda x: np.sum(x) - 1.0, "jac": lambda x: np.ones_like(x)},
-                {"type": "ineq", "fun": lambda x: self.B.T @ x - (self.targets - self.CONSTRAINT_TOLERANCE), "jac": lambda x: self.B.T},
-                *self._beta_constraints(),
-            ],
+            bounds=Bounds(0.0, self.max_weight), constraints=self._slsqp_constraints(),
             method="SLSQP", options={"maxiter": 500, "ftol": 1e-10},
         )
         if not result.success and self._max_violation(result.x) > 1e-5:
@@ -1817,17 +1800,12 @@ class PortfolioOptimizer:
         return np.asarray(w.value, dtype=float), str(problem.status)
 
     def _solve_scipy(self) -> Tuple[np.ndarray, str]:
-        constraints = [
-            {"type": "eq", "fun": lambda x: np.sum(x) - 1.0, "jac": lambda x: np.ones_like(x)},
-            {"type": "ineq", "fun": lambda x: self.B.T @ x - (self.targets - self.CONSTRAINT_TOLERANCE), "jac": lambda x: self.B.T},
-            *self._beta_constraints(),
-        ]
         result = minimize(
             fun=lambda x: -self.utility(x),
             x0=self.warm_start,
             jac=lambda x: -(self.mu - self.risk_aversion * self.sigma @ x),
-            bounds=[(0.0, self.max_weight)] * len(self.tickers),
-            constraints=constraints,
+            bounds=Bounds(0.0, self.max_weight),
+            constraints=self._slsqp_constraints(),
             method="SLSQP",
             options={"maxiter": 2000, "ftol": 1e-12},
         )
@@ -1840,9 +1818,7 @@ class PortfolioOptimizer:
         n_vars = n_assets * bits
         levels = 2**bits - 1
         scale = self.max_weight / levels
-        encoder = np.zeros((n_assets, n_vars))
-        for asset in range(n_assets):
-            encoder[asset, asset * bits: (asset + 1) * bits] = scale * 2.0 ** np.arange(bits)
+        encoder = np.kron(np.eye(n_assets), scale * 2.0 ** np.arange(bits))
         ones = np.ones(n_assets)
         quadratic = 0.5 * self.risk_aversion * self.sigma + SA_BUDGET_PENALTY * np.outer(ones, ones)
         linear = -self.mu - 2.0 * SA_BUDGET_PENALTY * ones
@@ -2471,7 +2447,7 @@ def _json_float(value: Any) -> float | None:
 
 def configure_logging(level: str) -> None:
     logging.basicConfig(
-        level=getattr(logging, level.upper(), logging.INFO),
+        level=level.upper(),
         format="%(asctime)s | %(levelname)-8s | %(name)-14s | %(message)s",
         datefmt="%H:%M:%S",
     )

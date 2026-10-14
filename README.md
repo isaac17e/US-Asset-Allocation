@@ -121,7 +121,7 @@ Python 3.10 or later and:
 pip install numpy pandas scipy requests plotly python-dotenv cvxpy tabulate fredapi
 ```
 
-`cvxpy`, `tabulate` and `fredapi` are optional: without them the scripts fall back to SciPy, `pandas.to_string` and the FRED REST API, respectively.
+`cvxpy` and `tabulate` are optional: without them the scripts fall back to SciPy and `pandas.to_string`, respectively. `fredapi` is required by `Corp_FR_Optimization.py`.
 
 ### API keys
 
