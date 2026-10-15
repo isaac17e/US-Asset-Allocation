@@ -153,9 +153,14 @@ STYLE_MIN_OBSERVATIONS: int = 120
 # PARÁMETROS EDITABLES · OPCIONES (BKM) Y COVARIANZA
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
-OPTIONS_MIN_DAYS: int = 30
-OPTIONS_MAX_DAYS: int = 90
-OPTIONS_TARGET_DAYS: int = 60
+# Horizonte común del portafolio (días de calendario / DTE). HORIZON_DEFAULT_DAYS es el valor por defecto;
+# se sobreescribe con USAA_HORIZON_DAYS o USAA_HORIZON_MONTHS (meses -> días como en to_years:
+# meses/12*365, redondeado), validado en 7..400 días. Se lee una sola vez al importar (pipeline_io.resolve_horizon_days).
+# La ventana de vencimientos conserva las proporciones de 30/90 alrededor de 60 (0.5x/1.5x) y coincide con
+# esos valores cuando el horizonte es el de por defecto.
+HORIZON_DEFAULT_DAYS: int = 60
+OPTIONS_TARGET_DAYS: int = pipeline_io.resolve_horizon_days(HORIZON_DEFAULT_DAYS)
+OPTIONS_MIN_DAYS, OPTIONS_MAX_DAYS = pipeline_io.horizon_option_window(OPTIONS_TARGET_DAYS, HORIZON_DEFAULT_DAYS, 30, 90)
 # Horizonte común: la asimetría y la curtosis BKM son del vencimiento de cada contrato. Se escalan (iid)
 # al DTE objetivo antes de interpolar para que todos los activos queden en el mismo plazo. Si un activo
 # no tiene vencimientos a ambos lados del objetivo, False escala desde el más cercano (queda marcado en
@@ -2458,6 +2463,7 @@ def validate_configuration() -> None:
         raise ValueError("Configura FMP_API_KEY en el archivo .env (o como variable de entorno).")
     if INVESTMENT_PROFILE not in PROFILES:
         raise ValueError(f"INVESTMENT_PROFILE inválido: {INVESTMENT_PROFILE}")
+    pipeline_io.resolve_horizon_days(OPTIONS_TARGET_DAYS, env={})
     if not 0 < OPTIONS_MIN_DAYS <= OPTIONS_TARGET_DAYS <= OPTIONS_MAX_DAYS:
         raise ValueError("Se requiere OPTIONS_MIN_DAYS <= OPTIONS_TARGET_DAYS <= OPTIONS_MAX_DAYS.")
     if not 0.0 <= CORRELATION_SHRINKAGE <= 1.0 or not 0.0 <= HISTORICAL_MU_BLEND <= 1.0:

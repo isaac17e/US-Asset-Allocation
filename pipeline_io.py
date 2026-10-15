@@ -68,6 +68,107 @@ def resolve_risk_free_rate(default: float, env: Mapping[str, str] | None = None)
     return rate
 
 
+HORIZON_MIN_DAYS = 7
+HORIZON_MAX_DAYS = 400
+# Same conventions as risk_estimators.to_years: dte is calendar days over 365,
+# months over 12, so 1 month = 365 / 12 calendar days.
+_CALENDAR_DAYS_PER_YEAR = 365.0
+_MONTHS_PER_YEAR = 12.0
+
+
+def months_to_days(months: float) -> int:
+    """Calendar days (nearest integer) of ``months``: ``months / 12 * 365``."""
+    return int(math.floor(float(months) / _MONTHS_PER_YEAR * _CALENDAR_DAYS_PER_YEAR + 0.5))
+
+
+def _horizon_number(raw: Any, name: str, source: str) -> float:
+    if isinstance(raw, bool):
+        raise ValueError(f"{name} ({source}) is not a number: {raw!r}.")
+    try:
+        value = float(str(raw).strip()) if isinstance(raw, str) else float(raw)
+    except (TypeError, ValueError):
+        raise ValueError(f"{name} ({source}) is not a number: {raw!r}.") from None
+    if not math.isfinite(value):
+        raise ValueError(f"{name} ({source}) is not a finite number: {raw!r}.")
+    return value
+
+
+def _horizon_from_source(
+    days_raw: Any, months_raw: Any, days_name: str, months_name: str, source: str,
+) -> int | None:
+    days_set = days_raw is not None and str(days_raw).strip() != ""
+    months_set = months_raw is not None and str(months_raw).strip() != ""
+    days = months = None
+    if days_set:
+        value = _horizon_number(days_raw, days_name, source)
+        if value != int(value):
+            raise ValueError(f"{days_name} ({source}) must be a whole number of days: {days_raw!r}.")
+        days = int(value)
+    if months_set:
+        months = months_to_days(_horizon_number(months_raw, months_name, source))
+    if days is not None and months is not None and days != months:
+        raise ValueError(
+            f"{days_name}={days_raw!r} and {months_name}={months_raw!r} disagree in {source} "
+            f"({months_raw!r} months = {months} days). Set only one."
+        )
+    return days if days is not None else months
+
+
+def resolve_horizon_days(
+    default: int,
+    env: Mapping[str, str] | None = None,
+    inputs: Mapping[str, Any] | None = None,
+) -> int:
+    """Portfolio horizon in calendar days.
+
+    Precedence: ``inputs`` (``horizon_days`` / ``horizon_months`` of an input
+    file, when the caller has one) beats env (``USAA_HORIZON_DAYS`` /
+    ``USAA_HORIZON_MONTHS``), and both beat ``default``. Months convert as
+    ``months / 12 * 365`` calendar days (the ``to_years`` convention), rounded
+    to the nearest day. Within one source, days and months must agree if both
+    are given. The result must be a whole number in 7..400 days; anything else
+    raises ``ValueError``. ``default`` is returned unchanged when nothing is set.
+    """
+    environment = os.environ if env is None else env
+    chosen: int | None = None
+    if inputs:
+        chosen = _horizon_from_source(
+            inputs.get("horizon_days"), inputs.get("horizon_months"),
+            "horizon_days", "horizon_months", "input file",
+        )
+    if chosen is None:
+        chosen = _horizon_from_source(
+            environment.get("USAA_HORIZON_DAYS"), environment.get("USAA_HORIZON_MONTHS"),
+            "USAA_HORIZON_DAYS", "USAA_HORIZON_MONTHS", "environment",
+        )
+    if chosen is None:
+        chosen = int(default)
+    if not HORIZON_MIN_DAYS <= chosen <= HORIZON_MAX_DAYS:
+        raise ValueError(
+            f"Portfolio horizon out of range: {chosen} days. "
+            f"Expected {HORIZON_MIN_DAYS}..{HORIZON_MAX_DAYS} calendar days "
+            "(USAA_HORIZON_DAYS or USAA_HORIZON_MONTHS)."
+        )
+    return chosen
+
+
+def horizon_option_window(
+    horizon_days: int, default_horizon: int, default_min: int, default_max: int,
+) -> tuple[int, int]:
+    """Expiry window (min, max DTE) scaled with the horizon.
+
+    The window keeps the proportions of the defaults around their horizon
+    (30/90 around 60 = 0.5x/1.5x). At ``default_horizon`` it returns the
+    defaults untouched.
+    """
+    if horizon_days == default_horizon:
+        return int(default_min), int(default_max)
+    scale = horizon_days / float(default_horizon)
+    low = max(1, int(math.floor(default_min * scale + 0.5)))
+    high = max(low, int(math.floor(default_max * scale + 0.5)))
+    return min(low, horizon_days), max(high, horizon_days)
+
+
 def _cli_risk_profile(argv: Sequence[str]) -> str | None:
     for i, arg in enumerate(argv):
         if arg == "--risk-profile":

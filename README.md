@@ -152,6 +152,15 @@ The investment profile is chosen with `--risk-profile conservador|moderado|agres
 
 `RISK_FREE_RATE` (annual decimal, e.g. `0.052`) overrides the risk-free rate of `US Asset Manager.py` (default `0.040`). It is read once at startup (`pipeline_io.resolve_risk_free_rate`) and feeds the CAPM expected return, the implied-moments engine and every Sharpe ratio. A non-number or a value outside `0 <= rf < 0.5` stops the run with a clear error. `Corp_FR_Optimization.py` ignores it: it builds its risk-free curve from FRED and has no flat scalar fallback (fewer than three nodes stops the run).
 
+### Portfolio horizon
+
+`US Asset Manager.py` uses one common horizon (calendar days, the option DTE convention) for the BKM skewness/kurtosis scaling, the MFIK cap, expiry selection and interpolation, tail risk (`horizon = to_years(dte=...)`) and the exported `horizon_days`/`horizon_end`. The default is `HORIZON_DEFAULT_DAYS = 60` (identical to the previous behavior). Override it with:
+
+- `USAA_HORIZON_DAYS`: whole number of calendar days.
+- `USAA_HORIZON_MONTHS`: months, converted with the `to_years` convention (`months / 12 * 365`, rounded to the nearest day): 1 = 30, 3 = 91, 6 = 183, 12 = 365.
+
+If both are set they must agree, otherwise the run stops. The value must be in 7..400 days; anything else (or a non-number) raises a `ValueError`. It is read once at import (`pipeline_io.resolve_horizon_days`), so every dependent quantity is computed from the resolved value. The option expiry window keeps the default proportions around the horizon (`OPTIONS_MIN_DAYS`/`OPTIONS_MAX_DAYS` = 0.5x/1.5x: 30/90 at 60 days, 60/180 at 120). The script reads no input JSON; `resolve_horizon_days` already takes an `inputs` mapping (`horizon_days`/`horizon_months`, precedence input file > env > default) for when one is added. `Corp_FR_Optimization.py` exports a universe, not a portfolio, and has no portfolio horizon (`BENCHMARK_TENORS` is the yield-overlay maturity and is unrelated).
+
 ## Pipeline JSON
 
 A successful run also writes the shared pipeline contract (v1): UTF-8 JSON, `indent=2`, written atomically (`<file>.tmp` then replace). Timestamps are ISO 8601 with offset in `America/Bogota`. If the output directory cannot be created or written, the script prints a warning and continues (the HTML report and console tables are unchanged).
@@ -161,7 +170,7 @@ A successful run also writes the shared pipeline contract (v1): UTF-8 JSON, `ind
 | `US Asset Manager.py` | `PORTFOLIO_OUT_DIR` (default `/workspace/pipeline/portfolio`) | `portfolio_latest.json`, `portfolio_us_asset_manager_<YYYYMMDDTHHMMSS>.json` |
 | `Corp_FR_Optimization.py` | `UNIVERSE_OUT_DIR` (default `/workspace/pipeline/universe`) | `corp_fr_latest.json`, `corp_fr_<YYYYMMDDTHHMMSS>.json` |
 
-`US Asset Manager.py` sets `source_repo` to `US-Asset-Allocation` and `optimizer` to `us_asset_manager`. Weights below `1e-6` are dropped and renormalized so they sum to 1 at 6 decimal places. `risk_profile` is the canonical `conservador|moderado|agresivo` and `investment_profile` the internal profile name. `params` carries the risk-free rate used (`risk_free_rate`), λ (`lambda`), the weight cap, factor targets and covariance shrinkage, and `beta_source` (per ticker, `raw` or `blume`). `horizon_days` is `OPTIONS_TARGET_DAYS`. `Corp_FR_Optimization.py` writes the selected Top-N tickers in ranking order, with rank, name, sector and composite score.
+`US Asset Manager.py` sets `source_repo` to `US-Asset-Allocation` and `optimizer` to `us_asset_manager`. Weights below `1e-6` are dropped and renormalized so they sum to 1 at 6 decimal places. `risk_profile` is the canonical `conservador|moderado|agresivo` and `investment_profile` the internal profile name. `params` carries the risk-free rate used (`risk_free_rate`), λ (`lambda`), the weight cap, factor targets and covariance shrinkage, and `beta_source` (per ticker, `raw` or `blume`). `horizon_days` is the resolved portfolio horizon (`OPTIONS_TARGET_DAYS`, see above) and `horizon_end` is the run date plus `horizon_days`. `Corp_FR_Optimization.py` writes the selected Top-N tickers in ranking order, with rank, name, sector and composite score.
 
 The writer is `pipeline_io.py`. Its tests do not use the network:
 
