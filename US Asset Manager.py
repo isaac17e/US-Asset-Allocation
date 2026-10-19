@@ -74,7 +74,10 @@ except ImportError:
 FMP_API_KEY: str = os.getenv("FMP_API_KEY", "")
 POLYGON_API_KEY: str = os.getenv("POLYGON_API_KEY", "")
 FMP_BASE_URL: str = "https://financialmodelingprep.com/stable"
-POLYGON_BASE_URL: str = "https://api.polygon.io"
+# Massive replaced Polygon.io; existing Polygon API keys and paths remain valid.
+MASSIVE_API_BASE: str = (os.getenv("MASSIVE_API_BASE") or os.getenv("POLYGON_API_BASE") or "https://api.massive.com").strip().rstrip("/")
+MASSIVE_WS_BASE: str = (os.getenv("MASSIVE_WS_BASE") or "wss://socket.massive.com").strip().rstrip("/")
+POLYGON_BASE_URL: str = MASSIVE_API_BASE  # compatibility alias
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
@@ -582,7 +585,7 @@ class FMPClient(_FMPTransport):
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
-# CLIENTE POLYGON.IO
+# CLIENTE POLYGON.IO / MASSIVE
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class PolygonClient(BaseHTTPClient):
@@ -602,6 +605,7 @@ class PolygonClient(BaseHTTPClient):
         contracts: List[Dict[str, Any]] = []
         pages = 0
         while url and pages < max_pages:
+            # API next_url values may use either host; follow them exactly as returned.
             payload = self._request_json(url, params, endpoint)
             if not isinstance(payload, dict):
                 break

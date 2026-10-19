@@ -128,7 +128,9 @@ pip install numpy pandas scipy requests plotly python-dotenv cvxpy tabulate fred
 | Variable | Service | Used by |
 |---|---|---|
 | `FMP_API_KEY` | [Financial Modeling Prep](https://financialmodelingprep.com) | Both scripts (required) |
-| `POLYGON_API_KEY` | [Polygon.io](https://polygon.io): options snapshot | `US Asset Manager.py` (optional; without it, historical moments are used) |
+| `POLYGON_API_KEY` | [Massive](https://massive.com) (formerly Polygon.io): options snapshot | `US Asset Manager.py` (optional; without it, historical moments are used) |
+| `MASSIVE_API_BASE` | Massive REST API base (default `https://api.massive.com`; legacy `POLYGON_API_BASE` is also honoured) | `US Asset Manager.py` (optional) |
+| `MASSIVE_WS_BASE` | Massive WebSocket base (default `wss://socket.massive.com`) | Reserved for WebSocket clients |
 | `FRED_API_KEY` | [FRED](https://fred.stlouisfed.org/docs/api/api_key.html) | `Corp_FR_Optimization.py` (required) |
 
 Some FMP endpoints (ETF holdings, financial statements, ratings) depend on your subscription plan. If an endpoint is unavailable, the script disables it and continues with neutral or fallback values.
@@ -140,6 +142,8 @@ Some FMP endpoints (ETF holdings, financial statements, ratings) depend on your 
 #   FMP_API_KEY=...
 #   FRED_API_KEY=...
 #   POLYGON_API_KEY=...   (optional)
+#   MASSIVE_API_BASE=https://api.massive.com   (optional; POLYGON_API_BASE is a legacy alias)
+#   MASSIVE_WS_BASE=wss://socket.massive.com   (optional)
 pip install python-dotenv
 
 python "US Asset Manager.py"        # produces portfolio_dashboard.html
