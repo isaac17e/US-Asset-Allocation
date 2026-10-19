@@ -8,6 +8,7 @@ Python tools for building investment portfolios in the US market from live marke
 | [`Corp_FR_Optimization.py`](Corp_FR_Optimization.py) | **Investment Grade corporate fixed income (USD)** portfolio selection: screens issuers on solvency, cash flow and rating, ranks them, and computes the minimum required yield by tenor. |
 | [`fmp_client.py`](fmp_client.py) | Shared FMP HTTP transport (throttling, retries, cache, plan-error detection) used by both scripts. |
 | [`risk_estimators.py`](risk_estimators.py) | Risk estimator library (EWMA + Ledoit-Wolf covariance, Q→P correction, portfolio moments, Cornish-Fisher). Used by `US Asset Manager.py`. |
+| [`bs_pricing.py`](bs_pricing.py) | Black-Scholes (European) and Bjerksund-Stensland 1993 (American) option prices with cost of carry. Used by `US Asset Manager.py` (BKM estimator). |
 
 Each script runs end to end, prints tables to the console and produces an interactive Plotly HTML report.
 
@@ -15,7 +16,7 @@ Each script runs end to end, prints tables to the console and produces an intera
 
 ### Browser report checks
 
-Install the development dependency with `.venv/bin/python -m pip install -r requirements-dev.txt`, then install Playwright's Chromium browser with `.venv/bin/python -m playwright install chromium`. Run the offline HTML report checks with `.venv/bin/python -m unittest tests.test_html_reports_browser -v`. Browser checks skip when Playwright or Chromium is unavailable; set `SKIP_BROWSER_TESTS=1` to skip them explicitly.
+Install the development dependency with `.venv/bin/python -m pip install -r requirements-dev.txt -c constraints.txt`, then install Playwright's Chromium browser with `.venv/bin/python -m playwright install chromium`. Run the offline HTML report checks with `.venv/bin/python -m unittest tests.test_html_reports_browser -v`. Browser checks skip when Playwright or Chromium is unavailable; set `SKIP_BROWSER_TESTS=1` to skip them explicitly.
 
 ---
 
@@ -122,8 +123,11 @@ A module with no network dependencies. It is a copy of the module of the same na
 Python 3.10 or later and:
 
 ```bash
-pip install numpy pandas scipy requests plotly python-dotenv cvxpy tabulate fredapi
+pip install -r requirements.txt -c constraints.txt   # tested, pinned versions (Python 3.14 venv)
+pip install -r requirements.txt                       # or unpinned lower bounds only
 ```
+
+`constraints.txt` only pins versions (it installs nothing by itself); it records the versions the test suite was run with. The pinned set comes from a Python 3.14 environment and may not be available on Python 3.10–3.11; `requirements.txt` provides lower bounds for Python 3.10 or later.
 
 `cvxpy` and `tabulate` are optional: without them the scripts fall back to SciPy and `pandas.to_string`, respectively. `fredapi` is required by `Corp_FR_Optimization.py`.
 
@@ -148,8 +152,6 @@ Some FMP endpoints (ETF holdings, financial statements, ratings) depend on your 
 #   POLYGON_API_KEY=...   (optional)
 #   MASSIVE_API_BASE=https://api.massive.com   (optional; POLYGON_API_BASE is a legacy alias)
 #   MASSIVE_WS_BASE=wss://socket.massive.com   (optional)
-pip install python-dotenv
-
 python "US Asset Manager.py"        # produces portfolio_dashboard.html
 python Corp_FR_Optimization.py      # produces reporte_portafolio_renta_fija.html
 ```

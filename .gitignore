@@ -4,6 +4,12 @@ __pycache__/
 .DS_Store
 pipeline/
 
+# informes generados por los pipelines (se escriben en el directorio de trabajo)
+/reporte_portafolio_renta_fija.html
+/reporte_portafolio_renta_fija.pdf
+/portfolio_dashboard.html
+/portfolio_dashboard.pdf
+
 # graphify: versionar solo graph.json, GRAPH_REPORT.md y manifest.json
 graphify-out/graph.html
 graphify-out/cache/

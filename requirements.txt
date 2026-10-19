@@ -1,0 +1,17 @@
+# Dependencias que realmente importan los scripts del repositorio (Python 3.10+).
+# Versiones probadas (fijadas): constraints.txt -> pip install -r requirements.txt -c constraints.txt
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+requests>=2.28
+plotly>=5.18
+
+# Optimizacion (opcional en runtime: sin cvxpy el script cae a SciPy)
+cvxpy>=1.4
+
+# Opcionales en runtime (el script los importa dentro de try/except)
+python-dotenv>=1.0
+tabulate>=0.9
+
+# Corp_FR_Optimization.py (curva libre de riesgo desde FRED)
+fredapi>=0.5
