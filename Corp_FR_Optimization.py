@@ -830,7 +830,7 @@ def _figure(traces: list, height: int = 380, **layout: Any) -> go.Figure:
 def build_html_report(curve: RiskFreeCurve, funnel: list[tuple[str, int]],
                       top: pd.DataFrame, overlay: pd.DataFrame,
                       summary: pd.DataFrame, fmp_calls: int) -> Path:
-    """Genera un único HTML con los gráficos (Plotly; plotly.js vía CDN) y las tablas."""
+    """Genera un único HTML con Plotly embebido y las tablas."""
     grid = np.linspace(curve.tenors.min(), curve.tenors.max(), 300)
     syms = top["symbol"].tolist()
     yt = _overlay_pivot(overlay, "YieldTarget").reindex(syms)[BENCHMARK_TENORS]
@@ -873,8 +873,8 @@ def build_html_report(curve: RiskFreeCurve, funnel: list[tuple[str, int]],
                             hovertemplate="%{x} · %{y}<br>Target %{z:.3f}%<extra></extra>")],
                 height=320, margin={"l": 50, "r": 20, "t": 10, "b": 40}),
     ]
-    # plotly.js se incluye una sola vez (vía CDN) en el primer gráfico del documento
-    plots = [f.to_html(full_html=False, include_plotlyjs="cdn" if i == 0 else False,
+    # plotly.js se incluye una sola vez en el primer gráfico del documento
+    plots = [f.to_html(full_html=False, include_plotlyjs=True if i == 0 else False,
                        config={"displaylogo": False, "responsive": True}) for i, f in enumerate(figs)]
 
     summ_html = summary.map(lambda v: f"{v:,.4f}" if isinstance(v, (float, int)) else v).to_html(

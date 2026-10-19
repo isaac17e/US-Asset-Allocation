@@ -13,6 +13,10 @@ Each script runs end to end, prints tables to the console and produces an intera
 
 > Code comments, console output and the HTML reports are in Spanish.
 
+### Browser report checks
+
+Install the development dependency with `.venv/bin/python -m pip install -r requirements-dev.txt`, then install Playwright's Chromium browser with `.venv/bin/python -m playwright install chromium`. Run the offline HTML report checks with `.venv/bin/python -m unittest tests.test_html_reports_browser -v`. Browser checks skip when Playwright or Chromium is unavailable; set `SKIP_BROWSER_TESTS=1` to skip them explicitly.
+
 ---
 
 ## 1. `US Asset Manager.py` — Passive ETF allocation
