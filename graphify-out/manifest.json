@@ -1,9 +1,9 @@
 {
   "Corp_FR_Optimization.py": {
-    "mtime": 1791983349.2981825,
-    "seen": 1792006734.528534,
-    "ast_hash": "3585360b2d34470e005512c175c9afa7",
-    "semantic_hash": "3585360b2d34470e005512c175c9afa7"
+    "mtime": 1792387556.091115,
+    "seen": 1792388030.7588632,
+    "ast_hash": "1c1c929e6d6a5c6351435d9eca5fb6e5",
+    "semantic_hash": ""
   },
   "US Asset Manager.py": {
     "mtime": 1792378740.74146,
@@ -36,9 +36,9 @@
     "semantic_hash": "dcfee1d76e61747a8dfe4c898bd597d5"
   },
   "README.md": {
-    "mtime": 1792378740.7683744,
-    "seen": 1792379313.018091,
-    "ast_hash": "c6ca5cf514927244bb9fefdebddc16bd",
+    "mtime": 1792387556.1158452,
+    "seen": 1792388030.758879,
+    "ast_hash": "2d99f6d6f8f7ba2b9a5295213e3c969a",
     "semantic_hash": ""
   },
   "fmp_client.py": {
@@ -81,6 +81,24 @@
     "mtime": 1792378774.5816088,
     "seen": 1792379313.0180879,
     "ast_hash": "4ddc48684fdb822be6a0aecd2b18d2e0",
+    "semantic_hash": ""
+  },
+  "tests/browser_test_helpers.py": {
+    "mtime": 1792387797.949457,
+    "seen": 1792388030.758873,
+    "ast_hash": "eebde5f74d3c548016383f89eed67115",
+    "semantic_hash": ""
+  },
+  "tests/test_html_reports_browser.py": {
+    "mtime": 1792387619.2456481,
+    "seen": 1792388030.758875,
+    "ast_hash": "1a11d3a66569e4ede1ac2439ac4c445e",
+    "semantic_hash": ""
+  },
+  "requirements-dev.txt": {
+    "mtime": 1792387556.1398535,
+    "seen": 1792388030.75888,
+    "ast_hash": "eac313652f258530db3923dc52a856c4",
     "semantic_hash": ""
   }
 }
