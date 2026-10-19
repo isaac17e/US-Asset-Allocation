@@ -210,6 +210,19 @@
       "source_location": "L265"
     },
     {
+      "id": "tests_test_report_pdf_reportpdfbrowsertests",
+      "label": "ReportPdfBrowserTests",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "test_report_pdf.py",
+      "file_type": "code",
+      "norm_label": "reportpdfbrowsertests",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L38"
+    },
+    {
       "id": "tests_test_horizon_exporthorizontests",
       "label": "ExportHorizonTests",
       "_callable": true,
@@ -234,6 +247,19 @@
       "norm_label": "managerhorizontests",
       "source_file": "tests/test_horizon.py",
       "source_location": "L122"
+    },
+    {
+      "id": "us_asset_manager_portfoliotailrisk",
+      "label": "PortfolioTailRisk",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "US Asset Manager.py",
+      "file_type": "code",
+      "norm_label": "portfoliotailrisk",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1933"
     },
     {
       "id": "tests_test_horizon_optionwindowtests",
@@ -340,6 +366,19 @@
       "source_location": "L2056"
     },
     {
+      "id": "us_asset_manager_expectedreturnmodel",
+      "label": "ExpectedReturnModel",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "expectedreturnmodel",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1561"
+    },
+    {
       "id": "us_asset_manager_impliedcovariancebuilder",
       "label": "ImpliedCovarianceBuilder",
       "_callable": true,
@@ -405,6 +444,19 @@
       "source_location": "L2224"
     },
     {
+      "id": "us_asset_manager_pipelineinputs",
+      "label": "PipelineInputs",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "pipelineinputs",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2210"
+    },
+    {
       "id": "us_asset_manager_portfoliooptimizer",
       "label": "PortfolioOptimizer",
       "_callable": true,
@@ -418,19 +470,6 @@
       "source_location": "L1662"
     },
     {
-      "id": "us_asset_manager_portfoliotailrisk",
-      "label": "PortfolioTailRisk",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "portfoliotailrisk",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1933"
-    },
-    {
       "id": "us_asset_manager_profileconfig",
       "label": "ProfileConfig",
       "_callable": true,
@@ -442,6 +481,19 @@
       "norm_label": "profileconfig",
       "source_file": "US Asset Manager.py",
       "source_location": "L470"
+    },
+    {
+      "id": "us_asset_manager_redundancyfilter",
+      "label": "RedundancyFilter",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "redundancyfilter",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L779"
     },
     {
       "id": "fmp_client_apiauthorizationerror",
@@ -494,45 +546,6 @@
       "norm_label": "polygonclient",
       "source_file": "US Asset Manager.py",
       "source_location": "L591"
-    },
-    {
-      "id": "us_asset_manager_expectedreturnmodel",
-      "label": "ExpectedReturnModel",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": "expectedreturnmodel",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1561"
-    },
-    {
-      "id": "us_asset_manager_pipelineinputs",
-      "label": "PipelineInputs",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": "pipelineinputs",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2210"
-    },
-    {
-      "id": "us_asset_manager_redundancyfilter",
-      "label": "RedundancyFilter",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": "redundancyfilter",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L779"
     },
     {
       "id": "us_asset_manager_factormodelbuilder",
@@ -626,6 +639,32 @@
       "source_location": "L628"
     },
     {
+      "id": "report_pdf_quiethandler",
+      "label": "_QuietHandler",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "code",
+      "norm_label": "_quiethandler",
+      "source_file": "report_pdf.py",
+      "source_location": "L27"
+    },
+    {
+      "id": "report_pdf_reportexporterror",
+      "label": "ReportExportError",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "code",
+      "norm_label": "reportexporterror",
+      "source_file": "report_pdf.py",
+      "source_location": "L18"
+    },
+    {
       "id": "tests_test_pipeline_io_weighttests",
       "label": "WeightTests",
       "_callable": true,
@@ -663,6 +702,19 @@
       "norm_label": "riskfreeratetests",
       "source_file": "tests/test_pipeline_io.py",
       "source_location": "L42"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfunittests",
+      "label": "ReportPdfUnitTests",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "ReportPdfUnitTests",
+      "file_type": "code",
+      "norm_label": "reportpdfunittests",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L16"
     },
     {
       "id": "us_asset_manager_bkmestimator",
@@ -1337,6 +1389,90 @@
       "source_location": "L619"
     },
     {
+      "id": "risk_estimators_cornish_fisher_es_gradient",
+      "label": "cornish_fisher_es_gradient()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "cornish_fisher_es_gradient()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L693"
+    },
+    {
+      "id": "risk_estimators_cornish_fisher_moments",
+      "label": "cornish_fisher_moments()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "cornish_fisher_moments()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L635"
+    },
+    {
+      "id": "risk_estimators_cornish_fisher_params",
+      "label": "cornish_fisher_params()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "cornish_fisher_params()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L643"
+    },
+    {
+      "id": "risk_estimators_cornish_fisher_params_a_parametros",
+      "label": "a_parametros()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "a_parametros()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L658"
+    },
+    {
+      "id": "risk_estimators_cornish_fisher_params_residuo",
+      "label": "residuo()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "residuo()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L662"
+    },
+    {
+      "id": "risk_estimators_cornish_fisher_tail",
+      "label": "cornish_fisher_tail()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "cornish_fisher_tail()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L677"
+    },
+    {
+      "id": "risk_estimators_cornish_fisher_z",
+      "label": "cornish_fisher_z()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "cornish_fisher_z()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L610"
+    },
+    {
       "id": "risk_estimators_cov_ewma_shrunk",
       "label": "cov_ewma_shrunk()",
       "_callable": true,
@@ -1385,6 +1521,18 @@
       "source_location": "L79"
     },
     {
+      "id": "risk_estimators_higher_moments_admissible",
+      "label": "higher_moments_admissible()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "higher_moments_admissible()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L563"
+    },
+    {
       "id": "risk_estimators_ledoit_wolf_constant_correlation",
       "label": "ledoit_wolf_constant_correlation()",
       "_callable": true,
@@ -1419,6 +1567,30 @@
       "norm_label": "martin_wagner_excess_return()",
       "source_file": "risk_estimators.py",
       "source_location": "L882"
+    },
+    {
+      "id": "risk_estimators_mfik_cap",
+      "label": "mfik_cap()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "mfik_cap()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L570"
+    },
+    {
+      "id": "risk_estimators_mfik_cap_tenor",
+      "label": "mfik_cap_tenor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "mfik_cap_tenor()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L594"
     },
     {
       "id": "risk_estimators_nearest_psd",
@@ -1481,6 +1653,18 @@
       "source_location": "L360"
     },
     {
+      "id": "risk_estimators_rescale_panel",
+      "label": "rescale_panel()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "rescale_panel()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L453"
+    },
+    {
       "id": "risk_estimators_scale_cov",
       "label": "scale_cov()",
       "_callable": true,
@@ -1491,6 +1675,78 @@
       "norm_label": "scale_cov()",
       "source_file": "risk_estimators.py",
       "source_location": "L318"
+    },
+    {
+      "id": "risk_estimators_standardized_panel",
+      "label": "standardized_panel()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "standardized_panel()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L433"
+    },
+    {
+      "id": "risk_estimators_var_cvar_cornish_fisher",
+      "label": "var_cvar_cornish_fisher()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "var_cvar_cornish_fisher()",
+      "source_file": "risk_estimators.py",
+      "source_location": "L703"
+    },
+    {
+      "id": "scripts_sweep_tail_penalty_load_manager",
+      "label": "load_manager()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "load_manager()",
+      "source_file": "scripts/sweep_tail_penalty.py",
+      "source_location": "L33"
+    },
+    {
+      "id": "scripts_sweep_tail_penalty_main",
+      "label": "main()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "main()",
+      "source_file": "scripts/sweep_tail_penalty.py",
+      "source_location": "L41"
+    },
+    {
+      "id": "us_asset_manager_impliedtailmodel_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1598"
+    },
+    {
+      "id": "us_asset_manager_portfoliotailrisk_compute",
+      "label": ".compute()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": ".compute()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1943"
     },
     {
       "id": "tests_test_optimizer_exportprofiletests_export",
@@ -1805,18 +2061,6 @@
       "source_location": "L321"
     },
     {
-      "id": "pipeline_io_cli_risk_profile",
-      "label": "_cli_risk_profile()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "pipeline_io.py",
-      "file_type": "code",
-      "norm_label": "_cli_risk_profile()",
-      "source_file": "pipeline_io.py",
-      "source_location": "L172"
-    },
-    {
       "id": "pipeline_io_dumps",
       "label": "_dumps()",
       "_callable": true,
@@ -1875,18 +2119,6 @@
       "norm_label": "resolve_horizon_days()",
       "source_file": "pipeline_io.py",
       "source_location": "L117"
-    },
-    {
-      "id": "pipeline_io_resolve_risk_profile",
-      "label": "resolve_risk_profile()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "pipeline_io.py",
-      "file_type": "code",
-      "norm_label": "resolve_risk_profile()",
-      "source_file": "pipeline_io.py",
-      "source_location": "L183"
     },
     {
       "id": "pipeline_io_warn",
@@ -2189,60 +2421,12 @@
       "source_location": "L276"
     },
     {
-      "id": "tests_browser_test_helpers_collect_page_errors",
-      "label": "collect_page_errors()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "code",
-      "norm_label": "collect_page_errors()",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L39"
-    },
-    {
-      "id": "tests_browser_test_helpers_collect_page_errors_on_console",
-      "label": "on_console()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "code",
-      "norm_label": "on_console()",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L43"
-    },
-    {
-      "id": "tests_browser_test_helpers_install_offline_route",
-      "label": "install_offline_route()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "code",
-      "norm_label": "install_offline_route()",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L23"
-    },
-    {
-      "id": "tests_browser_test_helpers_install_offline_route_handle_route",
-      "label": "handle_route()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "code",
-      "norm_label": "handle_route()",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L25"
-    },
-    {
       "id": "tests_browser_test_helpers_launch_browser",
       "label": "launch_browser()",
       "_callable": true,
       "_origin": "ast",
       "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "community_name": "test_report_pdf.py",
       "file_type": "code",
       "norm_label": "launch_browser()",
       "source_file": "tests/browser_test_helpers.py",
@@ -2254,23 +2438,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "community_name": "test_report_pdf.py",
       "file_type": "code",
       "norm_label": "load_playwright()",
       "source_file": "tests/browser_test_helpers.py",
       "source_location": "L7"
-    },
-    {
-      "id": "tests_test_html_reports_browser_offlinebrowsertestcase_setup",
-      "label": ".setUp()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "code",
-      "norm_label": ".setup()",
-      "source_file": "tests/test_html_reports_browser.py",
-      "source_location": "L104"
     },
     {
       "id": "tests_test_html_reports_browser_offlinebrowsertestcase_setupclass",
@@ -2278,11 +2450,47 @@
       "_callable": true,
       "_origin": "ast",
       "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "community_name": "test_report_pdf.py",
       "file_type": "code",
       "norm_label": ".setupclass()",
       "source_file": "tests/test_html_reports_browser.py",
       "source_location": "L85"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfbrowsertests_setupclass",
+      "label": ".setUpClass()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "test_report_pdf.py",
+      "file_type": "code",
+      "norm_label": ".setupclass()",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L40"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfbrowsertests_test_external_script_is_blocked_and_reported",
+      "label": ".test_external_script_is_blocked_and_reported()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "test_report_pdf.py",
+      "file_type": "code",
+      "norm_label": ".test_external_script_is_blocked_and_reported()",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L70"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfbrowsertests_test_static_table_exports_as_single_page_pdf",
+      "label": ".test_static_table_exports_as_single_page_pdf()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "test_report_pdf.py",
+      "file_type": "code",
+      "norm_label": ".test_static_table_exports_as_single_page_pdf()",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L54"
     },
     {
       "id": "tests_test_horizon_exporthorizontests_export",
@@ -2405,52 +2613,76 @@
       "source_location": "L139"
     },
     {
-      "id": "us_asset_manager_configure_logging",
-      "label": "configure_logging()",
+      "id": "pipeline_io_horizon_option_window",
+      "label": "horizon_option_window()",
       "_callable": true,
       "_origin": "ast",
       "community": 16,
       "community_name": "US Asset Manager.py",
       "file_type": "code",
-      "norm_label": "configure_logging()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2457"
+      "norm_label": "horizon_option_window()",
+      "source_file": "pipeline_io.py",
+      "source_location": "L155"
     },
     {
-      "id": "us_asset_manager_is_configured_key",
-      "label": "_is_configured_key()",
+      "id": "us_asset_manager_clip",
+      "label": "_clip()",
       "_callable": true,
       "_origin": "ast",
       "community": 16,
       "community_name": "US Asset Manager.py",
       "file_type": "code",
-      "norm_label": "_is_configured_key()",
+      "norm_label": "_clip()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L359"
+      "source_location": "L355"
     },
     {
-      "id": "us_asset_manager_main",
-      "label": "main()",
+      "id": "us_asset_manager_json_float",
+      "label": "_json_float()",
       "_callable": true,
       "_origin": "ast",
       "community": 16,
       "community_name": "US Asset Manager.py",
       "file_type": "code",
-      "norm_label": "main()",
+      "norm_label": "_json_float()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2481"
+      "source_location": "L2454"
     },
     {
-      "id": "us_asset_manager_validate_configuration",
-      "label": "validate_configuration()",
+      "id": "us_asset_manager_portfoliotailrisk_init",
+      "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
       "community": 16,
       "community_name": "US Asset Manager.py",
       "file_type": "code",
-      "norm_label": "validate_configuration()",
+      "norm_label": ".__init__()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2465"
+      "source_location": "L1940"
+    },
+    {
+      "id": "us_asset_manager_to_float",
+      "label": "_to_float()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "US Asset Manager.py",
+      "file_type": "code",
+      "norm_label": "_to_float()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L338"
+    },
+    {
+      "id": "tests_test_fmp_client_load",
+      "label": "_load()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "test_optimizer.py",
+      "file_type": "code",
+      "norm_label": "_load()",
+      "source_file": "tests/test_fmp_client.py",
+      "source_location": "L16"
     },
     {
       "id": "tests_test_horizon_optionwindowtests_test_default_window_is_untouched",
@@ -2717,18 +2949,6 @@
       "source_location": "L78"
     },
     {
-      "id": "risk_estimators_var_cvar_cornish_fisher",
-      "label": "var_cvar_cornish_fisher()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "var_cvar_cornish_fisher()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L703"
-    },
-    {
       "id": "us_asset_manager_beta_band_text",
       "label": "beta_band_text()",
       "_callable": true,
@@ -2921,6 +3141,42 @@
       "source_location": "L2145"
     },
     {
+      "id": "us_asset_manager_expectedreturnmodel_build",
+      "label": ".build()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".build()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1565"
+    },
+    {
+      "id": "us_asset_manager_expectedreturnmodel_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1562"
+    },
+    {
+      "id": "us_asset_manager_historical_betas",
+      "label": "_historical_betas()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "_historical_betas()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L403"
+    },
+    {
       "id": "us_asset_manager_impliedcovariancebuilder_build",
       "label": ".build()",
       "_callable": true,
@@ -3038,7 +3294,19 @@
       "file_type": "code",
       "norm_label": "._compare_solvers()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2315"
+      "source_location": "L2322"
+    },
+    {
+      "id": "us_asset_manager_passiveetfallocationpipeline_prepare",
+      "label": ".prepare()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".prepare()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2236"
     },
     {
       "id": "us_asset_manager_passiveetfallocationpipeline_print_reports",
@@ -3050,7 +3318,7 @@
       "file_type": "code",
       "norm_label": "._print_reports()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2337"
+      "source_location": "L2344"
     },
     {
       "id": "us_asset_manager_passiveetfallocationpipeline_run",
@@ -3269,30 +3537,6 @@
       "source_location": "L1741"
     },
     {
-      "id": "us_asset_manager_portfoliotailrisk_compute",
-      "label": ".compute()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": ".compute()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1943"
-    },
-    {
-      "id": "us_asset_manager_portfoliotailrisk_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1940"
-    },
-    {
       "id": "us_asset_manager_profileconfig_target_vector",
       "label": ".target_vector()",
       "_callable": true,
@@ -3317,12 +3561,36 @@
       "source_location": "L390"
     },
     {
+      "id": "us_asset_manager_redundancyfilter_apply",
+      "label": ".apply()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".apply()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L786"
+    },
+    {
+      "id": "us_asset_manager_redundancyfilter_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L780"
+    },
+    {
       "id": "corp_fr_optimization_export_universe_json",
       "label": "export_universe_json()",
       "_callable": true,
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "export_universe_json()",
       "source_file": "Corp_FR_Optimization.py",
@@ -3334,7 +3602,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "iso_bogota()",
       "source_file": "pipeline_io.py",
@@ -3346,7 +3614,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "normalize_weights()",
       "source_file": "pipeline_io.py",
@@ -3358,7 +3626,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "now_bogota()",
       "source_file": "pipeline_io.py",
@@ -3370,7 +3638,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "stamp_bogota()",
       "source_file": "pipeline_io.py",
@@ -3382,11 +3650,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "export_portfolio_json()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2377"
+      "source_location": "L2384"
     },
     {
       "id": "us_asset_manager_fmpclient_historical_adjusted_close",
@@ -3399,18 +3667,6 @@
       "norm_label": ".historical_adjusted_close()",
       "source_file": "US Asset Manager.py",
       "source_location": "L565"
-    },
-    {
-      "id": "us_asset_manager_impliedmomentsengine_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 21,
-      "community_name": "APIAuthorizationError",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1240"
     },
     {
       "id": "us_asset_manager_marketdataloader_init",
@@ -3461,100 +3717,16 @@
       "source_location": "L596"
     },
     {
-      "id": "us_asset_manager_expectedreturnmodel_build",
-      "label": ".build()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": ".build()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1565"
-    },
-    {
-      "id": "us_asset_manager_expectedreturnmodel_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1562"
-    },
-    {
-      "id": "us_asset_manager_historical_betas",
-      "label": "_historical_betas()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": "_historical_betas()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L403"
-    },
-    {
       "id": "us_asset_manager_market_beta",
       "label": "market_beta()",
       "_callable": true,
       "_origin": "ast",
       "community": 22,
-      "community_name": ".prepare",
+      "community_name": "Mean-variance optimization with factor targets",
       "file_type": "code",
       "norm_label": "market_beta()",
       "source_file": "US Asset Manager.py",
       "source_location": "L410"
-    },
-    {
-      "id": "us_asset_manager_passiveetfallocationpipeline_prepare",
-      "label": ".prepare()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": ".prepare()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2236"
-    },
-    {
-      "id": "us_asset_manager_redundancyfilter_apply",
-      "label": ".apply()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": ".apply()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L786"
-    },
-    {
-      "id": "us_asset_manager_redundancyfilter_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L780"
-    },
-    {
-      "id": "us_asset_manager_clip",
-      "label": "_clip()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 23,
-      "community_name": "FactorModelBuilder",
-      "file_type": "code",
-      "norm_label": "_clip()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L355"
     },
     {
       "id": "us_asset_manager_combine_scores",
@@ -3617,18 +3789,6 @@
       "source_location": "L1021"
     },
     {
-      "id": "us_asset_manager_factormodelbuilder_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 23,
-      "community_name": "FactorModelBuilder",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L898"
-    },
-    {
       "id": "us_asset_manager_factormodelbuilder_momentum",
       "label": "._momentum()",
       "_callable": true,
@@ -3663,6 +3823,18 @@
       "norm_label": "._style_betas()",
       "source_file": "US Asset Manager.py",
       "source_location": "L928"
+    },
+    {
+      "id": "us_asset_manager_first_number",
+      "label": "_first_number()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "FactorModelBuilder",
+      "file_type": "code",
+      "norm_label": "_first_number()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L346"
     },
     {
       "id": "us_asset_manager_percentile_score",
@@ -3833,6 +4005,18 @@
       "source_location": "L407"
     },
     {
+      "id": "us_asset_manager_factormodelbuilder_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "Any",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L898"
+    },
+    {
       "id": "us_asset_manager_fmpclient_dividends",
       "label": ".dividends()",
       "_callable": true,
@@ -3917,7 +4101,7 @@
       "source_location": "L537"
     },
     {
-      "id": "us_asset_manager_passiveetfallocationpipeline_init",
+      "id": "us_asset_manager_universebuilder_init",
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
@@ -3926,19 +4110,7 @@
       "file_type": "code",
       "norm_label": ".__init__()",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2225"
-    },
-    {
-      "id": "us_asset_manager_profileconfig_from_registry",
-      "label": ".from_registry()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 27,
-      "community_name": "Any",
-      "file_type": "code",
-      "norm_label": ".from_registry()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L482"
+      "source_location": "L643"
     },
     {
       "id": "us_asset_manager_universebuilder_build_candidates",
@@ -3977,18 +4149,6 @@
       "source_location": "L693"
     },
     {
-      "id": "us_asset_manager_universebuilder_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 28,
-      "community_name": "UniverseBuilder",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L643"
-    },
-    {
       "id": "us_asset_manager_universebuilder_name_key",
       "label": "._name_key()",
       "_callable": true,
@@ -4025,172 +4185,64 @@
       "source_location": "L675"
     },
     {
-      "id": "risk_estimators_cornish_fisher_es_gradient",
-      "label": "cornish_fisher_es_gradient()",
+      "id": "report_pdf_default_pdf_path",
+      "label": "default_pdf_path()",
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "cornish_fisher_moments",
+      "community_name": "report_pdf.py",
       "file_type": "code",
-      "norm_label": "cornish_fisher_es_gradient()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L693"
+      "norm_label": "default_pdf_path()",
+      "source_file": "report_pdf.py",
+      "source_location": "L22"
     },
     {
-      "id": "risk_estimators_cornish_fisher_moments",
-      "label": "cornish_fisher_moments()",
+      "id": "report_pdf_export_report_pdf",
+      "label": "export_report_pdf()",
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "cornish_fisher_moments",
+      "community_name": "report_pdf.py",
       "file_type": "code",
-      "norm_label": "cornish_fisher_moments()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L635"
+      "norm_label": "export_report_pdf()",
+      "source_file": "report_pdf.py",
+      "source_location": "L32"
     },
     {
-      "id": "risk_estimators_cornish_fisher_params",
-      "label": "cornish_fisher_params()",
+      "id": "report_pdf_export_report_pdf_route_request",
+      "label": "route_request()",
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "cornish_fisher_moments",
+      "community_name": "report_pdf.py",
       "file_type": "code",
-      "norm_label": "cornish_fisher_params()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L643"
+      "norm_label": "route_request()",
+      "source_file": "report_pdf.py",
+      "source_location": "L69"
     },
     {
-      "id": "risk_estimators_cornish_fisher_params_a_parametros",
-      "label": "a_parametros()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "a_parametros()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L658"
-    },
-    {
-      "id": "risk_estimators_cornish_fisher_params_residuo",
-      "label": "residuo()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "residuo()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L662"
-    },
-    {
-      "id": "risk_estimators_cornish_fisher_tail",
-      "label": "cornish_fisher_tail()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "cornish_fisher_tail()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L677"
-    },
-    {
-      "id": "risk_estimators_cornish_fisher_z",
-      "label": "cornish_fisher_z()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "cornish_fisher_z()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L610"
-    },
-    {
-      "id": "risk_estimators_higher_moments_admissible",
-      "label": "higher_moments_admissible()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "higher_moments_admissible()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L563"
-    },
-    {
-      "id": "risk_estimators_rescale_panel",
-      "label": "rescale_panel()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "rescale_panel()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L453"
-    },
-    {
-      "id": "risk_estimators_standardized_panel",
-      "label": "standardized_panel()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": "standardized_panel()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L433"
-    },
-    {
-      "id": "us_asset_manager_impliedtailmodel_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1598"
-    },
-    {
-      "id": "pipeline_io_resolve_risk_free_rate",
-      "label": "resolve_risk_free_rate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "file_type": "code",
-      "norm_label": "resolve_risk_free_rate()",
-      "source_file": "pipeline_io.py",
-      "source_location": "L48"
-    },
-    {
-      "id": "scripts_sweep_tail_penalty_load_manager",
-      "label": "load_manager()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "file_type": "code",
-      "norm_label": "load_manager()",
-      "source_file": "scripts/sweep_tail_penalty.py",
-      "source_location": "L33"
-    },
-    {
-      "id": "scripts_sweep_tail_penalty_main",
+      "id": "report_pdf_main",
       "label": "main()",
       "_callable": true,
       "_origin": "ast",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 29,
+      "community_name": "report_pdf.py",
       "file_type": "code",
       "norm_label": "main()",
-      "source_file": "scripts/sweep_tail_penalty.py",
-      "source_location": "L41"
+      "source_file": "report_pdf.py",
+      "source_location": "L126"
+    },
+    {
+      "id": "report_pdf_quiethandler_log_message",
+      "label": ".log_message()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "code",
+      "norm_label": ".log_message()",
+      "source_file": "report_pdf.py",
+      "source_location": "L28"
     },
     {
       "id": "tests_test_pipeline_io_weighttests_assert_sums_to_one",
@@ -4313,54 +4365,6 @@
       "source_location": "L32"
     },
     {
-      "id": "pipeline_io_horizon_option_window",
-      "label": "horizon_option_window()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "math",
-      "file_type": "code",
-      "norm_label": "horizon_option_window()",
-      "source_file": "pipeline_io.py",
-      "source_location": "L155"
-    },
-    {
-      "id": "us_asset_manager_first_number",
-      "label": "_first_number()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "math",
-      "file_type": "code",
-      "norm_label": "_first_number()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L346"
-    },
-    {
-      "id": "us_asset_manager_json_float",
-      "label": "_json_float()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "math",
-      "file_type": "code",
-      "norm_label": "_json_float()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2447"
-    },
-    {
-      "id": "us_asset_manager_to_float",
-      "label": "_to_float()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "math",
-      "file_type": "code",
-      "norm_label": "_to_float()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L338"
-    },
-    {
       "id": "tests_test_pipeline_io_riskfreeratetests_test_default_without_env",
       "label": ".test_default_without_env()",
       "_callable": true,
@@ -4409,28 +4413,148 @@
       "source_location": "L57"
     },
     {
-      "id": "risk_estimators_mfik_cap",
-      "label": "mfik_cap()",
+      "id": "us_asset_manager_configure_logging",
+      "label": "configure_logging()",
       "_callable": true,
       "_origin": "ast",
       "community": 34,
-      "community_name": "mfik_cap_tenor",
+      "community_name": "logging",
       "file_type": "code",
-      "norm_label": "mfik_cap()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L570"
+      "norm_label": "configure_logging()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2464"
     },
     {
-      "id": "risk_estimators_mfik_cap_tenor",
-      "label": "mfik_cap_tenor()",
+      "id": "us_asset_manager_is_configured_key",
+      "label": "_is_configured_key()",
       "_callable": true,
       "_origin": "ast",
       "community": 34,
-      "community_name": "mfik_cap_tenor",
+      "community_name": "logging",
       "file_type": "code",
-      "norm_label": "mfik_cap_tenor()",
-      "source_file": "risk_estimators.py",
-      "source_location": "L594"
+      "norm_label": "_is_configured_key()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L359"
+    },
+    {
+      "id": "us_asset_manager_main",
+      "label": "main()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "logging",
+      "file_type": "code",
+      "norm_label": "main()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2488"
+    },
+    {
+      "id": "us_asset_manager_passiveetfallocationpipeline_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "logging",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2225"
+    },
+    {
+      "id": "us_asset_manager_profileconfig_from_registry",
+      "label": ".from_registry()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "logging",
+      "file_type": "code",
+      "norm_label": ".from_registry()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L482"
+    },
+    {
+      "id": "us_asset_manager_validate_configuration",
+      "label": "validate_configuration()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "logging",
+      "file_type": "code",
+      "norm_label": "validate_configuration()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L2472"
+    },
+    {
+      "id": "pipeline_io_cli_risk_profile",
+      "label": "_cli_risk_profile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
+      "file_type": "code",
+      "norm_label": "_cli_risk_profile()",
+      "source_file": "pipeline_io.py",
+      "source_location": "L172"
+    },
+    {
+      "id": "pipeline_io_resolve_risk_profile",
+      "label": "resolve_risk_profile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
+      "file_type": "code",
+      "norm_label": "resolve_risk_profile()",
+      "source_file": "pipeline_io.py",
+      "source_location": "L183"
+    },
+    {
+      "id": "pipeline_io_resolve_risk_free_rate",
+      "label": "resolve_risk_free_rate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 36,
+      "community_name": "resolve_risk_free_rate",
+      "file_type": "code",
+      "norm_label": "resolve_risk_free_rate()",
+      "source_file": "pipeline_io.py",
+      "source_location": "L48"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfunittests_test_cli_missing_file_returns_two_with_one_line",
+      "label": ".test_cli_missing_file_returns_two_with_one_line()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "ReportPdfUnitTests",
+      "file_type": "code",
+      "norm_label": ".test_cli_missing_file_returns_two_with_one_line()",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L31"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfunittests_test_default_path_uses_report_folder_and_stem",
+      "label": ".test_default_path_uses_report_folder_and_stem()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "ReportPdfUnitTests",
+      "file_type": "code",
+      "norm_label": ".test_default_path_uses_report_folder_and_stem()",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L17"
+    },
+    {
+      "id": "tests_test_report_pdf_reportpdfunittests_test_missing_playwright_has_install_hint",
+      "label": ".test_missing_playwright_has_install_hint()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "ReportPdfUnitTests",
+      "file_type": "code",
+      "norm_label": ".test_missing_playwright_has_install_hint()",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L23"
     },
     {
       "id": "us_asset_manager_bkmestimator_american_call",
@@ -4529,6 +4653,54 @@
       "source_location": "L1155"
     },
     {
+      "id": "tests_browser_test_helpers_collect_page_errors",
+      "label": "collect_page_errors()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "code",
+      "norm_label": "collect_page_errors()",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L39"
+    },
+    {
+      "id": "tests_browser_test_helpers_collect_page_errors_on_console",
+      "label": "on_console()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "code",
+      "norm_label": "on_console()",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L43"
+    },
+    {
+      "id": "tests_browser_test_helpers_install_offline_route",
+      "label": "install_offline_route()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "code",
+      "norm_label": "install_offline_route()",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L23"
+    },
+    {
+      "id": "tests_browser_test_helpers_install_offline_route_handle_route",
+      "label": "handle_route()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "code",
+      "norm_label": "handle_route()",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L25"
+    },
+    {
       "id": "tests_browser_test_helpers_wait_for_plotly",
       "label": "wait_for_plotly()",
       "_callable": true,
@@ -4599,6 +4771,18 @@
       "norm_label": ".assert_browser_clean()",
       "source_file": "tests/test_html_reports_browser.py",
       "source_location": "L116"
+    },
+    {
+      "id": "tests_test_html_reports_browser_offlinebrowsertestcase_setup",
+      "label": ".setUp()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "code",
+      "norm_label": ".setup()",
+      "source_file": "tests/test_html_reports_browser.py",
+      "source_location": "L104"
     },
     {
       "id": "tests_test_html_reports_browser_offlinebrowsertestcase_teardown",
@@ -4767,18 +4951,6 @@
       "norm_label": ".json()",
       "source_file": "tests/test_fmp_client.py",
       "source_location": "L34"
-    },
-    {
-      "id": "tests_test_fmp_client_load",
-      "label": "_load()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "FakeResponse",
-      "file_type": "code",
-      "norm_label": "_load()",
-      "source_file": "tests/test_fmp_client.py",
-      "source_location": "L16"
     },
     {
       "id": "tests_test_fmp_client_transporttests_setup",
@@ -5115,6 +5287,18 @@
       "norm_label": "._implied_from_options()",
       "source_file": "US Asset Manager.py",
       "source_location": "L1345"
+    },
+    {
+      "id": "us_asset_manager_impliedmomentsengine_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "ImpliedMomentsEngine",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1240"
     },
     {
       "id": "us_asset_manager_impliedmomentsengine_interpolate_to_target",
@@ -5717,6 +5901,17 @@
       "source_location": "L1"
     },
     {
+      "id": "scripts_sweep_tail_penalty",
+      "label": "sweep_tail_penalty.py",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "code",
+      "norm_label": "sweep_tail_penalty.py",
+      "source_file": "scripts/sweep_tail_penalty.py",
+      "source_location": "L1"
+    },
+    {
       "id": "risk_estimators_rationale_106",
       "label": "Covarianza EWMA. Parametros ---------- returns : DataFrame o array (T, n) de\u2026",
       "_origin": "ast",
@@ -5805,6 +6000,28 @@
       "source_location": "L395"
     },
     {
+      "id": "risk_estimators_rationale_434",
+      "label": "Estandariza cada columna a media 0 y desviacion 1. Conserva la dependencia\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "estandariza cada columna a media 0 y desviacion 1. conserva la dependencia...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L434"
+    },
+    {
+      "id": "risk_estimators_rationale_454",
+      "label": "Lleva un panel estandarizado a (mu_target, sd_target) por columna.\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "lleva un panel estandarizado a (mu_target, sd_target) por columna....",
+      "source_file": "risk_estimators.py",
+      "source_location": "L454"
+    },
+    {
       "id": "risk_estimators_rationale_465",
       "label": "Momentos centrales 1 a 4 del retorno del portafolio, en O(J*n). Equivale a\u2026",
       "_origin": "ast",
@@ -5827,6 +6044,50 @@
       "source_location": "L494"
     },
     {
+      "id": "risk_estimators_rationale_564",
+      "label": "True si (asimetria, curtosis TOTAL) es un par posible y K <= kurt_max.",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "true si (asimetria, curtosis total) es un par posible y k <= kurt_max.",
+      "source_file": "risk_estimators.py",
+      "source_location": "L564"
+    },
+    {
+      "id": "risk_estimators_rationale_571",
+      "label": "Tope de MFIK segun la profundidad de la cadena OTM. Un indice liquido (SPY)\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "tope de mfik segun la profundidad de la cadena otm. un indice liquido (spy)...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L571"
+    },
+    {
+      "id": "risk_estimators_rationale_595",
+      "label": "Tope de MFIK (curtosis total) al plazo de la cadena. El exceso sobre 3 escala\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "tope de mfik (curtosis total) al plazo de la cadena. el exceso sobre 3 escala...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L595"
+    },
+    {
+      "id": "risk_estimators_rationale_611",
+      "label": "Transformacion de Cornish-Fisher con parametros (s, k); vectorizada en z.",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "transformacion de cornish-fisher con parametros (s, k); vectorizada en z.",
+      "source_file": "risk_estimators.py",
+      "source_location": "L611"
+    },
+    {
       "id": "risk_estimators_rationale_620",
       "label": "Intervalo (k_lo, k_hi) de k en que z -> z_cf es estrictamente creciente. Forma\u2026",
       "_origin": "ast",
@@ -5836,6 +6097,61 @@
       "norm_label": "intervalo (k_lo, k_hi) de k en que z -> z_cf es estrictamente creciente. forma...",
       "source_file": "risk_estimators.py",
       "source_location": "L620"
+    },
+    {
+      "id": "risk_estimators_rationale_636",
+      "label": "(sd, asimetria, exceso de curtosis) de z_cf(Z), Z ~ N(0,1). Media = 0.",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "(sd, asimetria, exceso de curtosis) de z_cf(z), z ~ n(0,1). media = 0.",
+      "source_file": "risk_estimators.py",
+      "source_location": "L636"
+    },
+    {
+      "id": "risk_estimators_rationale_644",
+      "label": "Parametros (s, k) cuya transformacion CF tiene los momentos pedidos. Busca\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "parametros (s, k) cuya transformacion cf tiene los momentos pedidos. busca...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L644"
+    },
+    {
+      "id": "risk_estimators_rationale_678",
+      "label": "Cuantil y ES de la cola izquierda (probabilidad alpha), estandarizados. La\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "cuantil y es de la cola izquierda (probabilidad alpha), estandarizados. la...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L678"
+    },
+    {
+      "id": "risk_estimators_rationale_694",
+      "label": "ES estandarizado y sus derivadas respecto a (skew, exkurt), por diferencias\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "es estandarizado y sus derivadas respecto a (skew, exkurt), por diferencias...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L694"
+    },
+    {
+      "id": "risk_estimators_rationale_704",
+      "label": "VaR y CVaR (como retornos, negativos en perdida) de Cornish-Fisher. 'exact' es\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "var y cvar (como retornos, negativos en perdida) de cornish-fisher. 'exact' es...",
+      "source_file": "risk_estimators.py",
+      "source_location": "L704"
     },
     {
       "id": "risk_estimators_rationale_80",
@@ -5869,6 +6185,17 @@
       "norm_label": "tamano de muestra efectivo de kish: 1 / sum(w^2). con pesos iguales devuelve n....",
       "source_file": "risk_estimators.py",
       "source_location": "L95"
+    },
+    {
+      "id": "scripts_sweep_tail_penalty_rationale_1",
+      "label": "Barrido de \u03b3 para la penalizaci\u00f3n de cola, con datos reales (necesita\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "numpy",
+      "file_type": "rationale",
+      "norm_label": "barrido de \u03b3 para la penalizacion de cola, con datos reales (necesita...",
+      "source_file": "scripts/sweep_tail_penalty.py",
+      "source_location": "L1"
     },
     {
       "id": "skipunless",
@@ -5948,17 +6275,6 @@
       "source_location": "L122"
     },
     {
-      "id": "pipeline_io_rationale_189",
-      "label": "Profile name: ``--risk-profile`` beats ``RISK_PROFILE``, and both beat\u2026",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "pipeline_io.py",
-      "file_type": "rationale",
-      "norm_label": "profile name: ``--risk-profile`` beats ``risk_profile``, and both beat...",
-      "source_file": "pipeline_io.py",
-      "source_location": "L189"
-    },
-    {
       "id": "pipeline_io_rationale_278",
       "label": "Write one JSON file atomically. Return False (and warn) on failure.",
       "_origin": "ast",
@@ -6025,25 +6341,14 @@
       "source_location": "L39"
     },
     {
-      "id": "tests_browser_test_helpers",
-      "label": "browser_test_helpers.py",
+      "id": "tests_test_report_pdf",
+      "label": "test_report_pdf.py",
       "_origin": "ast",
       "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "community_name": "test_report_pdf.py",
       "file_type": "code",
-      "norm_label": "browser_test_helpers.py",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_browser_test_helpers_rationale_1",
-      "label": "Shared offline browser helpers for Plotly report tests.",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "rationale",
-      "norm_label": "shared offline browser helpers for plotly report tests.",
-      "source_file": "tests/browser_test_helpers.py",
+      "norm_label": "test_report_pdf.py",
+      "source_file": "tests/test_report_pdf.py",
       "source_location": "L1"
     },
     {
@@ -6051,44 +6356,33 @@
       "label": "Launch Chromium with external name resolution disabled.",
       "_origin": "ast",
       "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "community_name": "test_report_pdf.py",
       "file_type": "rationale",
       "norm_label": "launch chromium with external name resolution disabled.",
       "source_file": "tests/browser_test_helpers.py",
       "source_location": "L15"
     },
     {
-      "id": "tests_browser_test_helpers_rationale_24",
-      "label": "Allow local and embedded content while recording external requests.",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "rationale",
-      "norm_label": "allow local and embedded content while recording external requests.",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L24"
-    },
-    {
-      "id": "tests_browser_test_helpers_rationale_40",
-      "label": "Collect page failures and console errors, ignoring favicon 404 noise.",
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
-      "file_type": "rationale",
-      "norm_label": "collect page failures and console errors, ignoring favicon 404 noise.",
-      "source_file": "tests/browser_test_helpers.py",
-      "source_location": "L40"
-    },
-    {
       "id": "tests_browser_test_helpers_rationale_8",
       "label": "Import the synchronous Playwright API only when a browser test runs.",
       "_origin": "ast",
       "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "community_name": "test_report_pdf.py",
       "file_type": "rationale",
       "norm_label": "import the synchronous playwright api only when a browser test runs.",
       "source_file": "tests/browser_test_helpers.py",
       "source_location": "L8"
+    },
+    {
+      "id": "tests_test_report_pdf_rationale_1",
+      "label": "Tests for offline report PDF export.",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "test_report_pdf.py",
+      "file_type": "rationale",
+      "norm_label": "tests for offline report pdf export.",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L1"
     },
     {
       "id": "tests_test_horizon_rationale_27",
@@ -6110,6 +6404,39 @@
       "file_type": "code",
       "norm_label": "us asset manager.py",
       "source_file": "US Asset Manager.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "pipeline_io_rationale_158",
+      "label": "Expiry window (min, max DTE) scaled with the horizon. The window keeps the\u2026",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "US Asset Manager.py",
+      "file_type": "rationale",
+      "norm_label": "expiry window (min, max dte) scaled with the horizon. the window keeps the...",
+      "source_file": "pipeline_io.py",
+      "source_location": "L158"
+    },
+    {
+      "id": "us_asset_manager_rationale_1934",
+      "label": "Asimetr\u00eda, curtosis y VaR/CVaR del portafolio al horizonte com\u00fan\u2026",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "US Asset Manager.py",
+      "file_type": "rationale",
+      "norm_label": "asimetria, curtosis y var/cvar del portafolio al horizonte comun...",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1934"
+    },
+    {
+      "id": "tests_test_fmp_client",
+      "label": "test_fmp_client.py",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "test_optimizer.py",
+      "file_type": "code",
+      "norm_label": "test_fmp_client.py",
+      "source_file": "tests/test_fmp_client.py",
       "source_location": "L1"
     },
     {
@@ -6154,6 +6481,17 @@
       "file_type": "code",
       "norm_label": "test_risk_estimators.py",
       "source_file": "tests/test_risk_estimators.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_test_fmp_client_rationale_1",
+      "label": "Pruebas del transporte FMP compartido y de su envoltura tolerante en\u2026",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "test_optimizer.py",
+      "file_type": "rationale",
+      "norm_label": "pruebas del transporte fmp compartido y de su envoltura tolerante en...",
+      "source_file": "tests/test_fmp_client.py",
       "source_location": "L1"
     },
     {
@@ -6278,17 +6616,6 @@
       "source_location": ""
     },
     {
-      "id": "risk_estimators_rationale_704",
-      "label": "VaR y CVaR (como retornos, negativos en perdida) de Cornish-Fisher. 'exact' es\u2026",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "DataFrame",
-      "file_type": "rationale",
-      "norm_label": "var y cvar (como retornos, negativos en perdida) de cornish-fisher. 'exact' es...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L704"
-    },
-    {
       "id": "us_asset_manager_rationale_1490",
       "label": "\u03c3 bajo la medida f\u00edsica. La MFIV de opciones lleva la prima de varianza.",
       "_origin": "ast",
@@ -6355,15 +6682,15 @@
       "source_location": "L1767"
     },
     {
-      "id": "us_asset_manager_rationale_1934",
-      "label": "Asimetr\u00eda, curtosis y VaR/CVaR del portafolio al horizonte com\u00fan\u2026",
+      "id": "us_asset_manager_rationale_2237",
+      "label": "Fases 0 a 2: universo, matriz B, momentos, \u03a3 y \u03bc. Es lo que reutilizan el\u2026",
       "_origin": "ast",
       "community": 2,
       "community_name": "DataFrame",
       "file_type": "rationale",
-      "norm_label": "asimetria, curtosis y var/cvar del portafolio al horizonte comun...",
+      "norm_label": "fases 0 a 2: universo, matriz b, momentos, \u03c3 y \u03bc. es lo que reutilizan el...",
       "source_file": "US Asset Manager.py",
-      "source_location": "L1934"
+      "source_location": "L2237"
     },
     {
       "id": "us_asset_manager_rationale_445",
@@ -6425,7 +6752,7 @@
       "label": "datetime",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "code",
       "norm_label": "datetime",
       "source_file": "",
@@ -6436,7 +6763,7 @@
       "label": "Contrato v1: corp_fr_latest.json y una copia con marca de tiempo. Nunca aborta\u2026",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "rationale",
       "norm_label": "contrato v1: corp_fr_latest.json y una copia con marca de tiempo. nunca aborta...",
       "source_file": "Corp_FR_Optimization.py",
@@ -6447,7 +6774,7 @@
       "label": "Drop weights ``< 1e-6``, renormalize, and round so they sum to 1. Tickers are\u2026",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "rationale",
       "norm_label": "drop weights ``< 1e-6``, renormalize, and round so they sum to 1. tickers are...",
       "source_file": "pipeline_io.py",
@@ -6458,7 +6785,7 @@
       "label": "Current time in America/Bogota, or ``moment`` converted to that zone. A naive\u2026",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "rationale",
       "norm_label": "current time in america/bogota, or ``moment`` converted to that zone. a naive...",
       "source_file": "pipeline_io.py",
@@ -6469,7 +6796,7 @@
       "label": "ISO 8601 with seconds and offset, e.g. ``2026-10-05T16:40:12-05:00``.",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "rationale",
       "norm_label": "iso 8601 with seconds and offset, e.g. ``2026-10-05t16:40:12-05:00``.",
       "source_file": "pipeline_io.py",
@@ -6480,22 +6807,22 @@
       "label": "``YYYYMMDDTHHMMSS`` in America/Bogota, for timestamped filenames.",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "rationale",
       "norm_label": "``yyyymmddthhmmss`` in america/bogota, for timestamped filenames.",
       "source_file": "pipeline_io.py",
       "source_location": "L44"
     },
     {
-      "id": "us_asset_manager_rationale_2381",
+      "id": "us_asset_manager_rationale_2388",
       "label": "Contrato v1: portfolio_latest.json y una copia con marca de tiempo. Nunca\u2026",
       "_origin": "ast",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "file_type": "rationale",
       "norm_label": "contrato v1: portfolio_latest.json y una copia con marca de tiempo. nunca...",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2381"
+      "source_location": "L2388"
     },
     {
       "id": "date",
@@ -6546,29 +6873,18 @@
       "label": "Collection",
       "_origin": "ast",
       "community": 22,
-      "community_name": ".prepare",
+      "community_name": "Mean-variance optimization with factor targets",
       "file_type": "code",
       "norm_label": "collection",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "us_asset_manager_rationale_2237",
-      "label": "Fases 0 a 2: universo, matriz B, momentos, \u03a3 y \u03bc. Es lo que reutilizan el\u2026",
-      "_origin": "ast",
-      "community": 22,
-      "community_name": ".prepare",
-      "file_type": "rationale",
-      "norm_label": "fases 0 a 2: universo, matriz b, momentos, \u03c3 y \u03bc. es lo que reutilizan el...",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L2237"
-    },
-    {
       "id": "us_asset_manager_rationale_414",
       "label": "Beta de mercado por ETF: OLS sobre retornos simples semanales (USD) contra\u2026",
       "_origin": "ast",
       "community": 22,
-      "community_name": ".prepare",
+      "community_name": "Mean-variance optimization with factor targets",
       "file_type": "rationale",
       "norm_label": "beta de mercado por etf: ols sobre retornos simples semanales (usd) contra...",
       "source_file": "US Asset Manager.py",
@@ -6608,158 +6924,125 @@
       "source_location": ""
     },
     {
-      "id": "risk_estimators_rationale_434",
-      "label": "Estandariza cada columna a media 0 y desviacion 1. Conserva la dependencia\u2026",
+      "id": "report_pdf",
+      "label": "report_pdf.py",
       "_origin": "ast",
       "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "estandariza cada columna a media 0 y desviacion 1. conserva la dependencia...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L434"
-    },
-    {
-      "id": "risk_estimators_rationale_454",
-      "label": "Lleva un panel estandarizado a (mu_target, sd_target) por columna.\u2026",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "lleva un panel estandarizado a (mu_target, sd_target) por columna....",
-      "source_file": "risk_estimators.py",
-      "source_location": "L454"
-    },
-    {
-      "id": "risk_estimators_rationale_564",
-      "label": "True si (asimetria, curtosis TOTAL) es un par posible y K <= kurt_max.",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "true si (asimetria, curtosis total) es un par posible y k <= kurt_max.",
-      "source_file": "risk_estimators.py",
-      "source_location": "L564"
-    },
-    {
-      "id": "risk_estimators_rationale_611",
-      "label": "Transformacion de Cornish-Fisher con parametros (s, k); vectorizada en z.",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "transformacion de cornish-fisher con parametros (s, k); vectorizada en z.",
-      "source_file": "risk_estimators.py",
-      "source_location": "L611"
-    },
-    {
-      "id": "risk_estimators_rationale_636",
-      "label": "(sd, asimetria, exceso de curtosis) de z_cf(Z), Z ~ N(0,1). Media = 0.",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "(sd, asimetria, exceso de curtosis) de z_cf(z), z ~ n(0,1). media = 0.",
-      "source_file": "risk_estimators.py",
-      "source_location": "L636"
-    },
-    {
-      "id": "risk_estimators_rationale_644",
-      "label": "Parametros (s, k) cuya transformacion CF tiene los momentos pedidos. Busca\u2026",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "parametros (s, k) cuya transformacion cf tiene los momentos pedidos. busca...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L644"
-    },
-    {
-      "id": "risk_estimators_rationale_678",
-      "label": "Cuantil y ES de la cola izquierda (probabilidad alpha), estandarizados. La\u2026",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "cuantil y es de la cola izquierda (probabilidad alpha), estandarizados. la...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L678"
-    },
-    {
-      "id": "risk_estimators_rationale_694",
-      "label": "ES estandarizado y sus derivadas respecto a (skew, exkurt), por diferencias\u2026",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "cornish_fisher_moments",
-      "file_type": "rationale",
-      "norm_label": "es estandarizado y sus derivadas respecto a (skew, exkurt), por diferencias...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L694"
-    },
-    {
-      "id": "scripts_sweep_tail_penalty",
-      "label": "sweep_tail_penalty.py",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "report_pdf.py",
       "file_type": "code",
-      "norm_label": "sweep_tail_penalty.py",
-      "source_file": "scripts/sweep_tail_penalty.py",
+      "norm_label": "report_pdf.py",
+      "source_file": "report_pdf.py",
       "source_location": "L1"
+    },
+    {
+      "id": "runtimeerror",
+      "label": "RuntimeError",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "code",
+      "norm_label": "runtimeerror",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "simplehttprequesthandler",
+      "label": "SimpleHTTPRequestHandler",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "code",
+      "norm_label": "simplehttprequesthandler",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "report_pdf_rationale_1",
+      "label": "Offline HTML-to-PDF export for one-shot reports. Kept identical in Portfolio-\u2026",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "rationale",
+      "norm_label": "offline html-to-pdf export for one-shot reports. kept identical in portfolio-...",
+      "source_file": "report_pdf.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "report_pdf_rationale_127",
+      "label": "Command-line entry point.",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "rationale",
+      "norm_label": "command-line entry point.",
+      "source_file": "report_pdf.py",
+      "source_location": "L127"
+    },
+    {
+      "id": "report_pdf_rationale_19",
+      "label": "Raised when a report cannot be rendered as an offline PDF.",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "rationale",
+      "norm_label": "raised when a report cannot be rendered as an offline pdf.",
+      "source_file": "report_pdf.py",
+      "source_location": "L19"
+    },
+    {
+      "id": "report_pdf_rationale_23",
+      "label": "Return the PDF path beside an HTML report.",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "rationale",
+      "norm_label": "return the pdf path beside an html report.",
+      "source_file": "report_pdf.py",
+      "source_location": "L23"
+    },
+    {
+      "id": "report_pdf_rationale_41",
+      "label": "Render a local HTML report with network access disabled.",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "file_type": "rationale",
+      "norm_label": "render a local html report with network access disabled.",
+      "source_file": "report_pdf.py",
+      "source_location": "L41"
+    },
+    {
+      "id": "pipeline_io_rationale_189",
+      "label": "Profile name: ``--risk-profile`` beats ``RISK_PROFILE``, and both beat\u2026",
+      "_origin": "ast",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
+      "file_type": "rationale",
+      "norm_label": "profile name: ``--risk-profile`` beats ``risk_profile``, and both beat...",
+      "source_file": "pipeline_io.py",
+      "source_location": "L189"
     },
     {
       "id": "pipeline_io_rationale_49",
       "label": "Annual risk-free rate (decimal): ``RISK_FREE_RATE`` when set, else ``default``.\u2026",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 36,
+      "community_name": "resolve_risk_free_rate",
       "file_type": "rationale",
       "norm_label": "annual risk-free rate (decimal): ``risk_free_rate`` when set, else ``default``....",
       "source_file": "pipeline_io.py",
       "source_location": "L49"
     },
     {
-      "id": "scripts_sweep_tail_penalty_rationale_1",
-      "label": "Barrido de \u03b3 para la penalizaci\u00f3n de cola, con datos reales (necesita\u2026",
+      "id": "tests_browser_test_helpers",
+      "label": "browser_test_helpers.py",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "file_type": "rationale",
-      "norm_label": "barrido de \u03b3 para la penalizacion de cola, con datos reales (necesita...",
-      "source_file": "scripts/sweep_tail_penalty.py",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "code",
+      "norm_label": "browser_test_helpers.py",
+      "source_file": "tests/browser_test_helpers.py",
       "source_location": "L1"
-    },
-    {
-      "id": "pipeline_io_rationale_158",
-      "label": "Expiry window (min, max DTE) scaled with the horizon. The window keeps the\u2026",
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "math",
-      "file_type": "rationale",
-      "norm_label": "expiry window (min, max dte) scaled with the horizon. the window keeps the...",
-      "source_file": "pipeline_io.py",
-      "source_location": "L158"
-    },
-    {
-      "id": "risk_estimators_rationale_571",
-      "label": "Tope de MFIK segun la profundidad de la cadena OTM. Un indice liquido (SPY)\u2026",
-      "_origin": "ast",
-      "community": 34,
-      "community_name": "mfik_cap_tenor",
-      "file_type": "rationale",
-      "norm_label": "tope de mfik segun la profundidad de la cadena otm. un indice liquido (spy)...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L571"
-    },
-    {
-      "id": "risk_estimators_rationale_595",
-      "label": "Tope de MFIK (curtosis total) al plazo de la cadena. El exceso sobre 3 escala\u2026",
-      "_origin": "ast",
-      "community": 34,
-      "community_name": "mfik_cap_tenor",
-      "file_type": "rationale",
-      "norm_label": "tope de mfik (curtosis total) al plazo de la cadena. el exceso sobre 3 escala...",
-      "source_file": "risk_estimators.py",
-      "source_location": "L595"
     },
     {
       "id": "tests_test_html_reports_browser",
@@ -6784,6 +7067,39 @@
       "source_location": ""
     },
     {
+      "id": "tests_browser_test_helpers_rationale_1",
+      "label": "Shared offline browser helpers for Plotly report tests.",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "rationale",
+      "norm_label": "shared offline browser helpers for plotly report tests.",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_browser_test_helpers_rationale_24",
+      "label": "Allow local and embedded content while recording external requests.",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "rationale",
+      "norm_label": "allow local and embedded content while recording external requests.",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L24"
+    },
+    {
+      "id": "tests_browser_test_helpers_rationale_40",
+      "label": "Collect page failures and console errors, ignoring favicon 404 noise.",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
+      "file_type": "rationale",
+      "norm_label": "collect page failures and console errors, ignoring favicon 404 noise.",
+      "source_file": "tests/browser_test_helpers.py",
+      "source_location": "L40"
+    },
+    {
       "id": "tests_browser_test_helpers_rationale_51",
       "label": "Wait until the requested number of plots has rendered SVG content.",
       "_origin": "ast",
@@ -6803,28 +7119,6 @@
       "file_type": "rationale",
       "norm_label": "offline browser checks for the generated plotly html reports.",
       "source_file": "tests/test_html_reports_browser.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_test_fmp_client",
-      "label": "test_fmp_client.py",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "FakeResponse",
-      "file_type": "code",
-      "norm_label": "test_fmp_client.py",
-      "source_file": "tests/test_fmp_client.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_test_fmp_client_rationale_1",
-      "label": "Pruebas del transporte FMP compartido y de su envoltura tolerante en\u2026",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "FakeResponse",
-      "file_type": "rationale",
-      "norm_label": "pruebas del transporte fmp compartido y de su envoltura tolerante en...",
-      "source_file": "tests/test_fmp_client.py",
       "source_location": "L1"
     },
     {
@@ -6971,6 +7265,21 @@
       "source_location": "L1"
     },
     {
+      "id": "readme_bkm_horizon_scaling",
+      "label": "BKM horizon scaling to 60 days and MFIK cap (mfik_cap_tenor)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 1,
+      "community_name": "numpy",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "bkm horizon scaling to 60 days and mfik cap (mfik_cap_tenor)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
       "id": "readme_portfolio_moments",
       "label": "Portfolio skewness/kurtosis in O(J n) with analytical gradients",
       "_origin": "semantic",
@@ -7001,46 +7310,93 @@
       "source_url": null
     },
     {
-      "id": "readme_bjerksund_stensland",
-      "label": "Bjerksund-Stensland American option model",
+      "id": "readme_factor_loading_matrix_b",
+      "label": "Factor loading matrix B (Value, Growth, Momentum, Quality)",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 22,
+      "community_name": "Mean-variance optimization with factor targets",
       "contributor": null,
       "file_type": "concept",
-      "norm_label": "bjerksund-stensland american option model",
+      "norm_label": "factor loading matrix b (value, growth, momentum, quality)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
     },
     {
-      "id": "readme_bkm_implied_moments",
-      "label": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "id": "readme_mean_variance_optimization",
+      "label": "Mean-variance optimization with factor targets",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 22,
+      "community_name": "Mean-variance optimization with factor targets",
       "contributor": null,
       "file_type": "concept",
-      "norm_label": "bakshi-kapadia-madan (bkm) model-free implied moments",
+      "norm_label": "mean-variance optimization with factor targets",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
     },
     {
-      "id": "readme_composite_credit_score",
-      "label": "Composite Credit Score",
+      "id": "readme_solvers",
+      "label": "Solvers: cvxpy, scipy SLSQP, QUBO simulated annealing",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 22,
+      "community_name": "Mean-variance optimization with factor targets",
       "contributor": null,
       "file_type": "concept",
-      "norm_label": "composite credit score",
+      "norm_label": "solvers: cvxpy, scipy slsqp, qubo simulated annealing",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_target_feasibility_lp",
+      "label": "Linear program for factor target feasibility and relaxation",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 22,
+      "community_name": "Mean-variance optimization with factor targets",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "linear program for factor target feasibility and relaxation",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_market_beta_constraint",
+      "label": "Market risk via beta band (market_beta, Blume shrinkage, raw beta for commodities)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 22,
+      "community_name": "Mean-variance optimization with factor targets",
+      "contributor": null,
+      "file_type": "rationale",
+      "norm_label": "market risk via beta band (market_beta, blume shrinkage, raw beta for commodities)",
+      "rationale": "Market risk is controlled by SPY beta, not volatility; no low-vol factor so conservative portfolios are not forced into low-vol assets.",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_returns_based_style_regression",
+      "label": "Returns-based style regression",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 22,
+      "community_name": "Mean-variance optimization with factor targets",
+      "contributor": null,
+      "file_type": "rationale",
+      "norm_label": "returns-based style regression",
+      "rationale": "Fallback for Value/Growth/Quality when the FMP plan lacks etf/holdings.",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7052,7 +7408,7 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "cornish-fisher var/cvar (maillard 2012)",
@@ -7067,100 +7423,10 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "ig corporate bond issuer screening pipeline (run_pipeline)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_covariance_drd",
-      "label": "Covariance Sigma = D R D",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "covariance sigma = d r d",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_covariance_ewma_shrunk",
-      "label": "cov_ewma_shrunk (EWMA, Kish ESS, Ledoit-Wolf, nearest PSD)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "cov_ewma_shrunk (ewma, kish ess, ledoit-wolf, nearest psd)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_disclaimer",
-      "label": "Academic-use disclaimer",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "academic-use disclaimer",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_ewma_ledoit_wolf",
-      "label": "EWMA correlation with Ledoit-Wolf shrinkage",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "ewma correlation with ledoit-wolf shrinkage",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_expected_return_mu",
-      "label": "Expected return mu (75% CAPM, 25% historical)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "expected return mu (75% capm, 25% historical)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_factor_loading_matrix_b",
-      "label": "Factor loading matrix B (Value, Growth, Momentum, Quality)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "factor loading matrix b (value, growth, momentum, quality)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7172,7 +7438,7 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "free cash flow screen (increasing or cagr > 3%)",
@@ -7187,7 +7453,7 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "financial modeling prep (fmp) api",
@@ -7202,25 +7468,10 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "shared fmp http transport (throttling, retries, cache, plan-error detection)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_fred_api",
-      "label": "FRED API",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "fred api",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7232,70 +7483,10 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "phase 0 hybrid etf universe",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_implied_tail_model",
-      "label": "ImpliedTailModel (Cornish-Fisher marginals, Gaussian copula)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "impliedtailmodel (cornish-fisher marginals, gaussian copula)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_investment_profiles",
-      "label": "Investment profiles (Conservador, Crecimiento, Momentum/Agresivo)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "investment profiles (conservador, crecimiento, momentum/agresivo)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_mean_variance_optimization",
-      "label": "Mean-variance optimization with factor targets",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "mean-variance optimization with factor targets",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_minimum_required_yield",
-      "label": "Minimum required yield by tenor",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "minimum required yield by tenor",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7307,7 +7498,7 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "offline unit tests (python -m unittest discover -s tests)",
@@ -7322,7 +7513,7 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "passiveetfallocationpipeline (etf allocation pipeline)",
@@ -7337,85 +7528,10 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "pipeline json contract v1",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_polygon_api",
-      "label": "Polygon.io options API",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "polygon.io options api",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_refinitiv_workspace_checklist",
-      "label": "Refinitiv Workspace bond-finding checklist (YTW, OAS buy rule)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "refinitiv workspace bond-finding checklist (ytw, oas buy rule)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_risk_free_curve",
-      "label": "Risk-free curve (FRED Treasury CMT, PCHIP)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "risk-free curve (fred treasury cmt, pchip)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_risk_free_rate_override",
-      "label": "RISK_FREE_RATE override (resolve_risk_free_rate)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "risk_free_rate override (resolve_risk_free_rate)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_risk_profile_selection",
-      "label": "Risk profile selection (--risk-profile / RISK_PROFILE, resolve_risk_profile)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "risk profile selection (--risk-profile / risk_profile, resolve_risk_profile)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7427,40 +7543,10 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "solvency screening (debt/ebitda, ebitda/interest, market cap)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_solvers",
-      "label": "Solvers: cvxpy, scipy SLSQP, QUBO simulated annealing",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "solvers: cvxpy, scipy slsqp, qubo simulated annealing",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_tail_penalty",
-      "label": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "tail penalty (use_tail_penalty, one-sided es_cf - es_gaussian, slsqp)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7472,40 +7558,10 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "final portfolio tail-risk measure (gaussian vs cornish-fisher var/cvar)",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_target_feasibility_lp",
-      "label": "Linear program for factor target feasibility and relaxation",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "linear program for factor target feasibility and relaxation",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null
-    },
-    {
-      "id": "readme_weighting_schemes",
-      "label": "Weighting schemes (Equal Weight, Credit-Score Weight)",
-      "_origin": "semantic",
-      "author": null,
-      "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
-      "contributor": null,
-      "file_type": "concept",
-      "norm_label": "weighting schemes (equal weight, credit-score weight)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7517,7 +7573,7 @@
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "document",
       "norm_label": "portfolio_dashboard.html",
@@ -7526,17 +7582,122 @@
       "source_url": null
     },
     {
-      "id": "readme_market_beta_constraint",
-      "label": "Market risk via beta band (market_beta, Blume shrinkage, raw beta for commodities)",
+      "id": "readme_replica_removal",
+      "label": "Replica removal (correlation >= 0.985)",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
       "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community_name": "IG corporate bond issuer screening pipeline (run_pipeline)",
       "contributor": null,
       "file_type": "rationale",
-      "norm_label": "market risk via beta band (market_beta, blume shrinkage, raw beta for commodities)",
-      "rationale": "Market risk is controlled by SPY beta, not volatility; no low-vol factor so conservative portfolios are not forced into low-vol assets.",
+      "norm_label": "replica removal (correlation >= 0.985)",
+      "rationale": "Drops dynamic ETFs that nearly duplicate an ETF already in the universe.",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_bjerksund_stensland",
+      "label": "Bjerksund-Stensland American option model",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "bjerksund-stensland american option model",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_bkm_implied_moments",
+      "label": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "bakshi-kapadia-madan (bkm) model-free implied moments",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_covariance_drd",
+      "label": "Covariance Sigma = D R D",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "covariance sigma = d r d",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_covariance_ewma_shrunk",
+      "label": "cov_ewma_shrunk (EWMA, Kish ESS, Ledoit-Wolf, nearest PSD)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "cov_ewma_shrunk (ewma, kish ess, ledoit-wolf, nearest psd)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_ewma_ledoit_wolf",
+      "label": "EWMA correlation with Ledoit-Wolf shrinkage",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "ewma correlation with ledoit-wolf shrinkage",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_implied_tail_model",
+      "label": "ImpliedTailModel (Cornish-Fisher marginals, Gaussian copula)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "impliedtailmodel (cornish-fisher marginals, gaussian copula)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_polygon_api",
+      "label": "Polygon.io options API",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "polygon.io options api",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7547,8 +7708,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
       "contributor": null,
       "file_type": "rationale",
       "norm_label": "stale option price filter (options_max_price_age_days)",
@@ -7563,8 +7724,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 32,
+      "community_name": "Bakshi-Kapadia-Madan (BKM) model-free implied moments",
       "contributor": null,
       "file_type": "rationale",
       "norm_label": "q to p measure correction (variance/correlation risk premium)",
@@ -7574,49 +7735,46 @@
       "source_url": null
     },
     {
-      "id": "readme_replica_removal",
-      "label": "Replica removal (correlation >= 0.985)",
+      "id": "readme_investment_profiles",
+      "label": "Investment profiles (Conservador, Crecimiento, Momentum/Agresivo)",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
       "contributor": null,
-      "file_type": "rationale",
-      "norm_label": "replica removal (correlation >= 0.985)",
-      "rationale": "Drops dynamic ETFs that nearly duplicate an ETF already in the universe.",
+      "file_type": "concept",
+      "norm_label": "investment profiles (conservador, crecimiento, momentum/agresivo)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
     },
     {
-      "id": "readme_returns_based_style_regression",
-      "label": "Returns-based style regression",
+      "id": "readme_risk_profile_selection",
+      "label": "Risk profile selection (--risk-profile / RISK_PROFILE, resolve_risk_profile)",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
       "contributor": null,
-      "file_type": "rationale",
-      "norm_label": "returns-based style regression",
-      "rationale": "Fallback for Value/Growth/Quality when the FMP plan lacks etf/holdings.",
+      "file_type": "concept",
+      "norm_label": "risk profile selection (--risk-profile / risk_profile, resolve_risk_profile)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
     },
     {
-      "id": "readme_synthetic_rating",
-      "label": "Synthetic credit rating (Damodaran coverage table + Debt/EBITDA)",
+      "id": "readme_tail_penalty",
+      "label": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
       "contributor": null,
-      "file_type": "rationale",
-      "norm_label": "synthetic credit rating (damodaran coverage table + debt/ebitda)",
-      "rationale": "FMP rating field is an equity score, not a credit rating, so a synthetic rating is used.",
+      "file_type": "concept",
+      "norm_label": "tail penalty (use_tail_penalty, one-sided es_cf - es_gaussian, slsqp)",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7627,8 +7785,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 35,
+      "community_name": "Tail penalty (USE_TAIL_PENALTY, one-sided ES_CF - ES_Gaussian, SLSQP)",
       "contributor": null,
       "file_type": "rationale",
       "norm_label": "tail penalty gamma sweep (2026-10-07)",
@@ -7638,16 +7796,152 @@
       "source_url": null
     },
     {
-      "id": "readme_bkm_horizon_scaling",
-      "label": "BKM horizon scaling to 60 days and MFIK cap (mfik_cap_tenor)",
+      "id": "readme_expected_return_mu",
+      "label": "Expected return mu (75% CAPM, 25% historical)",
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 34,
-      "community_name": "mfik_cap_tenor",
+      "community": 36,
+      "community_name": "resolve_risk_free_rate",
       "contributor": null,
       "file_type": "concept",
-      "norm_label": "bkm horizon scaling to 60 days and mfik cap (mfik_cap_tenor)",
+      "norm_label": "expected return mu (75% capm, 25% historical)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_fred_api",
+      "label": "FRED API",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 36,
+      "community_name": "resolve_risk_free_rate",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "fred api",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_risk_free_curve",
+      "label": "Risk-free curve (FRED Treasury CMT, PCHIP)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 36,
+      "community_name": "resolve_risk_free_rate",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "risk-free curve (fred treasury cmt, pchip)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_risk_free_rate_override",
+      "label": "RISK_FREE_RATE override (resolve_risk_free_rate)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 36,
+      "community_name": "resolve_risk_free_rate",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "risk_free_rate override (resolve_risk_free_rate)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_composite_credit_score",
+      "label": "Composite Credit Score",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 37,
+      "community_name": "Minimum required yield by tenor",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "composite credit score",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_disclaimer",
+      "label": "Academic-use disclaimer",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 37,
+      "community_name": "Minimum required yield by tenor",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "academic-use disclaimer",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_minimum_required_yield",
+      "label": "Minimum required yield by tenor",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 37,
+      "community_name": "Minimum required yield by tenor",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "minimum required yield by tenor",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_refinitiv_workspace_checklist",
+      "label": "Refinitiv Workspace bond-finding checklist (YTW, OAS buy rule)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 37,
+      "community_name": "Minimum required yield by tenor",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "refinitiv workspace bond-finding checklist (ytw, oas buy rule)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_weighting_schemes",
+      "label": "Weighting schemes (Equal Weight, Credit-Score Weight)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 37,
+      "community_name": "Minimum required yield by tenor",
+      "contributor": null,
+      "file_type": "concept",
+      "norm_label": "weighting schemes (equal weight, credit-score weight)",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null
+    },
+    {
+      "id": "readme_synthetic_rating",
+      "label": "Synthetic credit rating (Damodaran coverage table + Debt/EBITDA)",
+      "_origin": "semantic",
+      "author": null,
+      "captured_at": null,
+      "community": 37,
+      "community_name": "Minimum required yield by tenor",
+      "contributor": null,
+      "file_type": "rationale",
+      "norm_label": "synthetic credit rating (damodaran coverage table + debt/ebitda)",
+      "rationale": "FMP rating field is an equity score, not a credit rating, so a synthetic rating is used.",
       "source_file": "README.md",
       "source_location": null,
       "source_url": null
@@ -7770,6 +8064,30 @@
       "type": "external"
     },
     {
+      "id": "argparse",
+      "label": "argparse",
+      "_origin": "semantic",
+      "community": 1,
+      "community_name": "numpy",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "argparse",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "dataclasses",
+      "label": "dataclasses",
+      "_origin": "semantic",
+      "community": 1,
+      "community_name": "numpy",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "dataclasses",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "numpy",
       "label": "numpy",
       "_origin": "semantic",
@@ -7830,14 +8148,14 @@
       "type": "external"
     },
     {
-      "id": "logging",
-      "label": "logging",
+      "id": "math",
+      "label": "math",
       "_origin": "semantic",
       "community": 16,
       "community_name": "US Asset Manager.py",
       "external": true,
       "file_type": "concept",
-      "norm_label": "logging",
+      "norm_label": "math",
       "source_file": "",
       "type": "external"
     },
@@ -7986,18 +8304,6 @@
       "type": "external"
     },
     {
-      "id": "tempfile",
-      "label": "tempfile",
-      "_origin": "semantic",
-      "community": 17,
-      "community_name": "test_optimizer.py",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "tempfile",
-      "source_file": "",
-      "type": "external"
-    },
-    {
       "id": "unittest",
       "label": "unittest",
       "_origin": "semantic",
@@ -8014,7 +8320,7 @@
       "label": "os",
       "_origin": "semantic",
       "community": 20,
-      "community_name": "export_portfolio_json",
+      "community_name": "os",
       "external": true,
       "file_type": "concept",
       "norm_label": "os",
@@ -8094,38 +8400,38 @@
       "type": "external"
     },
     {
-      "id": "argparse",
-      "label": "argparse",
+      "id": "tempfile",
+      "label": "tempfile",
       "_origin": "semantic",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 29,
+      "community_name": "report_pdf.py",
       "external": true,
       "file_type": "concept",
-      "norm_label": "argparse",
+      "norm_label": "tempfile",
       "source_file": "",
       "type": "external"
     },
     {
-      "id": "dataclasses",
-      "label": "dataclasses",
+      "id": "logging",
+      "label": "logging",
       "_origin": "semantic",
-      "community": 3,
-      "community_name": "sweep_tail_penalty.py",
+      "community": 34,
+      "community_name": "logging",
       "external": true,
       "file_type": "concept",
-      "norm_label": "dataclasses",
+      "norm_label": "logging",
       "source_file": "",
       "type": "external"
     },
     {
-      "id": "math",
-      "label": "math",
+      "id": "urllib_parse",
+      "label": "urllib_parse",
       "_origin": "semantic",
-      "community": 32,
-      "community_name": "math",
+      "community": 5,
+      "community_name": "test_html_reports_browser.py",
       "external": true,
       "file_type": "concept",
-      "norm_label": "math",
+      "norm_label": "urllib_parse",
       "source_file": "",
       "type": "external"
     },
@@ -8166,13 +8472,35 @@
       "type": "external"
     },
     {
-      "id": "urllib_parse",
-      "label": "urllib_parse",
-      "community": 14,
-      "community_name": "browser_test_helpers.py",
+      "id": "functools",
+      "label": "functools",
+      "community": 29,
+      "community_name": "report_pdf.py",
       "external": true,
       "file_type": "concept",
-      "norm_label": "urllib_parse",
+      "norm_label": "functools",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "http_server",
+      "label": "http_server",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "http_server",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "threading",
+      "label": "threading",
+      "community": 29,
+      "community_name": "report_pdf.py",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "threading",
       "source_file": "",
       "type": "external"
     }
@@ -8816,7 +9144,7 @@
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_export_universe_json",
+      "target": "os",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -8828,6 +9156,18 @@
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_export_universe_json",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1057",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
       "target": "corp_fr_optimization_banner",
       "relation": "calls",
       "_origin": "ast",
@@ -8835,7 +9175,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1051",
+      "source_location": "L1058",
       "weight": 1.0
     },
     {
@@ -8847,7 +9187,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1055",
+      "source_location": "L1062",
       "weight": 1.0
     },
     {
@@ -9472,6 +9812,78 @@
       "context": "call",
       "source_file": "pipeline_io.py",
       "source_location": "L316",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_export_report_pdf",
+      "target": "report_pdf_default_pdf_path",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "report_pdf.py",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_export_report_pdf",
+      "target": "tempfile",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "report_pdf.py",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_export_report_pdf",
+      "target": "os",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "report_pdf.py",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_export_report_pdf",
+      "target": "report_pdf_reportexporterror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "report_pdf.py",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_main",
+      "target": "argparse",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "report_pdf.py",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_main",
+      "target": "report_pdf_export_report_pdf",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "report_pdf.py",
+      "source_location": "L135",
       "weight": 1.0
     },
     {
@@ -11323,6 +11735,30 @@
       "weight": 1.0
     },
     {
+      "source": "tests_test_report_pdf_reportpdfbrowsertests_setupclass",
+      "target": "tests_browser_test_helpers_load_playwright",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf_reportpdfbrowsertests_setupclass",
+      "target": "tests_browser_test_helpers_launch_browser",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
       "source": "tests_test_risk_estimators_delta_referencia",
       "target": "numpy",
       "relation": "calls",
@@ -11619,7 +12055,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2458",
+      "source_location": "L2465",
       "weight": 1.0
     },
     {
@@ -11703,7 +12139,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2383",
+      "source_location": "L2390",
       "weight": 1.0
     },
     {
@@ -11715,7 +12151,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2384",
+      "source_location": "L2391",
       "weight": 1.0
     },
     {
@@ -11727,7 +12163,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2390",
+      "source_location": "L2397",
       "weight": 1.0
     },
     {
@@ -11739,7 +12175,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2398",
+      "source_location": "L2405",
       "weight": 1.0
     },
     {
@@ -11751,7 +12187,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2414",
+      "source_location": "L2421",
       "weight": 1.0
     },
     {
@@ -11763,7 +12199,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2432",
+      "source_location": "L2439",
       "weight": 1.0
     },
     {
@@ -11775,7 +12211,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2433",
+      "source_location": "L2440",
       "weight": 1.0
     },
     {
@@ -11787,7 +12223,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2437",
+      "source_location": "L2444",
       "weight": 1.0
     },
     {
@@ -11799,7 +12235,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2442",
+      "source_location": "L2449",
       "weight": 1.0
     },
     {
@@ -12411,7 +12847,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2454",
+      "source_location": "L2461",
       "weight": 1.0
     },
     {
@@ -12423,7 +12859,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2482",
+      "source_location": "L2489",
       "weight": 1.0
     },
     {
@@ -12435,7 +12871,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2483",
+      "source_location": "L2490",
       "weight": 1.0
     },
     {
@@ -12447,7 +12883,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2485",
+      "source_location": "L2492",
       "weight": 1.0
     },
     {
@@ -12459,7 +12895,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2486",
+      "source_location": "L2493",
       "weight": 1.0
     },
     {
@@ -12771,7 +13207,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2312",
+      "source_location": "L2319",
       "weight": 1.0
     },
     {
@@ -13203,7 +13639,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2466",
+      "source_location": "L2473",
       "weight": 1.0
     },
     {
@@ -13215,7 +13651,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2470",
+      "source_location": "L2477",
       "weight": 1.0
     },
     {
@@ -13227,7 +13663,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2478",
+      "source_location": "L2485",
       "weight": 1.0
     },
     {
@@ -14143,6 +14579,54 @@
       "weight": 1.0
     },
     {
+      "source": "report_pdf",
+      "target": "os",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "sys",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "tempfile",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "argparse",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
       "source": "risk_estimators",
       "target": "logging",
       "relation": "imports",
@@ -14827,6 +15311,78 @@
       "weight": 1.0
     },
     {
+      "source": "tests_test_report_pdf",
+      "target": "report_pdf",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "os",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "tests_browser_test_helpers_launch_browser",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "tests_browser_test_helpers_load_playwright",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "sys",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "tempfile",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
       "source": "tests_test_risk_estimators",
       "target": "numpy",
       "relation": "imports",
@@ -15439,6 +15995,66 @@
       "weight": 1.0
     },
     {
+      "source": "report_pdf",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "threading",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "urllib_parse",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "functools",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "http_server",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "report_pdf.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
       "source": "risk_estimators",
       "target": "scipy_stats",
       "relation": "imports_from",
@@ -15700,6 +16316,30 @@
       "context": "import",
       "source_file": "tests/test_pipeline_io.py",
       "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "unittest",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -16563,7 +17203,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2377",
+      "source_location": "L2384",
       "weight": 1.0
     },
     {
@@ -16575,7 +17215,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2377",
+      "source_location": "L2384",
       "weight": 1.0
     },
     {
@@ -16719,7 +17359,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2447",
+      "source_location": "L2454",
       "weight": 1.0
     },
     {
@@ -16743,7 +17383,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2315",
+      "source_location": "L2322",
       "weight": 1.0
     },
     {
@@ -16755,7 +17395,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2315",
+      "source_location": "L2322",
       "weight": 1.0
     },
     {
@@ -16767,7 +17407,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2337",
+      "source_location": "L2344",
       "weight": 1.0
     },
     {
@@ -16779,7 +17419,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2337",
+      "source_location": "L2344",
       "weight": 1.0
     },
     {
@@ -16791,7 +17431,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2337",
+      "source_location": "L2344",
       "weight": 1.0
     },
     {
@@ -16803,7 +17443,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2337",
+      "source_location": "L2344",
       "weight": 1.0
     },
     {
@@ -17367,7 +18007,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "US Asset Manager.py",
-      "source_location": "L2315",
+      "source_location": "L2322",
       "weight": 1.0
     },
     {
@@ -18090,6 +18730,61 @@
       "confidence_score": 1.0,
       "source_file": "pipeline_io.py",
       "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "report_pdf_main",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "report_pdf_reportexporterror",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "report_pdf_default_pdf_path",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "report_pdf_quiethandler",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf",
+      "target": "report_pdf_export_report_pdf",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -19006,6 +19701,28 @@
       "weight": 1.0
     },
     {
+      "source": "tests_test_report_pdf",
+      "target": "tests_test_report_pdf_reportpdfunittests",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf",
+      "target": "tests_test_report_pdf_reportpdfbrowsertests",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
       "source": "tests_test_risk_estimators",
       "target": "tests_test_risk_estimators_retornos_shock_covid",
       "relation": "contains",
@@ -19178,7 +19895,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2377",
+      "source_location": "L2384",
       "weight": 1.0
     },
     {
@@ -19189,7 +19906,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2447",
+      "source_location": "L2454",
       "weight": 1.0
     },
     {
@@ -19200,7 +19917,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2457",
+      "source_location": "L2464",
       "weight": 1.0
     },
     {
@@ -19211,7 +19928,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2465",
+      "source_location": "L2472",
       "weight": 1.0
     },
     {
@@ -19222,7 +19939,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2481",
+      "source_location": "L2488",
       "weight": 1.0
     },
     {
@@ -19523,6 +20240,28 @@
       "weight": 1.0
     },
     {
+      "source": "report_pdf_quiethandler",
+      "target": "simplehttprequesthandler",
+      "relation": "inherits",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_reportexporterror",
+      "target": "runtimeerror",
+      "relation": "inherits",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
       "source": "tests_test_html_reports_browser_allocationdashboardtests",
       "target": "tests_test_html_reports_browser_offlinebrowsertestcase",
       "relation": "inherits",
@@ -19751,6 +20490,17 @@
       "confidence_score": 1.0,
       "source_file": "fmp_client.py",
       "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_quiethandler",
+      "target": "report_pdf_quiethandler_log_message",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -21096,6 +21846,72 @@
       "weight": 1.0
     },
     {
+      "source": "tests_test_report_pdf_reportpdfbrowsertests",
+      "target": "tests_test_report_pdf_reportpdfbrowsertests_setupclass",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf_reportpdfbrowsertests",
+      "target": "tests_test_report_pdf_reportpdfbrowsertests_test_static_table_exports_as_single_page_pdf",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf_reportpdfbrowsertests",
+      "target": "tests_test_report_pdf_reportpdfbrowsertests_test_external_script_is_blocked_and_reported",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf_reportpdfunittests",
+      "target": "tests_test_report_pdf_reportpdfunittests_test_default_path_uses_report_folder_and_stem",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf_reportpdfunittests",
+      "target": "tests_test_report_pdf_reportpdfunittests_test_missing_playwright_has_install_hint",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_test_report_pdf_reportpdfunittests",
+      "target": "tests_test_report_pdf_reportpdfunittests_test_cli_missing_file_returns_two_with_one_line",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
       "source": "tests_test_risk_estimators_ledoitwolfewmatests",
       "target": "tests_test_risk_estimators_ledoitwolfewmatests_test_classic_unweighted_case_unchanged",
       "relation": "method",
@@ -21862,7 +22678,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2315",
+      "source_location": "L2322",
       "weight": 1.0
     },
     {
@@ -21873,7 +22689,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2337",
+      "source_location": "L2344",
       "weight": 1.0
     },
     {
@@ -22691,6 +23507,61 @@
       "weight": 1.0
     },
     {
+      "source": "report_pdf_rationale_1",
+      "target": "report_pdf",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_rationale_127",
+      "target": "report_pdf_main",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_rationale_19",
+      "target": "report_pdf_reportexporterror",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_rationale_23",
+      "target": "report_pdf_default_pdf_path",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_rationale_41",
+      "target": "report_pdf_export_report_pdf",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "report_pdf.py",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
       "source": "risk_estimators_rationale_106",
       "target": "risk_estimators_ewma_cov",
       "relation": "rationale_for",
@@ -23197,6 +24068,17 @@
       "weight": 1.0
     },
     {
+      "source": "tests_test_report_pdf_rationale_1",
+      "target": "tests_test_report_pdf",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_report_pdf.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
       "source": "tests_test_risk_estimators_rationale_1",
       "target": "tests_test_risk_estimators",
       "relation": "rationale_for",
@@ -23340,14 +24222,14 @@
       "weight": 1.0
     },
     {
-      "source": "us_asset_manager_rationale_2381",
+      "source": "us_asset_manager_rationale_2388",
       "target": "us_asset_manager_export_portfolio_json",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2381",
+      "source_location": "L2388",
       "weight": 1.0
     },
     {
@@ -23486,6 +24368,18 @@
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
       "source_location": "L581",
+      "weight": 1.0
+    },
+    {
+      "source": "report_pdf_export_report_pdf",
+      "target": "report_pdf_export_report_pdf_route_request",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "argument",
+      "source_file": "report_pdf.py",
+      "source_location": "L77",
       "weight": 1.0
     },
     {
@@ -23657,7 +24551,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2487",
+      "source_location": "L2494",
       "weight": 0.8
     },
     {
@@ -23668,7 +24562,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "US Asset Manager.py",
-      "source_location": "L2490",
+      "source_location": "L2497",
       "weight": 0.8
     },
     {
@@ -24645,5 +25539,5 @@
       "source_file": "README.md"
     }
   ],
-  "built_at_commit": "1cab073504e79e787a8ea4a8c0f8d3bd4dd5c1fb"
+  "built_at_commit": "11c183b67be083c0f42f1734209e40a23e906ab4"
 }
