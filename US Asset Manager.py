@@ -2309,6 +2309,13 @@ class PassiveETFAllocationPipeline:
         self.logger.info("FASE 5 · Dashboard interactivo HTML")
         output = DashboardBuilder().build(DASHBOARD_FILE, self.profile, result, optimizer.targets, moments, mu_table, risk)
         self.logger.info("Dashboard generado: %s", output)
+        if os.getenv("REPORT_PDF") == "1":
+            try:
+                import report_pdf
+
+                report_pdf.export_report_pdf(output, layout="single")
+            except Exception as exc:
+                self.logger.warning("PDF omitido: %s", exc)
         export_portfolio_json(self.profile, result, float(optimizer.max_weight), optimizer, inputs.beta_table["beta_source"].to_dict())
         return result
 

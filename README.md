@@ -154,6 +154,8 @@ python "US Asset Manager.py"        # produces portfolio_dashboard.html
 python Corp_FR_Optimization.py      # produces reporte_portafolio_renta_fija.html
 ```
 
+Set `REPORT_PDF=1` to also export the allocation dashboard and corporate fixed-income report as PDFs (requires Playwright and Chromium). For a one-off export, run `.venv/bin/python report_pdf.py REPORT.html [--layout a4|single]`.
+
 All parameters (investment profile, solver, screening thresholds, score weights, rating spreads, etc.) live in the configuration block at the top of each file.
 
 The investment profile is chosen with `--risk-profile conservador|moderado|agresivo` or the `RISK_PROFILE` environment variable (the flag wins; default `moderado`; anything else stops the run). It maps to `Conservador`, `Crecimiento` and `Momentum/Agresivo` (`pipeline_io.resolve_risk_profile`).

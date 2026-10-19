@@ -1047,6 +1047,13 @@ def run_pipeline() -> None:
     print_refinitiv_instructions(top, overlay)
 
     path = build_html_report(curve, funnel, top, overlay, summary, fmp.n_calls)
+    if os.getenv("REPORT_PDF") == "1":
+        try:
+            import report_pdf
+
+            report_pdf.export_report_pdf(path, layout="a4")
+        except Exception as exc:
+            log.warning("PDF omitido: %s", exc)
     export_universe_json(top)
     _banner("FIN DEL PIPELINE")
     print(f"  Reporte interactivo: {path}")
