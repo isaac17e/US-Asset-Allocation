@@ -72,7 +72,7 @@ NON_COMMON_SYMBOL_PATTERN = r"-P[A-Z]?$"  # preferentes: CTA-PA, CTA-PB…
 # --- Apalancamiento y cobertura ----------------------------------------------
 FUNDAMENTALS_PERIOD = "annual"   # período de los estados financieros
 DEBT_DEFINITION = "total"        # "total" (Total Debt) o "net" (Net Debt)
-MAX_DEBT_TO_EBITDA = 3.0         # x  (base: RATING_SELECTION puede relajarlo, ver effective_solvency_limits)
+MAX_DEBT_TO_EBITDA = 3.0         # x  (base: la selección de rating puede relajarlo, ver effective_solvency_limits)
 MIN_TOTAL_DEBT_USD = 2_000_000_000  # solo emisores con bonos en circulación
 MIN_INTEREST_COVERAGE = 2.5      # x  (EBITDA / Interest Expense; base, igual que arriba)
 COVERAGE_CAP = 100.0             # tope de cobertura (evita outliers/infinitos)
@@ -93,7 +93,9 @@ INVESTMENT_GRADE_RATINGS = {
     "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
 }
 MANUAL_RATING_OVERRIDES: dict[str, str] = {}  # ratings de agencia, ej. {"AAPL": "AA+"}
-RATING_SELECTION: Optional[list[str]] = ["BB", "B+"]  # Top N solo con estos ratings, ej. ["A+", "A"]; None = todos
+RATING_SELECTION: Optional[list[str]] = None  # lista exacta, ej. ["A+", "A"]; si se define, ignora techo y piso
+RATING_CEILING: Optional[str] = "BBB"
+RATING_FLOOR: Optional[str] = "B+"
 
 # --- Rating sintético (peor entre cobertura y apalancamiento) ----------------
 SYNTHETIC_COVERAGE_TABLE = [     # EBIT/Intereses (Damodaran): (umbral mín., rating)
@@ -124,7 +126,7 @@ MAX_SINGLE_ISSUER_WEIGHT = 0.15  # tope por emisor (None para desactivar)
 PORTFOLIO_NOTIONAL_USD = 10_000_000
 
 # --- Yield Target Overlay (spreads) ------------------------------------------
-MIN_SPREAD_BPS_BY_BUCKET = {"AAA": 40, "AA": 60, "A": 90, "BBB": 140}  # bps sobre el Tesoro
+MIN_SPREAD_BPS_BY_BUCKET = {"AAA": 40, "AA": 60, "A": 90, "BBB": 140, "BB": 250, "B": 400}  # bps sobre el Tesoro
 TENOR_PREMIUM_BPS = {3.0: 0, 5.0: 10, 10.0: 25}  # prima por plazo sobre el bucket
 SCORE_SPREAD_ADJ_BPS_PER_UNIT = -5.0  # bps por unidad de score (0 = off)
 
@@ -226,9 +228,21 @@ def rating_bucket(rating: Optional[str]) -> Optional[str]:
 
 
 def _selected_ratings() -> list[str]:
-    """RATING_SELECTION normalizado (mayúsculas, sin espacios ni duplicados)."""
-    sel = [RATING_SELECTION] if isinstance(RATING_SELECTION, str) else RATING_SELECTION
-    return list(dict.fromkeys(str(r).strip().upper() for r in sel or []))
+    """Ratings admitidos: RATING_SELECTION (lista exacta) o, si no hay, todos los escalones
+    entre RATING_CEILING y RATING_FLOOR (ambos inclusive). Lista vacía = sin filtro."""
+    if RATING_SELECTION:
+        sel = [RATING_SELECTION] if isinstance(RATING_SELECTION, str) else RATING_SELECTION
+        return list(dict.fromkeys(str(r).strip().upper() for r in sel))
+    if RATING_CEILING is None and RATING_FLOOR is None:
+        return []
+    ceiling = str(RATING_CEILING or RATING_SCALE[0]).strip().upper()
+    floor = str(RATING_FLOOR or "BBB-").strip().upper()
+    invalid = [r for r in (ceiling, floor) if r not in RATING_SCALE]
+    if invalid:
+        raise ValueError(f"RATING_CEILING/RATING_FLOOR inválido: {', '.join(invalid)}")
+    if _rating_rank(ceiling) > _rating_rank(floor):
+        raise ValueError(f"RATING_CEILING ({ceiling}) es peor que RATING_FLOOR ({floor})")
+    return RATING_SCALE[_rating_rank(ceiling):_rating_rank(floor) + 1]
 
 
 def _worst_selected_rating() -> Optional[str]:
@@ -689,6 +703,10 @@ def stage_weights(top: pd.DataFrame) -> pd.DataFrame:
 def stage_overlay(top: pd.DataFrame, curve: RiskFreeCurve) -> pd.DataFrame:
     """Yield Target mínimo = Rf(t) + spread(bucket) + prima(plazo) + ajuste(score)."""
     rows = []
+    missing = sorted({r.rating for r in top.itertuples(index=False) if r.ratingBucket is None})
+    if missing:
+        log.warning("Sin bucket de spread para %s: se usa el spread más alto de MIN_SPREAD_BPS_BY_BUCKET.",
+                    ", ".join(missing))
     for r in top.itertuples(index=False):
         base_bps = MIN_SPREAD_BPS_BY_BUCKET.get(r.ratingBucket, max(MIN_SPREAD_BPS_BY_BUCKET.values()))
         adj_bps = SCORE_SPREAD_ADJ_BPS_PER_UNIT * r.CompositeScore
@@ -1066,7 +1084,7 @@ def run_pipeline() -> None:
 
     # --- Fase 5: scoring y Top N ---------------------------------------------
     ranked = stage_scoring(ig)
-    if RATING_SELECTION:
+    if _selected_ratings():
         ranked = select_ratings(ranked)
         funnel.append((f"Rating ∈ {{{', '.join(_selected_ratings())}}}", len(ranked)))
         _abort_if_empty(ranked, "selección de rating", funnel)
