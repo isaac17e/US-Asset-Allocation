@@ -58,10 +58,10 @@ Useful environment variables: `RISK_FREE_RATE` (default 0.040), `USAA_HORIZON_DA
 `run_pipeline` in six steps:
 
 1. **Risk-free curve**: Treasury nodes from FRED, PCHIP-interpolated.
-2. **Solvency screen**: US non-financial companies, market cap ≥ USD 10bn, Debt/EBITDA ≤ 3.0x, EBITDA/Interest ≥ 2.5x, debt ≥ USD 2bn.
+2. **Solvency screen**: US non-financial companies, market cap ≥ USD 10bn, Debt/EBITDA ≤ 3.0x, EBITDA/Interest ≥ 2.5x, debt ≥ USD 2bn. Those two limits are baselines: `RATING_SELECTION` relaxes them just enough to reach its worst rating (e.g. `["BBB", "B+"]` → ≤ 6.0x and ≥ 1.75x); they are never tightened.
 3. **Free cash flow**: increasing FCF or 3-year CAGR > 3%.
-4. **Synthetic rating**: worse of an interest-coverage rating and a Debt/EBITDA rating (overridable with `MANUAL_RATING_OVERRIDES`).
-5. **Credit score**: weighted Z-scores of coverage, leverage, FCF growth and rating; top 15 issuers selected.
+4. **Synthetic rating**: worse of an interest-coverage rating and a Debt/EBITDA rating (overridable with `MANUAL_RATING_OVERRIDES`). Issuers rated below BBB- survive only if `RATING_SELECTION` includes them.
+5. **Credit score**: weighted Z-scores of coverage, leverage, FCF growth and rating; top `TOP_N` (25) issuers selected. `RATING_SELECTION` is an exact list, not a range: only issuers whose rating is in it pass, so list every notch you want (e.g. `["BBB", "BBB-", "BB+", "BB", "BB-", "B+"]`); `None` keeps all. Z-scores are computed over the whole universe before this filter.
 6. **Weights and target yield**: Equal and Score weighting (15% cap); minimum yield for 3/5/10 years = `Rf + rating spread + tenor premium + score adjustment`.
 
 Outputs: console funnel and ranking, a Refinitiv checklist (buy if YTW ≥ target and OAS ≥ minimum), `reporte_portafolio_renta_fija.html` and the universe JSON.
