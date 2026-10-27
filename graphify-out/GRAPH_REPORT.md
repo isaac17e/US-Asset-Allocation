@@ -1,93 +1,104 @@
-# Graph Report - US-Asset-Allocation  (2026-10-19)
+# Graph Report - US-Asset-Allocation  (2026-10-27)
 
 ## Corpus Check
-- 20 files · ~33,856 words
+- 20 files · ~34,123 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 4, .bak-20261018 1)
 
 ## Summary
-- 720 nodes · 1509 edges · 48 communities (32 shown, 16 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 31 edges (avg confidence: 0.9)
+- 731 nodes · 1524 edges · 63 communities (36 shown, 27 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 30 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `79f5a01f`
+- Built from commit: `e4818532`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Corp_FR_Optimization.py
-- risk_estimators.py
+- numpy
 - PortfolioOptimizer
 - Mean-variance optimization with factor targets
 - ndarray
 - test_html_reports_browser.py
 - FakeResponse
-- ImpliedMomentsEngine
+- to_years
 - check_risk_estimators_sync.py
-- US Asset Manager.py
+- fmp_client.py
 - ._profile
 - pipeline_io.py
-- _delta_referencia
+- APIAuthorizationError
 - _tail_inputs
 - pathlib
 - test_horizon.py
-- math
+- sys
 - test_optimizer.py
 - mock_patch
 - FMPClient
-- numpy
+- os
 - DataFrame
 - OptimizationResult
 - cornish_fisher_moments
 - AtomicWriteTests
-- beta_range_reachable
+- .cover_band
 - RawBetaTests
 - RiskFreeCurve
-- Series
+- .build
 - report_pdf.py
 - browser_test_helpers.py
 - stage_scoring
 - cov_ewma_shrunk
 - DataFrame
-- stage_rating
+- _rating_rank
 - build_html_report
 - .__init__
 - MfikCapTests
 - ReportPdfUnitTests
 - sweep_tail_penalty.py
-- var_cvar_cornish_fisher
+- US Asset Manager.py
 - mfik_cap_tenor
 - ExportProfileTests
 - TailPenaltySolveTests
 - stage_fcf
-- ewma_cov
-- ._solve_qubo_sa
+- Any
+- math
 - _QuietHandler
+- UniverseBuilder
+- ImpliedMomentsEngine
+- test_pipeline_io.py
+- FactorModelBuilder
+- Any
+- RiskProfileTests
+- ImpliedCovarianceBuilder
+- _selected_ratings
+- beta_range_reachable
+- RiskFreeRateTests
+- WeightTests
 
 ## God Nodes (most connected - your core abstractions)
-1. `run_pipeline()` - 27 edges
+1. `run_pipeline()` - 29 edges
 2. `PortfolioOptimizer` - 17 edges
 3. `FMPClient` - 16 edges
-4. `APIError` - 16 edges
-5. `APIAuthorizationError` - 16 edges
-6. `ImpliedMomentsEngine` - 15 edges
+4. `ImpliedMomentsEngine` - 15 edges
+5. `APIAuthorizationError` - 15 edges
+6. `APIError` - 15 edges
 7. `OptimizationResult` - 14 edges
 8. `export_portfolio_json()` - 14 edges
-9. `FMPClient` - 13 edges
-10. `build_html_report()` - 12 edges
+9. `build_html_report()` - 12 edges
+10. `ResolveHorizonTests` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `market_beta()` --implements--> `Market risk via beta band (market_beta, Blume shrinkage, raw beta for commodities)`  [EXTRACTED]
-  US Asset Manager.py → README.md
 - `ImpliedTailModel` --implements--> `ImpliedTailModel (Cornish-Fisher marginals, Gaussian copula)`  [EXTRACTED]
   US Asset Manager.py → README.md
 - `_client()` --calls--> `FMPClient`  [EXTRACTED]
   tests/test_fmp_client.py → fmp_client.py
 - `resolve_risk_profile()` --implements--> `Risk profile selection (--risk-profile / RISK_PROFILE, resolve_risk_profile)`  [EXTRACTED]
   pipeline_io.py → README.md
-- `mfik_cap_tenor()` --implements--> `BKM horizon scaling to 60 days and MFIK cap (mfik_cap_tenor)`  [EXTRACTED]
-  risk_estimators.py → README.md
+- `market_beta()` --implements--> `Market risk via beta band (market_beta, Blume shrinkage, raw beta for commodities)`  [EXTRACTED]
+  US Asset Manager.py → README.md
+- `resolve_risk_free_rate()` --implements--> `RISK_FREE_RATE override (resolve_risk_free_rate)`  [EXTRACTED]
+  pipeline_io.py → README.md
 
 ## Import Cycles
 - None detected.
@@ -97,15 +108,15 @@
 - **ETF allocation pipeline phases (universe, factors, moments/covariance, optimization)** — readme_hybrid_universe, readme_factor_loading_matrix_b, readme_covariance_drd, readme_expected_return_mu, readme_mean_variance_optimization [EXTRACTED 1.00]
 - **risk_estimators library components** — readme_covariance_ewma_shrunk, readme_q_to_p_correction, readme_portfolio_moments, readme_cornish_fisher, readme_svix_martin_wagner [EXTRACTED 1.00]
 
-## Communities (48 total, 16 thin omitted)
+## Communities (63 total, 27 thin omitted)
 
 ### Community 0 - "Corp_FR_Optimization.py"
-Cohesion: 0.27
-Nodes (11): _abort_if_empty(), _banner(), _check_keys(), _fmt_pct(), portfolio_summary(), print_curve(), print_funnel(), print_overlay() (+3 more)
+Cohesion: 0.25
+Nodes (12): _abort_if_empty(), _banner(), build_risk_free_curve(), _check_keys(), _fmt_pct(), portfolio_summary(), print_curve(), print_funnel() (+4 more)
 
-### Community 1 - "risk_estimators.py"
-Cohesion: 0.14
-Nodes (7): Portfolio skewness/kurtosis in O(J n) with analytical gradients, SVIX / Martin-Wagner expected return (experimental, disabled), martin_wagner_excess_return(), portfolio_moments(), q_to_p_correlation(), q_to_p_vol(), scale_cov()
+### Community 1 - "numpy"
+Cohesion: 0.11
+Nodes (12): Portfolio skewness/kurtosis in O(J n) with analytical gradients, SVIX / Martin-Wagner expected return (experimental, disabled), cornish_fisher_domain(), ewma_cov(), ewma_weights(), martin_wagner_excess_return(), nearest_psd(), portfolio_moment_gradients() (+4 more)
 
 ### Community 2 - "PortfolioOptimizer"
 Cohesion: 0.18
@@ -113,43 +124,43 @@ Nodes (3): OptimizationError, PortfolioOptimizer, objective()
 
 ### Community 3 - "Mean-variance optimization with factor targets"
 Cohesion: 0.06
-Nodes (36): resolve_risk_free_rate(), Bjerksund-Stensland American option model, Bakshi-Kapadia-Madan (BKM) model-free implied moments, Composite Credit Score, Cornish-Fisher VaR/CVaR (Maillard 2012), IG corporate bond issuer screening pipeline (run_pipeline), Covariance Sigma = D R D, cov_ewma_shrunk (EWMA, Kish ESS, Ledoit-Wolf, nearest PSD) (+28 more)
+Nodes (36): Bjerksund-Stensland American option model, Bakshi-Kapadia-Madan (BKM) model-free implied moments, Composite Credit Score, Cornish-Fisher VaR/CVaR (Maillard 2012), IG corporate bond issuer screening pipeline (run_pipeline), Covariance Sigma = D R D, cov_ewma_shrunk (EWMA, Kish ESS, Ledoit-Wolf, nearest PSD), Academic-use disclaimer (+28 more)
 
 ### Community 4 - "ndarray"
-Cohesion: 0.22
-Nodes (3): portfolio_moment_gradients(), BKMEstimator, ImpliedTailModel
+Cohesion: 0.21
+Nodes (5): BKMEstimator, ImpliedTailModel, flip_delta(), violation(), _project_capped_simplex()
 
 ### Community 5 - "test_html_reports_browser.py"
-Cohesion: 0.17
-Nodes (7): wait_for_plotly(), AllocationDashboardTests, CorpFixedIncomeHTMLTests, CorpFixedIncomeReportTests, OfflineBrowserTestCase, _synthetic_corporate_inputs(), _write_corporate_report()
+Cohesion: 0.16
+Nodes (8): wait_for_plotly(), AllocationDashboardTests, CorpFixedIncomeHTMLTests, CorpFixedIncomeReportTests, OfflineBrowserTestCase, _synthetic_corporate_inputs(), _synthetic_dashboard_inputs(), _write_corporate_report()
 
 ### Community 6 - "FakeResponse"
-Cohesion: 0.10
-Nodes (6): _client(), CorpTolerantClientTests, FakeResponse, TransportTests, _load_manager(), MassiveBaseTests
+Cohesion: 0.17
+Nodes (4): _client(), CorpTolerantClientTests, FakeResponse, TransportTests
 
-### Community 7 - "ImpliedMomentsEngine"
-Cohesion: 0.12
-Nodes (5): annualize(), scale_bkm_moments(), scale_moments(), to_years(), ImpliedMomentsEngine
+### Community 7 - "to_years"
+Cohesion: 0.20
+Nodes (4): annualize(), scale_bkm_moments(), scale_moments(), to_years()
 
 ### Community 8 - "check_risk_estimators_sync.py"
 Cohesion: 0.24
 Nodes (5): US Asset Allocation README, AM-PM repository (source of risk_estimators copy), Manual risk_estimators.py sync with AM-PM (drift check), definitions(), main()
 
-### Community 9 - "US Asset Manager.py"
-Cohesion: 0.05
-Nodes (21): APIAuthorizationError, APIError, BaseHTTPClient, FMPClient, _to_float(), _clip(), _combine_scores(), configure_logging() (+13 more)
+### Community 9 - "fmp_client.py"
+Cohesion: 0.23
+Nodes (3): BaseHTTPClient, FMPClient, _to_float()
 
 ### Community 10 - "._profile"
 Cohesion: 0.19
 Nodes (3): FactorTargetTests, PortfolioConstraintTests, RiskProfileSelectionTests
 
 ### Community 11 - "pipeline_io.py"
-Cohesion: 0.05
-Nodes (20): atomic_write_json(), _atomic_write_text(), _cli_risk_profile(), _dumps(), _horizon_from_source(), _horizon_number(), iso_bogota(), months_to_days() (+12 more)
+Cohesion: 0.23
+Nodes (7): atomic_write_json(), _atomic_write_text(), _cli_risk_profile(), _dumps(), resolve_risk_profile(), _warn(), write_json_files()
 
-### Community 12 - "_delta_referencia"
-Cohesion: 0.26
-Nodes (4): _delta_referencia(), LedoitWolfEwmaTests, _retornos_normales(), _retornos_shock_covid()
+### Community 12 - "APIAuthorizationError"
+Cohesion: 0.19
+Nodes (4): APIAuthorizationError, APIError, MarketDataLoader, PolygonClient
 
 ### Community 13 - "_tail_inputs"
 Cohesion: 0.19
@@ -163,37 +174,33 @@ Nodes (3): launch_browser(), load_playwright(), ReportPdfBrowserTests
 Cohesion: 0.09
 Nodes (5): ExportHorizonTests, _load_manager(), ManagerHorizonTests, OptionWindowTests, ResolveHorizonTests
 
-### Community 16 - "math"
-Cohesion: 0.11
-Nodes (9): american_call(), american_price(), bs93_phi(), bs_price(), horizon_option_window(), BlackScholesPricingTests, _Frozen, _load_manager() (+1 more)
+### Community 16 - "sys"
+Cohesion: 0.07
+Nodes (10): BlackScholesPricingTests, _Frozen, _load_manager(), _outcome(), _load_manager(), MassiveBaseTests, _delta_referencia(), LedoitWolfEwmaTests (+2 more)
 
 ### Community 17 - "test_optimizer.py"
 Cohesion: 0.22
 Nodes (3): _reload_manager(), RiskContributionTests, _synthetic_inputs()
 
 ### Community 19 - "FMPClient"
-Cohesion: 0.14
-Nodes (5): FMPClient, _latest(), stage_screener(), stage_solvency(), _to_float()
+Cohesion: 0.15
+Nodes (4): FMPClient, _latest(), stage_solvency(), _to_float()
 
-### Community 20 - "numpy"
+### Community 20 - "os"
 Cohesion: 0.20
-Nodes (4): build_risk_free_curve(), export_universe_json(), nearest_psd(), _synthetic_dashboard_inputs()
+Nodes (7): export_universe_json(), iso_bogota(), normalize_weights(), now_bogota(), stamp_bogota(), export_portfolio_json(), _json_float()
 
 ### Community 21 - "DataFrame"
-Cohesion: 0.21
-Nodes (4): ConsoleReporter, _historical_betas(), ImpliedCovarianceBuilder, _nearest_psd()
+Cohesion: 0.25
+Nodes (4): _combine_scores(), ConsoleReporter, _historical_betas(), _percentile_score()
 
 ### Community 22 - "OptimizationResult"
-Cohesion: 0.15
-Nodes (6): ExpectedReturnModel, market_beta(), OptimizationResult, PassiveETFAllocationPipeline, PipelineInputs, RedundancyFilter
+Cohesion: 0.22
+Nodes (5): ExpectedReturnModel, OptimizationResult, PassiveETFAllocationPipeline, PipelineInputs, PortfolioTailRisk
 
 ### Community 23 - "cornish_fisher_moments"
 Cohesion: 0.18
-Nodes (8): cornish_fisher_domain(), cornish_fisher_es_gradient(), cornish_fisher_moments(), cornish_fisher_params(), a_parametros(), residuo(), cornish_fisher_tail(), cornish_fisher_z()
-
-### Community 25 - "beta_range_reachable"
-Cohesion: 0.17
-Nodes (3): beta_band_text(), beta_range_reachable(), BetaPoolFilter
+Nodes (8): cornish_fisher_es_gradient(), cornish_fisher_moments(), cornish_fisher_params(), a_parametros(), residuo(), cornish_fisher_tail(), cornish_fisher_z(), var_cvar_cornish_fisher()
 
 ### Community 29 - "report_pdf.py"
 Cohesion: 0.16
@@ -208,12 +215,12 @@ Cohesion: 0.25
 Nodes (4): average_correlation(), cov_ewma_shrunk(), effective_sample_size(), ledoit_wolf_constant_correlation()
 
 ### Community 33 - "DataFrame"
-Cohesion: 0.29
-Nodes (4): _overlay_pivot(), print_refinitiv_instructions(), select_ratings(), _selected_ratings()
+Cohesion: 0.40
+Nodes (3): _overlay_pivot(), print_refinitiv_instructions(), stage_screener()
 
-### Community 34 - "stage_rating"
-Cohesion: 0.25
-Nodes (4): rating_bucket(), _rating_rank(), stage_rating(), synthetic_rating()
+### Community 34 - "_rating_rank"
+Cohesion: 0.21
+Nodes (6): effective_solvency_limits(), rating_bucket(), _rating_rank(), stage_rating(), synthetic_rating(), _worst_selected_rating()
 
 ### Community 36 - ".__init__"
 Cohesion: 0.29
@@ -223,29 +230,49 @@ Nodes (3): higher_moments_admissible(), rescale_panel(), standardized_panel()
 Cohesion: 0.40
 Nodes (3): BKM horizon scaling to 60 days and MFIK cap (mfik_cap_tenor), mfik_cap(), mfik_cap_tenor()
 
-### Community 46 - "._solve_qubo_sa"
-Cohesion: 0.67
-Nodes (3): flip_delta(), violation(), _project_capped_simplex()
+### Community 45 - "Any"
+Cohesion: 0.26
+Nodes (3): FMPClient, _is_configured_key(), validate_configuration()
+
+### Community 46 - "math"
+Cohesion: 0.26
+Nodes (7): american_call(), american_price(), bs93_phi(), bs_price(), horizon_option_window(), resolve_risk_free_rate(), _clip()
+
+### Community 48 - "UniverseBuilder"
+Cohesion: 0.27
+Nodes (3): ETFDescriptor, RedundancyFilter, UniverseBuilder
+
+### Community 51 - "FactorModelBuilder"
+Cohesion: 0.33
+Nodes (3): FactorModelBuilder, _first_number(), _to_float()
+
+### Community 52 - "Any"
+Cohesion: 0.38
+Nodes (4): _horizon_from_source(), _horizon_number(), months_to_days(), resolve_horizon_days()
+
+### Community 55 - "_selected_ratings"
+Cohesion: 0.33
+Nodes (3): select_ratings(), _selected_ratings(), validate_rating_selection()
 
 ## Knowledge Gaps
-- **13 isolated node(s):** `Portfolio skewness/kurtosis in O(J n) with analytical gradients`, `SVIX / Martin-Wagner expected return (experimental, disabled)`, `Solvers: cvxpy, scipy SLSQP, QUBO simulated annealing`, `Linear program for factor target feasibility and relaxation`, `Free cash flow screen (increasing or CAGR > 3%)` (+8 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 237 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **13 isolated node(s):** `Portfolio skewness/kurtosis in O(J n) with analytical gradients`, `SVIX / Martin-Wagner expected return (experimental, disabled)`, `Bjerksund-Stensland American option model`, `Academic-use disclaimer`, `Free cash flow screen (increasing or CAGR > 3%)` (+8 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 245 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `PortfolioOptimizer` connect `PortfolioOptimizer` to `US Asset Manager.py`, `._solve_qubo_sa`, `OptimizationResult`, `beta_range_reachable`, `Series`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **What connects `Portfolio skewness/kurtosis in O(J n) with analytical gradients`, `SVIX / Martin-Wagner expected return (experimental, disabled)`, `Solvers: cvxpy, scipy SLSQP, QUBO simulated annealing` to the rest of the system?**
+- **Why does `PortfolioOptimizer` connect `PortfolioOptimizer` to `US Asset Manager.py`, `beta_range_reachable`, `ndarray`, `OptimizationResult`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **What connects `Portfolio skewness/kurtosis in O(J n) with analytical gradients`, `SVIX / Martin-Wagner expected return (experimental, disabled)`, `Bjerksund-Stensland American option model` to the rest of the system?**
   _13 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `risk_estimators.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
+- **Should `numpy` be split into smaller, more focused modules?**
+  _Cohesion score 0.11333333333333333 - nodes in this community are weakly interconnected._
 - **Why does `IG corporate bond issuer screening pipeline (run_pipeline)` connect `Mean-variance optimization with factor targets` to `Corp_FR_Optimization.py`?**
   _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Should `Mean-variance optimization with factor targets` be split into smaller, more focused modules?**
-  _Cohesion score 0.058693244739756366 - nodes in this community are weakly interconnected._
-- **Why does `ResolveHorizonTests` connect `test_horizon.py` to `ImpliedMomentsEngine`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
-- **Should `FakeResponse` be split into smaller, more focused modules?**
-  _Cohesion score 0.10227272727272728 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05555555555555555 - nodes in this community are weakly interconnected._
+- **Why does `ResolveHorizonTests` connect `test_horizon.py` to `to_years`?**
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+- **Should `test_horizon.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.09113300492610837 - nodes in this community are weakly interconnected._
