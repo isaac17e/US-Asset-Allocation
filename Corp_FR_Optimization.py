@@ -72,9 +72,9 @@ NON_COMMON_SYMBOL_PATTERN = r"-P[A-Z]?$"  # preferentes: CTA-PA, CTA-PB…
 # --- Apalancamiento y cobertura ----------------------------------------------
 FUNDAMENTALS_PERIOD = "annual"   # período de los estados financieros
 DEBT_DEFINITION = "total"        # "total" (Total Debt) o "net" (Net Debt)
-MAX_DEBT_TO_EBITDA = 3.0         # x
+MAX_DEBT_TO_EBITDA = 3.0         # x  (base: RATING_SELECTION puede relajarlo, ver effective_solvency_limits)
 MIN_TOTAL_DEBT_USD = 2_000_000_000  # solo emisores con bonos en circulación
-MIN_INTEREST_COVERAGE = 2.5      # x  (EBITDA / Interest Expense)
+MIN_INTEREST_COVERAGE = 2.5      # x  (EBITDA / Interest Expense; base, igual que arriba)
 COVERAGE_CAP = 100.0             # tope de cobertura (evita outliers/infinitos)
 
 # --- Gasto de intereses nulo o ausente ---------------------------------------
@@ -93,7 +93,7 @@ INVESTMENT_GRADE_RATINGS = {
     "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
 }
 MANUAL_RATING_OVERRIDES: dict[str, str] = {}  # ratings de agencia, ej. {"AAPL": "AA+"}
-RATING_SELECTION: Optional[list[str]] = ["A+", "A"]  # Top N solo con estos ratings, ej. ["A+", "A"]; None = todos
+RATING_SELECTION: Optional[list[str]] = ["BBB", "BB+"]  # Top N solo con estos ratings, ej. ["A+", "A"]; None = todos
 
 # --- Rating sintético (peor entre cobertura y apalancamiento) ----------------
 SYNTHETIC_COVERAGE_TABLE = [     # EBIT/Intereses (Damodaran): (umbral mín., rating)
@@ -103,7 +103,8 @@ SYNTHETIC_COVERAGE_TABLE = [     # EBIT/Intereses (Damodaran): (umbral mín., ra
 ]
 SYNTHETIC_LEVERAGE_TABLE = [     # Deuda/EBITDA (aprox. S&P): (umbral máx., rating)
     (0.50, "AAA"), (1.00, "AA"), (1.50, "A+"), (2.00, "A"), (2.50, "A-"),
-    (3.00, "BBB+"), (3.50, "BBB"), (4.00, "BBB-"), (5.00, "BB"), (float("inf"), "B"),
+    (3.00, "BBB+"), (3.50, "BBB"), (4.00, "BBB-"), (4.50, "BB+"), (5.00, "BB"),
+    (5.50, "BB-"), (6.00, "B+"), (float("inf"), "B"),
 ]
 SYNTHETIC_MAX_RATING = "AA"      # techo: casi ningún corporativo de EE.UU. es AAA
 
@@ -222,6 +223,50 @@ def rating_bucket(rating: Optional[str]) -> Optional[str]:
         return None
     base = rating.strip().upper().rstrip("+-")
     return base if base in MIN_SPREAD_BPS_BY_BUCKET else None
+
+
+def _selected_ratings() -> list[str]:
+    """RATING_SELECTION normalizado (mayúsculas, sin espacios ni duplicados)."""
+    sel = [RATING_SELECTION] if isinstance(RATING_SELECTION, str) else RATING_SELECTION
+    return list(dict.fromkeys(str(r).strip().upper() for r in sel or []))
+
+
+def _worst_selected_rating() -> Optional[str]:
+    """Peor rating válido de RATING_SELECTION (fija hasta dónde deben relajarse los umbrales)."""
+    sel = [r for r in _selected_ratings() if r in RATING_SCALE]
+    return max(sel, key=_rating_rank) if sel else None
+
+
+def effective_solvency_limits() -> tuple[float, float]:
+    """(D/EBITDA máx., cobertura mín.) que dejan pasar al peor rating de RATING_SELECTION.
+
+    Parte de MAX_DEBT_TO_EBITDA / MIN_INTEREST_COVERAGE y solo los relaja, nunca los
+    endurece, para no cambiar el universo sobre el que se calculan los Z-scores.
+    """
+    worst = _worst_selected_rating()
+    if worst is None:
+        return MAX_DEBT_TO_EBITDA, MIN_INTEREST_COVERAGE
+    rank = _rating_rank(worst)
+    # Cobertura: fila más cercana con rating igual o mejor que el peor seleccionado.
+    cov_floor = [f for f, r in SYNTHETIC_COVERAGE_TABLE if _rating_rank(r) <= rank][-1]
+    # Apalancamiento: fila más cercana con rating igual o peor (sin tope si no hay).
+    lev_cap = next((c for c, r in SYNTHETIC_LEVERAGE_TABLE if _rating_rank(r) >= rank), float("inf"))
+    return max(MAX_DEBT_TO_EBITDA, lev_cap), min(MIN_INTEREST_COVERAGE, cov_floor)
+
+
+def validate_rating_selection() -> None:
+    """Avisa de ratings inválidos o que el rating sintético nunca produce."""
+    sel = _selected_ratings()
+    invalid = [r for r in sel if r not in RATING_SCALE]
+    if invalid:
+        log.warning("RATING_SELECTION contiene ratings inválidos (se ignoran): %s", ", ".join(invalid))
+    producible = {r for _, r in SYNTHETIC_COVERAGE_TABLE + SYNTHETIC_LEVERAGE_TABLE
+                  if _rating_rank(r) >= _rating_rank(SYNTHETIC_MAX_RATING)}
+    producible |= {str(r).strip().upper() for r in MANUAL_RATING_OVERRIDES.values()}
+    never = [r for r in sel if r in RATING_SCALE and r not in producible]
+    if never:
+        log.warning("El rating sintético nunca produce %s (techo %s y escalones de las tablas); "
+                    "solo aparecerá vía MANUAL_RATING_OVERRIDES.", ", ".join(never), SYNTHETIC_MAX_RATING)
 
 
 # =============================================================================
@@ -469,7 +514,8 @@ def stage_solvency(fmp: FMPClient, universe: pd.DataFrame) -> pd.DataFrame:
     df = pd.DataFrame(out)
     if df.empty:
         return df
-    mask = (df["debtToEbitda"] <= MAX_DEBT_TO_EBITDA) & (df["interestCoverage"] >= MIN_INTEREST_COVERAGE)
+    max_lev, min_cov = effective_solvency_limits()
+    mask = (df["debtToEbitda"] <= max_lev) & (df["interestCoverage"] >= min_cov)
     return df[mask].reset_index(drop=True)
 
 
@@ -522,9 +568,9 @@ def stage_fcf(fmp: FMPClient, df: pd.DataFrame) -> pd.DataFrame:
 def stage_rating(df: pd.DataFrame) -> pd.DataFrame:
     """Asigna rating (override manual > sintético).
 
-    Con los umbrales de solvencia actuales todo emisor ya es >= BBB-, así que no es
-    una etapa del embudo; solo descarta (con aviso) si un override manual o umbrales
-    más laxos dejan entrar a un emisor high yield.
+    Con los umbrales base todo emisor ya es >= BBB-; solo descarta (con aviso) lo que
+    quede por debajo de BBB- y del peor rating de RATING_SELECTION (que puede ser high
+    yield, y entonces relaja los umbrales de solvencia).
     """
     ratings, sources = [], []
     for row in df.itertuples(index=False):
@@ -538,9 +584,13 @@ def stage_rating(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df["rating"] = ratings
     df["ratingSource"] = sources
-    non_ig = ~df["rating"].isin(INVESTMENT_GRADE_RATINGS)
+    worst = _worst_selected_rating()
+    allowed = set(INVESTMENT_GRADE_RATINGS)
+    if worst:
+        allowed |= {r for r in RATING_SCALE if _rating_rank(r) <= _rating_rank(worst)}
+    non_ig = ~df["rating"].isin(allowed)
     if non_ig.any():
-        log.warning("Excluidos por rating < BBB-: %s",
+        log.warning("Excluidos por rating fuera del rango permitido: %s",
                     ", ".join(f"{s} ({r})" for s, r in zip(df.loc[non_ig, "symbol"], df.loc[non_ig, "rating"])))
     df = df[~non_ig].copy()
     df["ratingBucket"] = df["rating"].map(rating_bucket)
@@ -589,20 +639,9 @@ def stage_scoring(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _selected_ratings() -> list[str]:
-    """RATING_SELECTION normalizado (mayúsculas, sin espacios ni duplicados)."""
-    sel = [RATING_SELECTION] if isinstance(RATING_SELECTION, str) else RATING_SELECTION
-    return list(dict.fromkeys(str(r).strip().upper() for r in sel or []))
-
-
 def select_ratings(ranked: pd.DataFrame) -> pd.DataFrame:
-    """Deja solo los ratings de RATING_SELECTION (Z-scores ya calculados sobre todo IG)."""
-    sel = _selected_ratings()
-    unknown = [r for r in sel if r not in INVESTMENT_GRADE_RATINGS]
-    if unknown:
-        log.warning("RATING_SELECTION contiene ratings no IG o inválidos (se ignoran): %s",
-                    ", ".join(unknown))
-    df = ranked[ranked["rating"].isin(sel)].reset_index(drop=True)
+    """Deja solo los ratings de RATING_SELECTION (Z-scores ya calculados sobre todo el universo)."""
+    df = ranked[ranked["rating"].isin(_selected_ratings())].reset_index(drop=True)
     df["Rank"] = df.index + 1
     return df
 
@@ -992,6 +1031,7 @@ def run_pipeline() -> None:
     _check_keys()
     fmp = FMPClient(FMP_API_KEY)
     funnel: list[tuple[str, int]] = []
+    validate_rating_selection()
 
     # --- Fase 1: curva libre de riesgo ---------------------------------------
     log.info("Fase 1: construyendo curva libre de riesgo desde FRED…")
@@ -1005,7 +1045,8 @@ def run_pipeline() -> None:
     _abort_if_empty(universe, "screener", funnel)
 
     solvent = stage_solvency(fmp, universe)
-    funnel.append((f"D/EBITDA ≤ {MAX_DEBT_TO_EBITDA}x y Cobertura ≥ {MIN_INTEREST_COVERAGE}x", len(solvent)))
+    max_lev, min_cov = effective_solvency_limits()
+    funnel.append((f"D/EBITDA ≤ {max_lev:g}x y Cobertura ≥ {min_cov:g}x", len(solvent)))
     _abort_if_empty(solvent, "solvencia", funnel)
 
     solvent = solvent[solvent["grossDebt"] >= MIN_TOTAL_DEBT_USD].reset_index(drop=True)
