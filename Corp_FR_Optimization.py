@@ -93,7 +93,7 @@ INVESTMENT_GRADE_RATINGS = {
     "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
 }
 MANUAL_RATING_OVERRIDES: dict[str, str] = {}  # ratings de agencia, ej. {"AAPL": "AA+"}
-RATING_SELECTION: Optional[list[str]] = ["BBB", "BB+"]  # Top N solo con estos ratings, ej. ["A+", "A"]; None = todos
+RATING_SELECTION: Optional[list[str]] = ["BB", "B+"]  # Top N solo con estos ratings, ej. ["A+", "A"]; None = todos
 
 # --- Rating sintético (peor entre cobertura y apalancamiento) ----------------
 SYNTHETIC_COVERAGE_TABLE = [     # EBIT/Intereses (Damodaran): (umbral mín., rating)
