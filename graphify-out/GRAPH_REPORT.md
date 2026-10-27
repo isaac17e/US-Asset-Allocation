@@ -1,17 +1,17 @@
 # Graph Report - US-Asset-Allocation  (2026-10-27)
 
 ## Corpus Check
-- 20 files · ~32,038 words
+- 20 files · ~32,175 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 4)
 
 ## Summary
-- 726 nodes · 1526 edges · 50 communities (29 shown, 21 thin omitted)
+- 726 nodes · 1527 edges · 50 communities (29 shown, 21 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 32 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6fa76ac2`
+- Built from commit: `92c8b3e2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -24,19 +24,19 @@
 - test_html_reports_browser.py
 - FakeResponse
 - to_years
-- ResolveHorizonTests
 - Any
+- ResolveHorizonTests
 - ._profile
 - pipeline_io.py
-- BlackScholesPricingTests
+- DataFrame
 - _tail_inputs
-- MassiveBaseTests
+- check_risk_estimators_sync.py
 - _load_manager
 - _delta_referencia
 - mock_patch
 - FMPClient
 - os
-- DataFrame
+- BlackScholesPricingTests
 - .prepare
 - cornish_fisher_moments
 - AtomicWriteTests
@@ -52,17 +52,17 @@
 - _rating_rank
 - build_html_report
 - var_cvar_cornish_fisher
-- _Frozen
+- MassiveBaseTests
 - ReportPdfUnitTests
 - OptimizationError
 - US Asset Manager.py
+- ImpliedCovarianceBuilder
+- _Frozen
 - OptionWindowTests
 - stage_fcf
 - math
 - test_pipeline_io.py
 - RiskProfileTests
-- ImpliedCovarianceBuilder
-- _selected_ratings
 - RiskFreeRateTests
 - WeightTests
 
@@ -132,7 +132,7 @@ Nodes (4): _client(), CorpTolerantClientTests, FakeResponse, TransportTests
 Cohesion: 0.22
 Nodes (4): annualize(), scale_bkm_moments(), scale_moments(), to_years()
 
-### Community 9 - "Any"
+### Community 8 - "Any"
 Cohesion: 0.05
 Nodes (19): APIAuthorizationError, APIError, BaseHTTPClient, FMPClient, _to_float(), _clip(), _combine_scores(), ETFDescriptor (+11 more)
 
@@ -144,13 +144,13 @@ Nodes (7): ExportProfileTests, FactorTargetTests, PortfolioConstraintTests, _rel
 Cohesion: 0.17
 Nodes (11): atomic_write_json(), _atomic_write_text(), _cli_risk_profile(), _dumps(), _horizon_from_source(), _horizon_number(), months_to_days(), resolve_horizon_days() (+3 more)
 
-### Community 12 - "BlackScholesPricingTests"
-Cohesion: 0.29
-Nodes (3): BlackScholesPricingTests, _load_manager(), _outcome()
-
 ### Community 13 - "_tail_inputs"
 Cohesion: 0.14
 Nodes (5): OneSidedPenaltyTests, _tail_inputs(), TailModelTests, TailPenaltySolveTests, TailRiskReportTests
+
+### Community 14 - "check_risk_estimators_sync.py"
+Cohesion: 0.24
+Nodes (5): US Asset Allocation README, AM-PM repository (source of risk_estimators copy), Manual risk_estimators.py sync with AM-PM (drift check), definitions(), main()
 
 ### Community 15 - "_load_manager"
 Cohesion: 0.24
@@ -165,12 +165,16 @@ Cohesion: 0.15
 Nodes (4): HorizonAlignmentTests, MfikCapTests, mock_patch, mock_stub()
 
 ### Community 19 - "FMPClient"
-Cohesion: 0.16
-Nodes (4): FMPClient, _latest(), stage_solvency(), _to_float()
+Cohesion: 0.14
+Nodes (5): FMPClient, _latest(), stage_screener(), stage_solvency(), _to_float()
 
 ### Community 20 - "os"
 Cohesion: 0.22
 Nodes (6): export_universe_json(), iso_bogota(), normalize_weights(), now_bogota(), stamp_bogota(), export_portfolio_json()
+
+### Community 21 - "BlackScholesPricingTests"
+Cohesion: 0.29
+Nodes (3): BlackScholesPricingTests, _load_manager(), _outcome()
 
 ### Community 22 - ".prepare"
 Cohesion: 0.25
@@ -185,8 +189,8 @@ Cohesion: 0.17
 Nodes (3): beta_band_text(), beta_range_reachable(), BetaPoolFilter
 
 ### Community 29 - "report_pdf.py"
-Cohesion: 0.07
-Nodes (14): US Asset Allocation README, AM-PM repository (source of risk_estimators copy), Manual risk_estimators.py sync with AM-PM (drift check), default_pdf_path(), export_report_pdf(), main(), _QuietHandler, ReportExportError (+6 more)
+Cohesion: 0.10
+Nodes (9): default_pdf_path(), export_report_pdf(), main(), _QuietHandler, ReportExportError, load_manager(), main(), configure_logging() (+1 more)
 
 ### Community 30 - "cornish_fisher_params"
 Cohesion: 0.40
@@ -202,19 +206,15 @@ Nodes (6): average_correlation(), cov_ewma_shrunk(), effective_sample_size(), ew
 
 ### Community 33 - "DataFrame"
 Cohesion: 0.40
-Nodes (3): _overlay_pivot(), print_refinitiv_instructions(), stage_screener()
+Nodes (3): _overlay_pivot(), print_refinitiv_instructions(), select_ratings()
 
 ### Community 34 - "_rating_rank"
-Cohesion: 0.21
-Nodes (6): effective_solvency_limits(), rating_bucket(), _rating_rank(), stage_rating(), synthetic_rating(), _worst_selected_rating()
+Cohesion: 0.17
+Nodes (8): effective_solvency_limits(), rating_bucket(), _rating_rank(), _selected_ratings(), stage_rating(), synthetic_rating(), validate_rating_selection(), _worst_selected_rating()
 
 ### Community 46 - "math"
 Cohesion: 0.21
 Nodes (7): american_call(), american_price(), bs93_phi(), bs_price(), horizon_option_window(), _json_float(), market_beta()
-
-### Community 55 - "_selected_ratings"
-Cohesion: 0.33
-Nodes (3): select_ratings(), _selected_ratings(), validate_rating_selection()
 
 ## Knowledge Gaps
 - **13 isolated node(s):** `Portfolio skewness/kurtosis in O(J n) with analytical gradients`, `SVIX / Martin-Wagner expected return (experimental, disabled)`, `Bjerksund-Stensland American option model`, `Academic-use disclaimer`, `Free cash flow screen (increasing or CAGR > 3%)` (+8 more)

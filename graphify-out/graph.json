@@ -119,17 +119,17 @@
       "source_location": "L331"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests",
-      "label": "BlackScholesPricingTests",
+      "id": "us_asset_manager_consolereporter",
+      "label": "ConsoleReporter",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": "blackscholespricingtests",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L102"
+      "norm_label": "consolereporter",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1899"
     },
     {
       "id": "tests_test_optimizer_onesidedpenaltytests",
@@ -182,19 +182,6 @@
       "norm_label": "tailriskreporttests",
       "source_file": "tests/test_optimizer.py",
       "source_location": "L265"
-    },
-    {
-      "id": "tests_test_massive_base_massivebasetests",
-      "label": "MassiveBaseTests",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "MassiveBaseTests",
-      "file_type": "code",
-      "norm_label": "massivebasetests",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L31"
     },
     {
       "id": "tests_test_horizon_exporthorizontests",
@@ -285,7 +272,7 @@
       "file_type": "code",
       "norm_label": "fmpclient",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L275"
+      "source_location": "L289"
     },
     {
       "id": "us_asset_manager_optimizationresult",
@@ -327,17 +314,17 @@
       "source_location": "L1591"
     },
     {
-      "id": "us_asset_manager_consolereporter",
-      "label": "ConsoleReporter",
+      "id": "tests_test_bs_pricing_blackscholespricingtests",
+      "label": "BlackScholesPricingTests",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": "consolereporter",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1899"
+      "norm_label": "blackscholespricingtests",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L102"
     },
     {
       "id": "us_asset_manager_expectedreturnmodel",
@@ -428,7 +415,7 @@
       "file_type": "code",
       "norm_label": "riskfreecurve",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L328"
+      "source_location": "L342"
     },
     {
       "id": "us_asset_manager_dashboardbuilder",
@@ -496,17 +483,17 @@
       "source_location": "L1862"
     },
     {
-      "id": "tests_test_bs_pricing_frozen",
-      "label": "_Frozen",
+      "id": "tests_test_massive_base_massivebasetests",
+      "label": "MassiveBaseTests",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "_Frozen",
+      "community_name": "MassiveBaseTests",
       "file_type": "code",
-      "norm_label": "_frozen",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L19"
+      "norm_label": "massivebasetests",
+      "source_file": "tests/test_massive_base.py",
+      "source_location": "L31"
     },
     {
       "id": "tests_test_report_pdf_reportpdfunittests",
@@ -561,12 +548,38 @@
       "source_location": "L1518"
     },
     {
+      "id": "us_asset_manager_impliedcovariancebuilder",
+      "label": "ImpliedCovarianceBuilder",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "code",
+      "norm_label": "impliedcovariancebuilder",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1401"
+    },
+    {
+      "id": "tests_test_bs_pricing_frozen",
+      "label": "_Frozen",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "_Frozen",
+      "file_type": "code",
+      "norm_label": "_frozen",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L19"
+    },
+    {
       "id": "tests_test_horizon_optionwindowtests",
       "label": "OptionWindowTests",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 41,
+      "community": 43,
       "community_name": "OptionWindowTests",
       "file_type": "code",
       "norm_label": "optionwindowtests",
@@ -665,19 +678,6 @@
       "source_location": "L64"
     },
     {
-      "id": "us_asset_manager_impliedcovariancebuilder",
-      "label": "ImpliedCovarianceBuilder",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "code",
-      "norm_label": "impliedcovariancebuilder",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1401"
-    },
-    {
       "id": "tests_test_pipeline_io_riskfreeratetests",
       "label": "RiskFreeRateTests",
       "_callable": true,
@@ -743,25 +743,12 @@
       "source_location": "L47"
     },
     {
-      "id": "tests_test_horizon_resolvehorizontests",
-      "label": "ResolveHorizonTests",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": "resolvehorizontests",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L42"
-    },
-    {
       "id": "fmp_client_apiauthorizationerror",
       "label": "APIAuthorizationError",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "apiauthorizationerror",
@@ -774,7 +761,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "apierror",
@@ -787,7 +774,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "basehttpclient",
@@ -800,7 +787,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "fmpclient",
@@ -813,7 +800,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "etfdescriptor",
@@ -826,7 +813,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "factormodelbuilder",
@@ -839,7 +826,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "fmpclient",
@@ -852,7 +839,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "impliedmomentsengine",
@@ -865,7 +852,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "marketdataloader",
@@ -878,7 +865,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "polygonclient",
@@ -891,12 +878,25 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "universebuilder",
       "source_file": "US Asset Manager.py",
       "source_location": "L629"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests",
+      "label": "ResolveHorizonTests",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": "resolvehorizontests",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L42"
     },
     {
       "id": "corp_fr_optimization_abort_if_empty",
@@ -908,7 +908,7 @@
       "file_type": "code",
       "norm_label": "_abort_if_empty()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L991"
+      "source_location": "L1009"
     },
     {
       "id": "corp_fr_optimization_banner",
@@ -920,7 +920,7 @@
       "file_type": "code",
       "norm_label": "_banner()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L190"
+      "source_location": "L192"
     },
     {
       "id": "corp_fr_optimization_build_risk_free_curve",
@@ -932,7 +932,7 @@
       "file_type": "code",
       "norm_label": "build_risk_free_curve()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L371"
+      "source_location": "L385"
     },
     {
       "id": "corp_fr_optimization_check_keys",
@@ -944,7 +944,7 @@
       "file_type": "code",
       "norm_label": "_check_keys()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L980"
+      "source_location": "L998"
     },
     {
       "id": "corp_fr_optimization_fmt_pct",
@@ -956,7 +956,7 @@
       "file_type": "code",
       "norm_label": "_fmt_pct()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L195"
+      "source_location": "L197"
     },
     {
       "id": "corp_fr_optimization_portfolio_summary",
@@ -968,7 +968,7 @@
       "file_type": "code",
       "norm_label": "portfolio_summary()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L706"
+      "source_location": "L724"
     },
     {
       "id": "corp_fr_optimization_print_curve",
@@ -980,7 +980,7 @@
       "file_type": "code",
       "norm_label": "print_curve()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L730"
+      "source_location": "L748"
     },
     {
       "id": "corp_fr_optimization_print_funnel",
@@ -992,7 +992,7 @@
       "file_type": "code",
       "norm_label": "print_funnel()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L745"
+      "source_location": "L763"
     },
     {
       "id": "corp_fr_optimization_print_overlay",
@@ -1004,7 +1004,7 @@
       "file_type": "code",
       "norm_label": "print_overlay()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L805"
+      "source_location": "L823"
     },
     {
       "id": "corp_fr_optimization_print_ranking",
@@ -1016,7 +1016,7 @@
       "file_type": "code",
       "norm_label": "print_ranking()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L753"
+      "source_location": "L771"
     },
     {
       "id": "corp_fr_optimization_print_weights",
@@ -1028,7 +1028,7 @@
       "file_type": "code",
       "norm_label": "print_weights()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L778"
+      "source_location": "L796"
     },
     {
       "id": "corp_fr_optimization_run_pipeline",
@@ -1040,7 +1040,7 @@
       "file_type": "code",
       "norm_label": "run_pipeline()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1029"
+      "source_location": "L1047"
     },
     {
       "id": "risk_estimators_martin_wagner_excess_return",
@@ -1547,112 +1547,100 @@
       "source_location": "L293"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_american_price_matches_frozen_grid_and_branches",
-      "label": ".test_american_price_matches_frozen_grid_and_branches()",
+      "id": "us_asset_manager_consolereporter_allocation_table",
+      "label": ".allocation_table()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_american_price_matches_frozen_grid_and_branches()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L129"
+      "norm_label": ".allocation_table()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1922"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_bs93_phi_matches_frozen_grid",
-      "label": ".test_bs93_phi_matches_frozen_grid()",
+      "id": "us_asset_manager_consolereporter_factor_table",
+      "label": ".factor_table()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_bs93_phi_matches_frozen_grid()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L114"
+      "norm_label": ".factor_table()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1938"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_bs_price_matches_frozen_grid",
-      "label": ".test_bs_price_matches_frozen_grid()",
+      "id": "us_asset_manager_consolereporter_metrics_table",
+      "label": ".metrics_table()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_bs_price_matches_frozen_grid()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L103"
+      "norm_label": ".metrics_table()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1952"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_degenerate_prices_and_european_parity",
-      "label": ".test_degenerate_prices_and_european_parity()",
+      "id": "us_asset_manager_consolereporter_risk_contributions",
+      "label": ".risk_contributions()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_degenerate_prices_and_european_parity()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L151"
+      "norm_label": ".risk_contributions()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1916"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_frozen_golden_values",
-      "label": ".test_frozen_golden_values()",
+      "id": "us_asset_manager_consolereporter_table",
+      "label": ".table()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_frozen_golden_values()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L165"
+      "norm_label": ".table()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1902"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_manager_delegates_pricing_to_module",
-      "label": ".test_manager_delegates_pricing_to_module()",
+      "id": "us_asset_manager_expectedreturnmodel_build",
+      "label": ".build()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_manager_delegates_pricing_to_module()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L178"
+      "norm_label": ".build()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1494"
     },
     {
-      "id": "tests_test_bs_pricing_blackscholespricingtests_test_manager_moments_match_frozen_pricer_delegation",
-      "label": ".test_manager_moments_match_frozen_pricer_delegation()",
+      "id": "us_asset_manager_historical_betas",
+      "label": "_historical_betas()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": ".test_manager_moments_match_frozen_pricer_delegation()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L189"
+      "norm_label": "_historical_betas()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L404"
     },
     {
-      "id": "tests_test_bs_pricing_load_manager",
-      "label": "_load_manager()",
+      "id": "us_asset_manager_portfoliooptimizer_init",
+      "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "BlackScholesPricingTests",
+      "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": "_load_manager()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L94"
-    },
-    {
-      "id": "tests_test_bs_pricing_outcome",
-      "label": "_outcome()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 12,
-      "community_name": "BlackScholesPricingTests",
-      "file_type": "code",
-      "norm_label": "_outcome()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L87"
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1594"
     },
     {
       "id": "tests_test_optimizer_onesidedpenaltytests_test_fat_tails_are_penalized",
@@ -1835,76 +1823,28 @@
       "source_location": "L276"
     },
     {
-      "id": "tests_test_massive_base_load_manager",
-      "label": "_load_manager()",
+      "id": "scripts_check_risk_estimators_sync_definitions",
+      "label": "definitions()",
       "_callable": true,
       "_origin": "ast",
       "community": 14,
-      "community_name": "MassiveBaseTests",
+      "community_name": "check_risk_estimators_sync.py",
       "file_type": "code",
-      "norm_label": "_load_manager()",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L14"
+      "norm_label": "definitions()",
+      "source_file": "scripts/check_risk_estimators_sync.py",
+      "source_location": "L20"
     },
     {
-      "id": "tests_test_massive_base_massivebasetests_test_client_follows_next_url_as_returned",
-      "label": ".test_client_follows_next_url_as_returned()",
+      "id": "scripts_check_risk_estimators_sync_main",
+      "label": "main()",
       "_callable": true,
       "_origin": "ast",
       "community": 14,
-      "community_name": "MassiveBaseTests",
+      "community_name": "check_risk_estimators_sync.py",
       "file_type": "code",
-      "norm_label": ".test_client_follows_next_url_as_returned()",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L60"
-    },
-    {
-      "id": "tests_test_massive_base_massivebasetests_test_client_follows_next_url_as_returned_request",
-      "label": "request()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "MassiveBaseTests",
-      "file_type": "code",
-      "norm_label": "request()",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L67"
-    },
-    {
-      "id": "tests_test_massive_base_massivebasetests_test_defaults",
-      "label": ".test_defaults()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "MassiveBaseTests",
-      "file_type": "code",
-      "norm_label": ".test_defaults()",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L45"
-    },
-    {
-      "id": "tests_test_massive_base_massivebasetests_test_environment_overrides_and_precedence",
-      "label": ".test_environment_overrides_and_precedence()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "MassiveBaseTests",
-      "file_type": "code",
-      "norm_label": ".test_environment_overrides_and_precedence()",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L50"
-    },
-    {
-      "id": "tests_test_massive_base_massivebasetests_test_python_sources_do_not_hardcode_legacy_hosts",
-      "label": ".test_python_sources_do_not_hardcode_legacy_hosts()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 14,
-      "community_name": "MassiveBaseTests",
-      "file_type": "code",
-      "norm_label": ".test_python_sources_do_not_hardcode_legacy_hosts()",
-      "source_file": "tests/test_massive_base.py",
-      "source_location": "L32"
+      "norm_label": "main()",
+      "source_file": "scripts/check_risk_estimators_sync.py",
+      "source_location": "L34"
     },
     {
       "id": "tests_test_horizon_exporthorizontests_export",
@@ -2312,7 +2252,7 @@
       "file_type": "code",
       "norm_label": ".get()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L292"
+      "source_location": "L306"
     },
     {
       "id": "corp_fr_optimization_fmpclient_get_records",
@@ -2324,7 +2264,7 @@
       "file_type": "code",
       "norm_label": ".get_records()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L314"
+      "source_location": "L328"
     },
     {
       "id": "corp_fr_optimization_fmpclient_init",
@@ -2336,7 +2276,7 @@
       "file_type": "code",
       "norm_label": ".__init__()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L278"
+      "source_location": "L292"
     },
     {
       "id": "corp_fr_optimization_fmpclient_norm_params",
@@ -2348,7 +2288,7 @@
       "file_type": "code",
       "norm_label": "._norm_params()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L283"
+      "source_location": "L297"
     },
     {
       "id": "corp_fr_optimization_latest",
@@ -2360,7 +2300,19 @@
       "file_type": "code",
       "norm_label": "_latest()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L455"
+      "source_location": "L469"
+    },
+    {
+      "id": "corp_fr_optimization_stage_screener",
+      "label": "stage_screener()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "FMPClient",
+      "file_type": "code",
+      "norm_label": "stage_screener()",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L415"
     },
     {
       "id": "corp_fr_optimization_stage_solvency",
@@ -2372,7 +2324,7 @@
       "file_type": "code",
       "norm_label": "stage_solvency()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L462"
+      "source_location": "L476"
     },
     {
       "id": "corp_fr_optimization_to_float",
@@ -2384,7 +2336,7 @@
       "file_type": "code",
       "norm_label": "_to_float()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L180"
+      "source_location": "L182"
     },
     {
       "id": "us_asset_manager_passiveetfallocationpipeline_compare_solvers",
@@ -2552,7 +2504,7 @@
       "file_type": "code",
       "norm_label": "export_universe_json()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L998"
+      "source_location": "L1016"
     },
     {
       "id": "pipeline_io_iso_bogota",
@@ -2615,100 +2567,112 @@
       "source_location": "L2313"
     },
     {
-      "id": "us_asset_manager_consolereporter_allocation_table",
-      "label": ".allocation_table()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_american_price_matches_frozen_grid_and_branches",
+      "label": ".test_american_price_matches_frozen_grid_and_branches()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".allocation_table()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1922"
+      "norm_label": ".test_american_price_matches_frozen_grid_and_branches()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L129"
     },
     {
-      "id": "us_asset_manager_consolereporter_factor_table",
-      "label": ".factor_table()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_bs93_phi_matches_frozen_grid",
+      "label": ".test_bs93_phi_matches_frozen_grid()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".factor_table()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1938"
+      "norm_label": ".test_bs93_phi_matches_frozen_grid()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L114"
     },
     {
-      "id": "us_asset_manager_consolereporter_metrics_table",
-      "label": ".metrics_table()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_bs_price_matches_frozen_grid",
+      "label": ".test_bs_price_matches_frozen_grid()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".metrics_table()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1952"
+      "norm_label": ".test_bs_price_matches_frozen_grid()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L103"
     },
     {
-      "id": "us_asset_manager_consolereporter_risk_contributions",
-      "label": ".risk_contributions()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_degenerate_prices_and_european_parity",
+      "label": ".test_degenerate_prices_and_european_parity()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".risk_contributions()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1916"
+      "norm_label": ".test_degenerate_prices_and_european_parity()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L151"
     },
     {
-      "id": "us_asset_manager_consolereporter_table",
-      "label": ".table()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_frozen_golden_values",
+      "label": ".test_frozen_golden_values()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".table()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1902"
+      "norm_label": ".test_frozen_golden_values()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L165"
     },
     {
-      "id": "us_asset_manager_expectedreturnmodel_build",
-      "label": ".build()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_manager_delegates_pricing_to_module",
+      "label": ".test_manager_delegates_pricing_to_module()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".build()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1494"
+      "norm_label": ".test_manager_delegates_pricing_to_module()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L178"
     },
     {
-      "id": "us_asset_manager_historical_betas",
-      "label": "_historical_betas()",
+      "id": "tests_test_bs_pricing_blackscholespricingtests_test_manager_moments_match_frozen_pricer_delegation",
+      "label": ".test_manager_moments_match_frozen_pricer_delegation()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": "_historical_betas()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L404"
+      "norm_label": ".test_manager_moments_match_frozen_pricer_delegation()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L189"
     },
     {
-      "id": "us_asset_manager_portfoliooptimizer_init",
-      "label": ".__init__()",
+      "id": "tests_test_bs_pricing_load_manager",
+      "label": "_load_manager()",
       "_callable": true,
       "_origin": "ast",
       "community": 21,
-      "community_name": "DataFrame",
+      "community_name": "BlackScholesPricingTests",
       "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1594"
+      "norm_label": "_load_manager()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L94"
+    },
+    {
+      "id": "tests_test_bs_pricing_outcome",
+      "label": "_outcome()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 21,
+      "community_name": "BlackScholesPricingTests",
+      "file_type": "code",
+      "norm_label": "_outcome()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L87"
     },
     {
       "id": "us_asset_manager_expectedreturnmodel_init",
@@ -3080,7 +3044,7 @@
       "file_type": "code",
       "norm_label": ".as_of()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L367"
+      "source_location": "L381"
     },
     {
       "id": "corp_fr_optimization_riskfreecurve_post_init",
@@ -3092,7 +3056,7 @@
       "file_type": "code",
       "norm_label": ".__post_init__()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L341"
+      "source_location": "L355"
     },
     {
       "id": "corp_fr_optimization_riskfreecurve_rate",
@@ -3104,7 +3068,7 @@
       "file_type": "code",
       "norm_label": ".rate()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L362"
+      "source_location": "L376"
     },
     {
       "id": "corp_fr_optimization_riskfreecurve_rate_pct",
@@ -3116,7 +3080,7 @@
       "file_type": "code",
       "norm_label": ".rate_pct()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L357"
+      "source_location": "L371"
     },
     {
       "id": "corp_fr_optimization_stage_overlay",
@@ -3128,7 +3092,7 @@
       "file_type": "code",
       "norm_label": "stage_overlay()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L689"
+      "source_location": "L703"
     },
     {
       "id": "us_asset_manager_dashboardbuilder_allocation_pie",
@@ -3263,30 +3227,6 @@
       "source_location": "L28"
     },
     {
-      "id": "scripts_check_risk_estimators_sync_definitions",
-      "label": "definitions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "file_type": "code",
-      "norm_label": "definitions()",
-      "source_file": "scripts/check_risk_estimators_sync.py",
-      "source_location": "L20"
-    },
-    {
-      "id": "scripts_check_risk_estimators_sync_main",
-      "label": "main()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "file_type": "code",
-      "norm_label": "main()",
-      "source_file": "scripts/check_risk_estimators_sync.py",
-      "source_location": "L34"
-    },
-    {
       "id": "scripts_sweep_tail_penalty_load_manager",
       "label": "load_manager()",
       "_callable": true,
@@ -3404,7 +3344,7 @@
       "file_type": "code",
       "norm_label": "cap_weights()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L652"
+      "source_location": "L666"
     },
     {
       "id": "corp_fr_optimization_stage_scoring",
@@ -3416,7 +3356,7 @@
       "file_type": "code",
       "norm_label": "stage_scoring()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L615"
+      "source_location": "L629"
     },
     {
       "id": "corp_fr_optimization_stage_weights",
@@ -3428,7 +3368,7 @@
       "file_type": "code",
       "norm_label": "stage_weights()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L673"
+      "source_location": "L687"
     },
     {
       "id": "corp_fr_optimization_zscore",
@@ -3440,7 +3380,7 @@
       "file_type": "code",
       "norm_label": "zscore()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L603"
+      "source_location": "L617"
     },
     {
       "id": "risk_estimators_average_correlation",
@@ -3536,7 +3476,7 @@
       "file_type": "code",
       "norm_label": "_overlay_pivot()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L800"
+      "source_location": "L818"
     },
     {
       "id": "corp_fr_optimization_print_refinitiv_instructions",
@@ -3548,19 +3488,19 @@
       "file_type": "code",
       "norm_label": "print_refinitiv_instructions()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L819"
+      "source_location": "L837"
     },
     {
-      "id": "corp_fr_optimization_stage_screener",
-      "label": "stage_screener()",
+      "id": "corp_fr_optimization_select_ratings",
+      "label": "select_ratings()",
       "_callable": true,
       "_origin": "ast",
       "community": 33,
       "community_name": "DataFrame",
       "file_type": "code",
-      "norm_label": "stage_screener()",
+      "norm_label": "select_ratings()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L401"
+      "source_location": "L656"
     },
     {
       "id": "corp_fr_optimization_effective_solvency_limits",
@@ -3572,7 +3512,7 @@
       "file_type": "code",
       "norm_label": "effective_solvency_limits()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L240"
+      "source_location": "L254"
     },
     {
       "id": "corp_fr_optimization_rating_bucket",
@@ -3584,7 +3524,7 @@
       "file_type": "code",
       "norm_label": "rating_bucket()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L220"
+      "source_location": "L222"
     },
     {
       "id": "corp_fr_optimization_rating_rank",
@@ -3596,7 +3536,19 @@
       "file_type": "code",
       "norm_label": "_rating_rank()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L205"
+      "source_location": "L207"
+    },
+    {
+      "id": "corp_fr_optimization_selected_ratings",
+      "label": "_selected_ratings()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "_rating_rank",
+      "file_type": "code",
+      "norm_label": "_selected_ratings()",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L230"
     },
     {
       "id": "corp_fr_optimization_stage_rating",
@@ -3608,7 +3560,7 @@
       "file_type": "code",
       "norm_label": "stage_rating()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L568"
+      "source_location": "L582"
     },
     {
       "id": "corp_fr_optimization_synthetic_rating",
@@ -3620,7 +3572,19 @@
       "file_type": "code",
       "norm_label": "synthetic_rating()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L210"
+      "source_location": "L212"
+    },
+    {
+      "id": "corp_fr_optimization_validate_rating_selection",
+      "label": "validate_rating_selection()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "_rating_rank",
+      "file_type": "code",
+      "norm_label": "validate_rating_selection()",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L271"
     },
     {
       "id": "corp_fr_optimization_worst_selected_rating",
@@ -3632,7 +3596,7 @@
       "file_type": "code",
       "norm_label": "_worst_selected_rating()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L234"
+      "source_location": "L248"
     },
     {
       "id": "corp_fr_optimization_build_html_report",
@@ -3644,7 +3608,7 @@
       "file_type": "code",
       "norm_label": "build_html_report()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L869"
+      "source_location": "L887"
     },
     {
       "id": "corp_fr_optimization_figure",
@@ -3656,7 +3620,7 @@
       "file_type": "code",
       "norm_label": "_figure()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L863"
+      "source_location": "L881"
     },
     {
       "id": "risk_estimators_var_cvar_cornish_fisher",
@@ -3695,52 +3659,76 @@
       "source_location": "L1869"
     },
     {
-      "id": "tests_test_bs_pricing_frozen_american_call",
-      "label": ".american_call()",
+      "id": "tests_test_massive_base_load_manager",
+      "label": "_load_manager()",
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "_Frozen",
+      "community_name": "MassiveBaseTests",
       "file_type": "code",
-      "norm_label": ".american_call()",
-      "source_file": "tests/test_bs_pricing.py",
+      "norm_label": "_load_manager()",
+      "source_file": "tests/test_massive_base.py",
+      "source_location": "L14"
+    },
+    {
+      "id": "tests_test_massive_base_massivebasetests_test_client_follows_next_url_as_returned",
+      "label": ".test_client_follows_next_url_as_returned()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "MassiveBaseTests",
+      "file_type": "code",
+      "norm_label": ".test_client_follows_next_url_as_returned()",
+      "source_file": "tests/test_massive_base.py",
+      "source_location": "L60"
+    },
+    {
+      "id": "tests_test_massive_base_massivebasetests_test_client_follows_next_url_as_returned_request",
+      "label": "request()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "MassiveBaseTests",
+      "file_type": "code",
+      "norm_label": "request()",
+      "source_file": "tests/test_massive_base.py",
+      "source_location": "L67"
+    },
+    {
+      "id": "tests_test_massive_base_massivebasetests_test_defaults",
+      "label": ".test_defaults()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "MassiveBaseTests",
+      "file_type": "code",
+      "norm_label": ".test_defaults()",
+      "source_file": "tests/test_massive_base.py",
+      "source_location": "L45"
+    },
+    {
+      "id": "tests_test_massive_base_massivebasetests_test_environment_overrides_and_precedence",
+      "label": ".test_environment_overrides_and_precedence()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 37,
+      "community_name": "MassiveBaseTests",
+      "file_type": "code",
+      "norm_label": ".test_environment_overrides_and_precedence()",
+      "source_file": "tests/test_massive_base.py",
       "source_location": "L50"
     },
     {
-      "id": "tests_test_bs_pricing_frozen_american_price",
-      "label": ".american_price()",
+      "id": "tests_test_massive_base_massivebasetests_test_python_sources_do_not_hardcode_legacy_hosts",
+      "label": ".test_python_sources_do_not_hardcode_legacy_hosts()",
       "_callable": true,
       "_origin": "ast",
       "community": 37,
-      "community_name": "_Frozen",
+      "community_name": "MassiveBaseTests",
       "file_type": "code",
-      "norm_label": ".american_price()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L79"
-    },
-    {
-      "id": "tests_test_bs_pricing_frozen_bs93_phi",
-      "label": ".bs93_phi()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "_Frozen",
-      "file_type": "code",
-      "norm_label": ".bs93_phi()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L38"
-    },
-    {
-      "id": "tests_test_bs_pricing_frozen_bs_price",
-      "label": ".bs_price()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "_Frozen",
-      "file_type": "code",
-      "norm_label": ".bs_price()",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L25"
+      "norm_label": ".test_python_sources_do_not_hardcode_legacy_hosts()",
+      "source_file": "tests/test_massive_base.py",
+      "source_location": "L32"
     },
     {
       "id": "tests_test_report_pdf_reportpdfunittests_test_cli_missing_file_returns_two_with_one_line",
@@ -3971,11 +3959,119 @@
       "source_location": "L360"
     },
     {
+      "id": "us_asset_manager_impliedcovariancebuilder_build",
+      "label": ".build()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "code",
+      "norm_label": ".build()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1469"
+    },
+    {
+      "id": "us_asset_manager_impliedcovariancebuilder_correlation",
+      "label": "._correlation()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "code",
+      "norm_label": "._correlation()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1446"
+    },
+    {
+      "id": "us_asset_manager_impliedcovariancebuilder_init",
+      "label": ".__init__()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "code",
+      "norm_label": ".__init__()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1402"
+    },
+    {
+      "id": "us_asset_manager_impliedcovariancebuilder_physical_vol",
+      "label": "._physical_vol()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "code",
+      "norm_label": "._physical_vol()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1418"
+    },
+    {
+      "id": "us_asset_manager_nearest_psd",
+      "label": "_nearest_psd()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "code",
+      "norm_label": "_nearest_psd()",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L381"
+    },
+    {
+      "id": "tests_test_bs_pricing_frozen_american_call",
+      "label": ".american_call()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "_Frozen",
+      "file_type": "code",
+      "norm_label": ".american_call()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L50"
+    },
+    {
+      "id": "tests_test_bs_pricing_frozen_american_price",
+      "label": ".american_price()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "_Frozen",
+      "file_type": "code",
+      "norm_label": ".american_price()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L79"
+    },
+    {
+      "id": "tests_test_bs_pricing_frozen_bs93_phi",
+      "label": ".bs93_phi()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "_Frozen",
+      "file_type": "code",
+      "norm_label": ".bs93_phi()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L38"
+    },
+    {
+      "id": "tests_test_bs_pricing_frozen_bs_price",
+      "label": ".bs_price()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "_Frozen",
+      "file_type": "code",
+      "norm_label": ".bs_price()",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L25"
+    },
+    {
       "id": "tests_test_horizon_optionwindowtests_test_default_window_is_untouched",
       "label": ".test_default_window_is_untouched()",
       "_callable": true,
       "_origin": "ast",
-      "community": 41,
+      "community": 43,
       "community_name": "OptionWindowTests",
       "file_type": "code",
       "norm_label": ".test_default_window_is_untouched()",
@@ -3987,7 +4083,7 @@
       "label": ".test_window_scales_and_always_brackets_the_horizon()",
       "_callable": true,
       "_origin": "ast",
-      "community": 41,
+      "community": 43,
       "community_name": "OptionWindowTests",
       "file_type": "code",
       "norm_label": ".test_window_scales_and_always_brackets_the_horizon()",
@@ -4004,7 +4100,7 @@
       "file_type": "code",
       "norm_label": "fcf_metrics()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L525"
+      "source_location": "L539"
     },
     {
       "id": "corp_fr_optimization_stage_fcf",
@@ -4016,7 +4112,7 @@
       "file_type": "code",
       "norm_label": "stage_fcf()",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L540"
+      "source_location": "L554"
     },
     {
       "id": "bs_pricing_american_call",
@@ -4463,102 +4559,6 @@
       "source_location": "L78"
     },
     {
-      "id": "us_asset_manager_impliedcovariancebuilder_build",
-      "label": ".build()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "code",
-      "norm_label": ".build()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1469"
-    },
-    {
-      "id": "us_asset_manager_impliedcovariancebuilder_correlation",
-      "label": "._correlation()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "code",
-      "norm_label": "._correlation()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1446"
-    },
-    {
-      "id": "us_asset_manager_impliedcovariancebuilder_init",
-      "label": ".__init__()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "code",
-      "norm_label": ".__init__()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1402"
-    },
-    {
-      "id": "us_asset_manager_impliedcovariancebuilder_physical_vol",
-      "label": "._physical_vol()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "code",
-      "norm_label": "._physical_vol()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1418"
-    },
-    {
-      "id": "us_asset_manager_nearest_psd",
-      "label": "_nearest_psd()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "code",
-      "norm_label": "_nearest_psd()",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L381"
-    },
-    {
-      "id": "corp_fr_optimization_select_ratings",
-      "label": "select_ratings()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 55,
-      "community_name": "_selected_ratings",
-      "file_type": "code",
-      "norm_label": "select_ratings()",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L642"
-    },
-    {
-      "id": "corp_fr_optimization_selected_ratings",
-      "label": "_selected_ratings()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 55,
-      "community_name": "_selected_ratings",
-      "file_type": "code",
-      "norm_label": "_selected_ratings()",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L228"
-    },
-    {
-      "id": "corp_fr_optimization_validate_rating_selection",
-      "label": "validate_rating_selection()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 55,
-      "community_name": "_selected_ratings",
-      "file_type": "code",
-      "norm_label": "validate_rating_selection()",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L257"
-    },
-    {
       "id": "tests_test_pipeline_io_riskfreeratetests_test_default_without_env",
       "label": ".test_default_without_env()",
       "_callable": true,
@@ -4919,143 +4919,11 @@
       "source_location": "L302"
     },
     {
-      "id": "tests_test_horizon_resolvehorizontests_test_bounds_are_inclusive",
-      "label": ".test_bounds_are_inclusive()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_bounds_are_inclusive()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L83"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_days_and_months_in_one_source",
-      "label": ".test_days_and_months_in_one_source()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_days_and_months_in_one_source()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L75"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_default_is_returned_untouched_when_nothing_is_set",
-      "label": ".test_default_is_returned_untouched_when_nothing_is_set()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_default_is_returned_untouched_when_nothing_is_set()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L43"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_env_days",
-      "label": ".test_env_days()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_env_days()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L48"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_env_months_use_calendar_year_convention",
-      "label": ".test_env_months_use_calendar_year_convention()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_env_months_use_calendar_year_convention()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L52"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_env_months_vs_input_days_precedence",
-      "label": ".test_env_months_vs_input_days_precedence()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_env_months_vs_input_days_precedence()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L70"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_input_file_beats_env_beats_default",
-      "label": ".test_input_file_beats_env_beats_default()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_input_file_beats_env_beats_default()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L62"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_malformed_values_fail_clearly",
-      "label": ".test_malformed_values_fail_clearly()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_malformed_values_fail_clearly()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L95"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_months_convention_matches_to_years",
-      "label": ".test_months_convention_matches_to_years()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_months_convention_matches_to_years()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L57"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_out_of_range_fails_clearly",
-      "label": ".test_out_of_range_fails_clearly()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_out_of_range_fails_clearly()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L87"
-    },
-    {
-      "id": "tests_test_horizon_resolvehorizontests_test_reads_process_environment_by_default",
-      "label": ".test_reads_process_environment_by_default()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "ResolveHorizonTests",
-      "file_type": "code",
-      "norm_label": ".test_reads_process_environment_by_default()",
-      "source_file": "tests/test_horizon.py",
-      "source_location": "L104"
-    },
-    {
       "id": "fmp_client_basehttpclient_backoff",
       "label": "._backoff()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._backoff()",
@@ -5067,7 +4935,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5079,7 +4947,7 @@
       "label": "._request_json()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._request_json()",
@@ -5091,7 +4959,7 @@
       "label": "._throttle()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._throttle()",
@@ -5103,7 +4971,7 @@
       "label": "._as_records()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._as_records()",
@@ -5115,7 +4983,7 @@
       "label": "._get()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._get()",
@@ -5127,7 +4995,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5139,7 +5007,7 @@
       "label": "._single_record()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._single_record()",
@@ -5151,7 +5019,7 @@
       "label": "_to_float()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_to_float()",
@@ -5163,7 +5031,7 @@
       "label": "_clip()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_clip()",
@@ -5175,7 +5043,7 @@
       "label": "_combine_scores()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_combine_scores()",
@@ -5187,7 +5055,7 @@
       "label": "._aggregate_fundamentals()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._aggregate_fundamentals()",
@@ -5199,7 +5067,7 @@
       "label": "._assemble_matrix()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._assemble_matrix()",
@@ -5211,7 +5079,7 @@
       "label": ".build()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".build()",
@@ -5223,7 +5091,7 @@
       "label": "._holding_metrics()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._holding_metrics()",
@@ -5235,7 +5103,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5247,7 +5115,7 @@
       "label": "._momentum()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._momentum()",
@@ -5259,7 +5127,7 @@
       "label": "._safe_fetch()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._safe_fetch()",
@@ -5271,7 +5139,7 @@
       "label": "._style_betas()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._style_betas()",
@@ -5283,7 +5151,7 @@
       "label": "_first_number()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_first_number()",
@@ -5295,7 +5163,7 @@
       "label": ".dividends()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".dividends()",
@@ -5307,7 +5175,7 @@
       "label": ".etf_holdings()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".etf_holdings()",
@@ -5319,7 +5187,7 @@
       "label": ".etf_info()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".etf_info()",
@@ -5331,7 +5199,7 @@
       "label": ".financial_growth()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".financial_growth()",
@@ -5343,7 +5211,7 @@
       "label": ".historical_adjusted_close()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".historical_adjusted_close()",
@@ -5355,7 +5223,7 @@
       "label": ".key_metrics_ttm()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".key_metrics_ttm()",
@@ -5367,7 +5235,7 @@
       "label": ".ratios_ttm()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".ratios_ttm()",
@@ -5379,7 +5247,7 @@
       "label": ".screen_etfs()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".screen_etfs()",
@@ -5391,7 +5259,7 @@
       "label": ".compute()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".compute()",
@@ -5403,7 +5271,7 @@
       "label": "._dividend_yield()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._dividend_yield()",
@@ -5415,7 +5283,7 @@
       "label": "._historical_fallback()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._historical_fallback()",
@@ -5427,7 +5295,7 @@
       "label": "._implied_from_options()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._implied_from_options()",
@@ -5439,7 +5307,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5451,7 +5319,7 @@
       "label": "._interpolate_to_target()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._interpolate_to_target()",
@@ -5463,7 +5331,7 @@
       "label": "._log_dividend_yield_coverage()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._log_dividend_yield_coverage()",
@@ -5475,7 +5343,7 @@
       "label": "._log_horizon_alignment()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._log_horizon_alignment()",
@@ -5487,7 +5355,7 @@
       "label": "._normalize_yield()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._normalize_yield()",
@@ -5499,7 +5367,7 @@
       "label": "._parse_chain()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._parse_chain()",
@@ -5511,7 +5379,7 @@
       "label": "._trailing_dividends()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._trailing_dividends()",
@@ -5523,7 +5391,7 @@
       "label": "_is_configured_key()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_is_configured_key()",
@@ -5535,7 +5403,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5547,7 +5415,7 @@
       "label": ".load()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".load()",
@@ -5559,7 +5427,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5571,7 +5439,7 @@
       "label": "_percentile_score()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_percentile_score()",
@@ -5583,7 +5451,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5595,7 +5463,7 @@
       "label": ".options_chain_snapshot()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".options_chain_snapshot()",
@@ -5607,7 +5475,7 @@
       "label": ".from_registry()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".from_registry()",
@@ -5619,7 +5487,7 @@
       "label": "_to_float()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "_to_float()",
@@ -5631,7 +5499,7 @@
       "label": ".build_candidates()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".build_candidates()",
@@ -5643,7 +5511,7 @@
       "label": "._dynamic_candidates()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._dynamic_candidates()",
@@ -5655,7 +5523,7 @@
       "label": "._enrich_and_deduplicate()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._enrich_and_deduplicate()",
@@ -5667,7 +5535,7 @@
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": ".__init__()",
@@ -5679,7 +5547,7 @@
       "label": "._name_key()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._name_key()",
@@ -5691,7 +5559,7 @@
       "label": "._normalize_asset_class()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._normalize_asset_class()",
@@ -5703,7 +5571,7 @@
       "label": "._parse_screener_record()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "._parse_screener_record()",
@@ -5715,12 +5583,144 @@
       "label": "validate_configuration()",
       "_callable": true,
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "validate_configuration()",
       "source_file": "US Asset Manager.py",
       "source_location": "L2401"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_bounds_are_inclusive",
+      "label": ".test_bounds_are_inclusive()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_bounds_are_inclusive()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L83"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_days_and_months_in_one_source",
+      "label": ".test_days_and_months_in_one_source()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_days_and_months_in_one_source()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L75"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_default_is_returned_untouched_when_nothing_is_set",
+      "label": ".test_default_is_returned_untouched_when_nothing_is_set()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_default_is_returned_untouched_when_nothing_is_set()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L43"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_env_days",
+      "label": ".test_env_days()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_env_days()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L48"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_env_months_use_calendar_year_convention",
+      "label": ".test_env_months_use_calendar_year_convention()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_env_months_use_calendar_year_convention()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L52"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_env_months_vs_input_days_precedence",
+      "label": ".test_env_months_vs_input_days_precedence()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_env_months_vs_input_days_precedence()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L70"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_input_file_beats_env_beats_default",
+      "label": ".test_input_file_beats_env_beats_default()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_input_file_beats_env_beats_default()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L62"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_malformed_values_fail_clearly",
+      "label": ".test_malformed_values_fail_clearly()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_malformed_values_fail_clearly()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L95"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_months_convention_matches_to_years",
+      "label": ".test_months_convention_matches_to_years()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_months_convention_matches_to_years()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L57"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_out_of_range_fails_clearly",
+      "label": ".test_out_of_range_fails_clearly()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_out_of_range_fails_clearly()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L87"
+    },
+    {
+      "id": "tests_test_horizon_resolvehorizontests_test_reads_process_environment_by_default",
+      "label": ".test_reads_process_environment_by_default()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "ResolveHorizonTests",
+      "file_type": "code",
+      "norm_label": ".test_reads_process_environment_by_default()",
+      "source_file": "tests/test_horizon.py",
+      "source_location": "L104"
     },
     {
       "id": "corp_fr_optimization",
@@ -5745,7 +5745,7 @@
       "source_location": "L3"
     },
     {
-      "id": "corp_fr_optimization_rationale_372",
+      "id": "corp_fr_optimization_rationale_386",
       "label": "Descarga el \u00faltimo dato de cada nodo CMT y construye la curva.",
       "_origin": "ast",
       "community": 0,
@@ -5753,10 +5753,10 @@
       "file_type": "rationale",
       "norm_label": "descarga el ultimo dato de cada nodo cmt y construye la curva.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L372"
+      "source_location": "L386"
     },
     {
-      "id": "corp_fr_optimization_rationale_707",
+      "id": "corp_fr_optimization_rationale_725",
       "label": "M\u00e9tricas agregadas por esquema de ponderaci\u00f3n.",
       "_origin": "ast",
       "community": 0,
@@ -5764,7 +5764,7 @@
       "file_type": "rationale",
       "norm_label": "metricas agregadas por esquema de ponderacion.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L707"
+      "source_location": "L725"
     },
     {
       "id": "risk_estimators",
@@ -5974,6 +5974,72 @@
       "norm_label": "calendar days (nearest integer) of ``months``: ``months / 12 * 365``.",
       "source_file": "pipeline_io.py",
       "source_location": "L80"
+    },
+    {
+      "id": "us_asset_manager_py_dataframe",
+      "label": "DataFrame",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "dataframe",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "us_asset_manager_py_series",
+      "label": "Series",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "DataFrame",
+      "file_type": "code",
+      "norm_label": "series",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "scripts_check_risk_estimators_sync",
+      "label": "check_risk_estimators_sync.py",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
+      "file_type": "code",
+      "norm_label": "check_risk_estimators_sync.py",
+      "source_file": "scripts/check_risk_estimators_sync.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_check_risk_estimators_sync_py_path",
+      "label": "Path",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "scripts_check_risk_estimators_sync_rationale_1",
+      "label": "Compara risk_estimators.py con la copia de AM-PM, funci\u00f3n por funci\u00f3n. Informa,\u2026",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
+      "file_type": "rationale",
+      "norm_label": "compara risk_estimators.py con la copia de am-pm, funcion por funcion. informa,...",
+      "source_file": "scripts/check_risk_estimators_sync.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_check_risk_estimators_sync_rationale_21",
+      "label": "Nombre \u2192 fuente normalizada (ast.dump ignora comentarios, docstrings no) de\u2026",
+      "_origin": "ast",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
+      "file_type": "rationale",
+      "norm_label": "nombre \u2192 fuente normalizada (ast.dump ignora comentarios, docstrings no) de...",
+      "source_file": "scripts/check_risk_estimators_sync.py",
+      "source_location": "L21"
     },
     {
       "id": "tests_test_horizon_rationale_27",
@@ -6196,7 +6262,7 @@
       "source_location": ""
     },
     {
-      "id": "corp_fr_optimization_rationale_181",
+      "id": "corp_fr_optimization_rationale_183",
       "label": "Convierte a float de forma segura; devuelve NaN si no es posible.",
       "_origin": "ast",
       "community": 19,
@@ -6204,10 +6270,10 @@
       "file_type": "rationale",
       "norm_label": "convierte a float de forma segura; devuelve nan si no es posible.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L181"
+      "source_location": "L183"
     },
     {
-      "id": "corp_fr_optimization_rationale_276",
+      "id": "corp_fr_optimization_rationale_290",
       "label": "Cliente FMP tolerante: sobre el transporte compartido (fmp_client.py) devuelve\u2026",
       "_origin": "ast",
       "community": 19,
@@ -6215,10 +6281,10 @@
       "file_type": "rationale",
       "norm_label": "cliente fmp tolerante: sobre el transporte compartido (fmp_client.py) devuelve...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L276"
+      "source_location": "L290"
     },
     {
-      "id": "corp_fr_optimization_rationale_284",
+      "id": "corp_fr_optimization_rationale_298",
       "label": "FMP espera booleanos en min\u00fascula ('true'/'false') y sin Nones.",
       "_origin": "ast",
       "community": 19,
@@ -6226,10 +6292,10 @@
       "file_type": "rationale",
       "norm_label": "fmp espera booleanos en minuscula ('true'/'false') y sin nones.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L284"
+      "source_location": "L298"
     },
     {
-      "id": "corp_fr_optimization_rationale_293",
+      "id": "corp_fr_optimization_rationale_307",
       "label": "GET con cach\u00e9, backoff exponencial ante 429/5xx y validaci\u00f3n de JSON. Devuelve\u2026",
       "_origin": "ast",
       "community": 19,
@@ -6237,10 +6303,10 @@
       "file_type": "rationale",
       "norm_label": "get con cache, backoff exponencial ante 429/5xx y validacion de json. devuelve...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L293"
+      "source_location": "L307"
     },
     {
-      "id": "corp_fr_optimization_rationale_315",
+      "id": "corp_fr_optimization_rationale_329",
       "label": "Como get(), pero siempre devuelve una lista de diccionarios.",
       "_origin": "ast",
       "community": 19,
@@ -6248,10 +6314,21 @@
       "file_type": "rationale",
       "norm_label": "como get(), pero siempre devuelve una lista de diccionarios.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L315"
+      "source_location": "L329"
     },
     {
-      "id": "corp_fr_optimization_rationale_456",
+      "id": "corp_fr_optimization_rationale_416",
+      "label": "Universo base: Large Caps activas (sin ETFs/fondos) en las bolsas elegidas.",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "FMPClient",
+      "file_type": "rationale",
+      "norm_label": "universo base: large caps activas (sin etfs/fondos) en las bolsas elegidas.",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L416"
+    },
+    {
+      "id": "corp_fr_optimization_rationale_470",
       "label": "\u00daltimo registro por fecha (FMP suele entregarlos del m\u00e1s reciente al m\u00e1s\u2026",
       "_origin": "ast",
       "community": 19,
@@ -6259,10 +6336,10 @@
       "file_type": "rationale",
       "norm_label": "ultimo registro por fecha (fmp suele entregarlos del mas reciente al mas...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L456"
+      "source_location": "L470"
     },
     {
-      "id": "corp_fr_optimization_rationale_463",
+      "id": "corp_fr_optimization_rationale_477",
       "label": "Calcula Debt/EBITDA y EBITDA/Interest del \u00faltimo a\u00f1o fiscal y filtra.",
       "_origin": "ast",
       "community": 19,
@@ -6270,7 +6347,7 @@
       "file_type": "rationale",
       "norm_label": "calcula debt/ebitda y ebitda/interest del ultimo ano fiscal y filtra.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L463"
+      "source_location": "L477"
     },
     {
       "id": "linearconstraint",
@@ -6317,7 +6394,7 @@
       "source_location": ""
     },
     {
-      "id": "corp_fr_optimization_rationale_999",
+      "id": "corp_fr_optimization_rationale_1017",
       "label": "Contrato v1: corp_fr_latest.json y una copia con marca de tiempo. Nunca aborta\u2026",
       "_origin": "ast",
       "community": 20,
@@ -6325,7 +6402,7 @@
       "file_type": "rationale",
       "norm_label": "contrato v1: corp_fr_latest.json y una copia con marca de tiempo. nunca aborta...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L999"
+      "source_location": "L1017"
     },
     {
       "id": "pipeline_io_rationale_214",
@@ -6381,28 +6458,6 @@
       "norm_label": "contrato v1: portfolio_latest.json y una copia con marca de tiempo. nunca...",
       "source_file": "US Asset Manager.py",
       "source_location": "L2317"
-    },
-    {
-      "id": "us_asset_manager_py_dataframe",
-      "label": "DataFrame",
-      "_origin": "ast",
-      "community": 21,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "dataframe",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "us_asset_manager_py_series",
-      "label": "Series",
-      "_origin": "ast",
-      "community": 21,
-      "community_name": "DataFrame",
-      "file_type": "code",
-      "norm_label": "series",
-      "source_file": "",
-      "source_location": ""
     },
     {
       "id": "us_asset_manager_rationale_2166",
@@ -6548,7 +6603,7 @@
       "source_location": "L868"
     },
     {
-      "id": "corp_fr_optimization_rationale_329",
+      "id": "corp_fr_optimization_rationale_343",
       "label": "Curva spot del Tesoro (CMT) con interpolaci\u00f3n para cualquier madurez. Las tasas\u2026",
       "_origin": "ast",
       "community": 27,
@@ -6556,10 +6611,10 @@
       "file_type": "rationale",
       "norm_label": "curva spot del tesoro (cmt) con interpolacion para cualquier madurez. las tasas...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L329"
+      "source_location": "L343"
     },
     {
-      "id": "corp_fr_optimization_rationale_358",
+      "id": "corp_fr_optimization_rationale_372",
       "label": "Rf en % para la madurez t (a\u00f1os). Fuera de rango: extrapolaci\u00f3n plana.",
       "_origin": "ast",
       "community": 27,
@@ -6567,10 +6622,10 @@
       "file_type": "rationale",
       "norm_label": "rf en % para la madurez t (anos). fuera de rango: extrapolacion plana.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L358"
+      "source_location": "L372"
     },
     {
-      "id": "corp_fr_optimization_rationale_363",
+      "id": "corp_fr_optimization_rationale_377",
       "label": "Rf en decimal para la madurez t (a\u00f1os).",
       "_origin": "ast",
       "community": 27,
@@ -6578,10 +6633,10 @@
       "file_type": "rationale",
       "norm_label": "rf en decimal para la madurez t (anos).",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L363"
+      "source_location": "L377"
     },
     {
-      "id": "corp_fr_optimization_rationale_690",
+      "id": "corp_fr_optimization_rationale_704",
       "label": "Yield Target m\u00ednimo = Rf(t) + spread(bucket) + prima(plazo) + ajuste(score).",
       "_origin": "ast",
       "community": 27,
@@ -6589,7 +6644,7 @@
       "file_type": "rationale",
       "norm_label": "yield target minimo = rf(t) + spread(bucket) + prima(plazo) + ajuste(score).",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L690"
+      "source_location": "L704"
     },
     {
       "id": "figure",
@@ -6621,28 +6676,6 @@
       "community_name": "report_pdf.py",
       "file_type": "code",
       "norm_label": "runtimeerror",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "scripts_check_risk_estimators_sync",
-      "label": "check_risk_estimators_sync.py",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "file_type": "code",
-      "norm_label": "check_risk_estimators_sync.py",
-      "source_file": "scripts/check_risk_estimators_sync.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "scripts_check_risk_estimators_sync_py_path",
-      "label": "Path",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "file_type": "code",
-      "norm_label": "path",
       "source_file": "",
       "source_location": ""
     },
@@ -6724,28 +6757,6 @@
       "source_location": "L41"
     },
     {
-      "id": "scripts_check_risk_estimators_sync_rationale_1",
-      "label": "Compara risk_estimators.py con la copia de AM-PM, funci\u00f3n por funci\u00f3n. Informa,\u2026",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "file_type": "rationale",
-      "norm_label": "compara risk_estimators.py con la copia de am-pm, funcion por funcion. informa,...",
-      "source_file": "scripts/check_risk_estimators_sync.py",
-      "source_location": "L1"
-    },
-    {
-      "id": "scripts_check_risk_estimators_sync_rationale_21",
-      "label": "Nombre \u2192 fuente normalizada (ast.dump ignora comentarios, docstrings no) de\u2026",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "file_type": "rationale",
-      "norm_label": "nombre \u2192 fuente normalizada (ast.dump ignora comentarios, docstrings no) de...",
-      "source_file": "scripts/check_risk_estimators_sync.py",
-      "source_location": "L21"
-    },
-    {
       "id": "scripts_sweep_tail_penalty_rationale_1",
       "label": "Barrido de \u03b3 para la penalizaci\u00f3n de cola, con datos reales (necesita\u2026",
       "_origin": "ast",
@@ -6801,7 +6812,7 @@
       "source_location": ""
     },
     {
-      "id": "corp_fr_optimization_rationale_604",
+      "id": "corp_fr_optimization_rationale_618",
       "label": "Winsoriza la m\u00e9trica cruda por cuantiles, estandariza y recorta a \u00b1ZSCORE_CLIP.",
       "_origin": "ast",
       "community": 31,
@@ -6809,10 +6820,10 @@
       "file_type": "rationale",
       "norm_label": "winsoriza la metrica cruda por cuantiles, estandariza y recorta a \u00b1zscore_clip.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L604"
+      "source_location": "L618"
     },
     {
-      "id": "corp_fr_optimization_rationale_616",
+      "id": "corp_fr_optimization_rationale_630",
       "label": "Composite = \u03a3 peso\u00b7Z (cobertura, deuda invertida, CAGR FCF, rating); ranking.",
       "_origin": "ast",
       "community": 31,
@@ -6820,10 +6831,10 @@
       "file_type": "rationale",
       "norm_label": "composite = \u03c3 peso\u00b7z (cobertura, deuda invertida, cagr fcf, rating); ranking.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L616"
+      "source_location": "L630"
     },
     {
-      "id": "corp_fr_optimization_rationale_653",
+      "id": "corp_fr_optimization_rationale_667",
       "label": "Aplica un tope por emisor redistribuyendo el exceso proporcionalmente.",
       "_origin": "ast",
       "community": 31,
@@ -6831,10 +6842,10 @@
       "file_type": "rationale",
       "norm_label": "aplica un tope por emisor redistribuyendo el exceso proporcionalmente.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L653"
+      "source_location": "L667"
     },
     {
-      "id": "corp_fr_optimization_rationale_674",
+      "id": "corp_fr_optimization_rationale_688",
       "label": "Equal Weight (1/N) y Credit-Score Weight (normalizado a 100%).",
       "_origin": "ast",
       "community": 31,
@@ -6842,7 +6853,7 @@
       "file_type": "rationale",
       "norm_label": "equal weight (1/n) y credit-score weight (normalizado a 100%).",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L674"
+      "source_location": "L688"
     },
     {
       "id": "risk_estimators_rationale_106",
@@ -6922,18 +6933,18 @@
       "source_location": ""
     },
     {
-      "id": "corp_fr_optimization_rationale_402",
-      "label": "Universo base: Large Caps activas (sin ETFs/fondos) en las bolsas elegidas.",
+      "id": "corp_fr_optimization_rationale_657",
+      "label": "Deja solo los ratings de RATING_SELECTION (Z-scores ya calculados sobre todo el\u2026",
       "_origin": "ast",
       "community": 33,
       "community_name": "DataFrame",
       "file_type": "rationale",
-      "norm_label": "universo base: large caps activas (sin etfs/fondos) en las bolsas elegidas.",
+      "norm_label": "deja solo los ratings de rating_selection (z-scores ya calculados sobre todo el...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L402"
+      "source_location": "L657"
     },
     {
-      "id": "corp_fr_optimization_rationale_801",
+      "id": "corp_fr_optimization_rationale_819",
       "label": "Emisor \u00d7 tenor para una columna del overlay, en el orden del ranking.",
       "_origin": "ast",
       "community": 33,
@@ -6941,10 +6952,10 @@
       "file_type": "rationale",
       "norm_label": "emisor \u00d7 tenor para una columna del overlay, en el orden del ranking.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L801"
+      "source_location": "L819"
     },
     {
-      "id": "corp_fr_optimization_rationale_206",
+      "id": "corp_fr_optimization_rationale_208",
       "label": "Posici\u00f3n en la escala (0 = AAA). Mayor = peor.",
       "_origin": "ast",
       "community": 34,
@@ -6952,10 +6963,10 @@
       "file_type": "rationale",
       "norm_label": "posicion en la escala (0 = aaa). mayor = peor.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L206"
+      "source_location": "L208"
     },
     {
-      "id": "corp_fr_optimization_rationale_211",
+      "id": "corp_fr_optimization_rationale_213",
       "label": "Peor entre el rating por cobertura EBIT/Int y el rating por Deuda/EBITDA.",
       "_origin": "ast",
       "community": 34,
@@ -6963,10 +6974,10 @@
       "file_type": "rationale",
       "norm_label": "peor entre el rating por cobertura ebit/int y el rating por deuda/ebitda.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L211"
+      "source_location": "L213"
     },
     {
-      "id": "corp_fr_optimization_rationale_221",
+      "id": "corp_fr_optimization_rationale_223",
       "label": "AA-' -> 'AA', 'BBB+' -> 'BBB'. Devuelve None si no aplica.",
       "_origin": "ast",
       "community": 34,
@@ -6974,10 +6985,21 @@
       "file_type": "rationale",
       "norm_label": "aa-' -> 'aa', 'bbb+' -> 'bbb'. devuelve none si no aplica.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L221"
+      "source_location": "L223"
     },
     {
-      "id": "corp_fr_optimization_rationale_235",
+      "id": "corp_fr_optimization_rationale_231",
+      "label": "Ratings admitidos: RATING_SELECTION (lista exacta) o, si no hay, todos los\u2026",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "_rating_rank",
+      "file_type": "rationale",
+      "norm_label": "ratings admitidos: rating_selection (lista exacta) o, si no hay, todos los...",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L231"
+    },
+    {
+      "id": "corp_fr_optimization_rationale_249",
       "label": "Peor rating v\u00e1lido de RATING_SELECTION (fija hasta d\u00f3nde deben relajarse los\u2026",
       "_origin": "ast",
       "community": 34,
@@ -6985,10 +7007,10 @@
       "file_type": "rationale",
       "norm_label": "peor rating valido de rating_selection (fija hasta donde deben relajarse los...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L235"
+      "source_location": "L249"
     },
     {
-      "id": "corp_fr_optimization_rationale_241",
+      "id": "corp_fr_optimization_rationale_255",
       "label": "(D/EBITDA m\u00e1x., cobertura m\u00edn.) que dejan pasar al peor rating de\u2026",
       "_origin": "ast",
       "community": 34,
@@ -6996,10 +7018,21 @@
       "file_type": "rationale",
       "norm_label": "(d/ebitda max., cobertura min.) que dejan pasar al peor rating de...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L241"
+      "source_location": "L255"
     },
     {
-      "id": "corp_fr_optimization_rationale_569",
+      "id": "corp_fr_optimization_rationale_272",
+      "label": "Avisa de ratings inv\u00e1lidos o que el rating sint\u00e9tico nunca produce.",
+      "_origin": "ast",
+      "community": 34,
+      "community_name": "_rating_rank",
+      "file_type": "rationale",
+      "norm_label": "avisa de ratings invalidos o que el rating sintetico nunca produce.",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L272"
+    },
+    {
+      "id": "corp_fr_optimization_rationale_583",
       "label": "Asigna rating (override manual > sint\u00e9tico). Con los umbrales base todo emisor\u2026",
       "_origin": "ast",
       "community": 34,
@@ -7007,7 +7040,7 @@
       "file_type": "rationale",
       "norm_label": "asigna rating (override manual > sintetico). con los umbrales base todo emisor...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L569"
+      "source_location": "L583"
     },
     {
       "id": "corp_fr_optimization_py_path",
@@ -7021,7 +7054,7 @@
       "source_location": ""
     },
     {
-      "id": "corp_fr_optimization_rationale_864",
+      "id": "corp_fr_optimization_rationale_882",
       "label": "Figura con el estilo com\u00fan del reporte (plantilla, m\u00e1rgenes y leyenda\u2026",
       "_origin": "ast",
       "community": 35,
@@ -7029,10 +7062,10 @@
       "file_type": "rationale",
       "norm_label": "figura con el estilo comun del reporte (plantilla, margenes y leyenda...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L864"
+      "source_location": "L882"
     },
     {
-      "id": "corp_fr_optimization_rationale_872",
+      "id": "corp_fr_optimization_rationale_890",
       "label": "Genera un \u00fanico HTML con Plotly embebido y las tablas.",
       "_origin": "ast",
       "community": 35,
@@ -7040,7 +7073,7 @@
       "file_type": "rationale",
       "norm_label": "genera un unico html con plotly embebido y las tablas.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L872"
+      "source_location": "L890"
     },
     {
       "id": "risk_estimators_rationale_704",
@@ -7063,17 +7096,6 @@
       "norm_label": "asimetria, curtosis y var/cvar del portafolio al horizonte comun...",
       "source_file": "US Asset Manager.py",
       "source_location": "L1863"
-    },
-    {
-      "id": "tests_test_bs_pricing_rationale_20",
-      "label": "Copia congelada del c\u00f3digo previo a la extracci\u00f3n a bs_pricing.py; no editar.",
-      "_origin": "ast",
-      "community": 37,
-      "community_name": "_Frozen",
-      "file_type": "rationale",
-      "norm_label": "copia congelada del codigo previo a la extraccion a bs_pricing.py; no editar.",
-      "source_file": "tests/test_bs_pricing.py",
-      "source_location": "L20"
     },
     {
       "id": "us_asset_manager_py_exception",
@@ -7164,7 +7186,29 @@
       "source_location": "L465"
     },
     {
-      "id": "corp_fr_optimization_rationale_526",
+      "id": "us_asset_manager_rationale_1419",
+      "label": "\u03c3 bajo la medida f\u00edsica. La MFIV de opciones lleva la prima de varianza.",
+      "_origin": "ast",
+      "community": 41,
+      "community_name": "ImpliedCovarianceBuilder",
+      "file_type": "rationale",
+      "norm_label": "\u03c3 bajo la medida fisica. la mfiv de opciones lleva la prima de varianza.",
+      "source_file": "US Asset Manager.py",
+      "source_location": "L1419"
+    },
+    {
+      "id": "tests_test_bs_pricing_rationale_20",
+      "label": "Copia congelada del c\u00f3digo previo a la extracci\u00f3n a bs_pricing.py; no editar.",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "_Frozen",
+      "file_type": "rationale",
+      "norm_label": "copia congelada del codigo previo a la extraccion a bs_pricing.py; no editar.",
+      "source_file": "tests/test_bs_pricing.py",
+      "source_location": "L20"
+    },
+    {
+      "id": "corp_fr_optimization_rationale_540",
       "label": "Devuelve (CAGR_FCF, estrictamente_creciente) sobre la ventana `years`. `fcf`\u2026",
       "_origin": "ast",
       "community": 44,
@@ -7172,10 +7216,10 @@
       "file_type": "rationale",
       "norm_label": "devuelve (cagr_fcf, estrictamente_creciente) sobre la ventana `years`. `fcf`...",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L526"
+      "source_location": "L540"
     },
     {
-      "id": "corp_fr_optimization_rationale_541",
+      "id": "corp_fr_optimization_rationale_555",
       "label": "Calcula CAGR del FCF y la condici\u00f3n de crecimiento estricto; filtra.",
       "_origin": "ast",
       "community": 44,
@@ -7183,7 +7227,7 @@
       "file_type": "rationale",
       "norm_label": "calcula cagr del fcf y la condicion de crecimiento estricto; filtra.",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L541"
+      "source_location": "L555"
     },
     {
       "id": "bs_pricing",
@@ -7373,50 +7417,6 @@
       "source_location": "L1"
     },
     {
-      "id": "us_asset_manager_rationale_1419",
-      "label": "\u03c3 bajo la medida f\u00edsica. La MFIV de opciones lleva la prima de varianza.",
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "ImpliedCovarianceBuilder",
-      "file_type": "rationale",
-      "norm_label": "\u03c3 bajo la medida fisica. la mfiv de opciones lleva la prima de varianza.",
-      "source_file": "US Asset Manager.py",
-      "source_location": "L1419"
-    },
-    {
-      "id": "corp_fr_optimization_rationale_229",
-      "label": "RATING_SELECTION normalizado (may\u00fasculas, sin espacios ni duplicados).",
-      "_origin": "ast",
-      "community": 55,
-      "community_name": "_selected_ratings",
-      "file_type": "rationale",
-      "norm_label": "rating_selection normalizado (mayusculas, sin espacios ni duplicados).",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L229"
-    },
-    {
-      "id": "corp_fr_optimization_rationale_258",
-      "label": "Avisa de ratings inv\u00e1lidos o que el rating sint\u00e9tico nunca produce.",
-      "_origin": "ast",
-      "community": 55,
-      "community_name": "_selected_ratings",
-      "file_type": "rationale",
-      "norm_label": "avisa de ratings invalidos o que el rating sintetico nunca produce.",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L258"
-    },
-    {
-      "id": "corp_fr_optimization_rationale_643",
-      "label": "Deja solo los ratings de RATING_SELECTION (Z-scores ya calculados sobre todo el\u2026",
-      "_origin": "ast",
-      "community": 55,
-      "community_name": "_selected_ratings",
-      "file_type": "rationale",
-      "norm_label": "deja solo los ratings de rating_selection (z-scores ya calculados sobre todo el...",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L643"
-    },
-    {
       "id": "risk_estimators_rationale_763",
       "label": "Convierte un plazo a anos. Exactamente UNA forma de expresarlo:\u2026",
       "_origin": "ast",
@@ -7464,7 +7464,7 @@
       "id": "date",
       "label": "date",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "date",
@@ -7475,7 +7475,7 @@
       "id": "fmp_client",
       "label": "fmp_client.py",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "fmp_client.py",
@@ -7486,7 +7486,7 @@
       "id": "fmp_client_py_any",
       "label": "Any",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "any",
@@ -7497,7 +7497,7 @@
       "id": "fmp_client_py_exception",
       "label": "Exception",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "exception",
@@ -7508,7 +7508,7 @@
       "id": "us_asset_manager_py_any",
       "label": "Any",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "code",
       "norm_label": "any",
@@ -7519,7 +7519,7 @@
       "id": "fmp_client_rationale_1",
       "label": "Cliente HTTP compartido para la API 'stable' de Financial Modeling Prep. Lo\u2026",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "rationale",
       "norm_label": "cliente http compartido para la api 'stable' de financial modeling prep. lo...",
@@ -7530,7 +7530,7 @@
       "id": "fmp_client_rationale_21",
       "label": "Error gen\u00e9rico de comunicaci\u00f3n con un proveedor de datos.",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "rationale",
       "norm_label": "error generico de comunicacion con un proveedor de datos.",
@@ -7541,7 +7541,7 @@
       "id": "fmp_client_rationale_25",
       "label": "Clave inv\u00e1lida o endpoint no incluido en el plan contratado.",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "rationale",
       "norm_label": "clave invalida o endpoint no incluido en el plan contratado.",
@@ -7552,7 +7552,7 @@
       "id": "us_asset_manager_rationale_1261",
       "label": "Suma de dividendos con fecha ex en los \u00faltimos 365 d\u00edas (0.0 si no pag\u00f3).",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "rationale",
       "norm_label": "suma de dividendos con fecha ex en los ultimos 365 dias (0.0 si no pago).",
@@ -7563,7 +7563,7 @@
       "id": "us_asset_manager_rationale_1362",
       "label": "Interpola al DTE objetivo (MFIS/MFIK ya vienen escalados a ese plazo). None si\u2026",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Any",
       "file_type": "rationale",
       "norm_label": "interpola al dte objetivo (mfis/mfik ya vienen escalados a ese plazo). none si...",
@@ -7606,8 +7606,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 29,
-      "community_name": "report_pdf.py",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "am-pm repository (source of risk_estimators copy)",
@@ -7621,8 +7621,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 29,
-      "community_name": "report_pdf.py",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
       "contributor": null,
       "file_type": "concept",
       "norm_label": "manual risk_estimators.py sync with am-pm (drift check)",
@@ -7636,8 +7636,8 @@
       "_origin": "semantic",
       "author": null,
       "captured_at": null,
-      "community": 29,
-      "community_name": "report_pdf.py",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
       "contributor": null,
       "file_type": "document",
       "norm_label": "us asset allocation readme",
@@ -8358,6 +8358,18 @@
       "type": "external"
     },
     {
+      "id": "ast",
+      "label": "ast",
+      "_origin": "semantic",
+      "community": 14,
+      "community_name": "check_risk_estimators_sync.py",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "ast",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "importlib_util",
       "label": "importlib_util",
       "_origin": "semantic",
@@ -8450,18 +8462,6 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "argparse",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "ast",
-      "label": "ast",
-      "_origin": "semantic",
-      "community": 29,
-      "community_name": "report_pdf.py",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "ast",
       "source_file": "",
       "type": "external"
     },
@@ -8896,7 +8896,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L993",
+      "source_location": "L1011",
       "weight": 1.0
     },
     {
@@ -8908,7 +8908,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L995",
+      "source_location": "L1013",
       "weight": 1.0
     },
     {
@@ -8920,7 +8920,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L873",
+      "source_location": "L891",
       "weight": 1.0
     },
     {
@@ -8932,7 +8932,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L875",
+      "source_location": "L893",
       "weight": 1.0
     },
     {
@@ -8944,7 +8944,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L881",
+      "source_location": "L899",
       "weight": 1.0
     },
     {
@@ -8956,7 +8956,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L882",
+      "source_location": "L900",
       "weight": 1.0
     },
     {
@@ -8968,7 +8968,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L953",
+      "source_location": "L971",
       "weight": 1.0
     },
     {
@@ -8980,7 +8980,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L382",
+      "source_location": "L396",
       "weight": 1.0
     },
     {
@@ -8992,7 +8992,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L395",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
@@ -9004,7 +9004,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L395",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
@@ -9016,7 +9016,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L986",
+      "source_location": "L1004",
       "weight": 1.0
     },
     {
@@ -9028,7 +9028,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L246",
+      "source_location": "L260",
       "weight": 1.0
     },
     {
@@ -9040,7 +9040,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L249",
+      "source_location": "L263",
       "weight": 1.0
     },
     {
@@ -9052,7 +9052,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1001",
+      "source_location": "L1019",
       "weight": 1.0
     },
     {
@@ -9064,7 +9064,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1008",
+      "source_location": "L1026",
       "weight": 1.0
     },
     {
@@ -9076,7 +9076,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1013",
+      "source_location": "L1031",
       "weight": 1.0
     },
     {
@@ -9088,7 +9088,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1017",
+      "source_location": "L1035",
       "weight": 1.0
     },
     {
@@ -9100,7 +9100,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1018",
+      "source_location": "L1036",
       "weight": 1.0
     },
     {
@@ -9112,7 +9112,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1020",
+      "source_location": "L1038",
       "weight": 1.0
     },
     {
@@ -9124,7 +9124,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L532",
+      "source_location": "L546",
       "weight": 1.0
     },
     {
@@ -9136,7 +9136,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L866",
+      "source_location": "L884",
       "weight": 1.0
     },
     {
@@ -9148,7 +9148,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L297",
+      "source_location": "L311",
       "weight": 1.0
     },
     {
@@ -9160,7 +9160,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L316",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -9172,7 +9172,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L196",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -9184,7 +9184,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L724",
+      "source_location": "L742",
       "weight": 1.0
     },
     {
@@ -9196,7 +9196,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L731",
+      "source_location": "L749",
       "weight": 1.0
     },
     {
@@ -9208,7 +9208,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L732",
+      "source_location": "L750",
       "weight": 1.0
     },
     {
@@ -9220,7 +9220,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L746",
+      "source_location": "L764",
       "weight": 1.0
     },
     {
@@ -9232,7 +9232,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L806",
+      "source_location": "L824",
       "weight": 1.0
     },
     {
@@ -9244,7 +9244,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L807",
+      "source_location": "L825",
       "weight": 1.0
     },
     {
@@ -9256,7 +9256,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L808",
+      "source_location": "L826",
       "weight": 1.0
     },
     {
@@ -9268,7 +9268,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L754",
+      "source_location": "L772",
       "weight": 1.0
     },
     {
@@ -9280,7 +9280,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L755",
+      "source_location": "L773",
       "weight": 1.0
     },
     {
@@ -9292,7 +9292,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L820",
+      "source_location": "L838",
       "weight": 1.0
     },
     {
@@ -9304,7 +9304,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L852",
+      "source_location": "L870",
       "weight": 1.0
     },
     {
@@ -9316,7 +9316,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L779",
+      "source_location": "L797",
       "weight": 1.0
     },
     {
@@ -9328,7 +9328,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L780",
+      "source_location": "L798",
       "weight": 1.0
     },
     {
@@ -9340,7 +9340,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L364",
+      "source_location": "L378",
       "weight": 1.0
     },
     {
@@ -9352,7 +9352,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1030",
+      "source_location": "L1048",
       "weight": 1.0
     },
     {
@@ -9364,7 +9364,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1031",
+      "source_location": "L1049",
       "weight": 1.0
     },
     {
@@ -9376,7 +9376,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1032",
+      "source_location": "L1050",
       "weight": 1.0
     },
     {
@@ -9388,7 +9388,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1034",
+      "source_location": "L1052",
       "weight": 1.0
     },
     {
@@ -9400,7 +9400,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1038",
+      "source_location": "L1056",
       "weight": 1.0
     },
     {
@@ -9412,7 +9412,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1039",
+      "source_location": "L1057",
       "weight": 1.0
     },
     {
@@ -9424,7 +9424,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1043",
+      "source_location": "L1061",
       "weight": 1.0
     },
     {
@@ -9436,7 +9436,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1045",
+      "source_location": "L1063",
       "weight": 1.0
     },
     {
@@ -9448,7 +9448,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1047",
+      "source_location": "L1065",
       "weight": 1.0
     },
     {
@@ -9460,7 +9460,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1048",
+      "source_location": "L1066",
       "weight": 1.0
     },
     {
@@ -9472,7 +9472,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1058",
+      "source_location": "L1076",
       "weight": 1.0
     },
     {
@@ -9484,7 +9484,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1064",
+      "source_location": "L1082",
       "weight": 1.0
     },
     {
@@ -9496,108 +9496,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1068",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_select_ratings",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1070",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_selected_ratings",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1071",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_stage_weights",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1079",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_stage_overlay",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1080",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_portfolio_summary",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1081",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_print_funnel",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1084",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_print_ranking",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1085",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_print_weights",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
       "source_location": "L1086",
       "weight": 1.0
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_print_overlay",
+      "target": "corp_fr_optimization_selected_ratings",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9609,7 +9513,7 @@
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_print_refinitiv_instructions",
+      "target": "corp_fr_optimization_select_ratings",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9621,31 +9525,19 @@
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_build_html_report",
+      "target": "corp_fr_optimization_stage_weights",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1090",
+      "source_location": "L1097",
       "weight": 1.0
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "os",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1091",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_export_universe_json",
+      "target": "corp_fr_optimization_stage_overlay",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9657,7 +9549,7 @@
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "corp_fr_optimization_banner",
+      "target": "corp_fr_optimization_portfolio_summary",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9669,7 +9561,19 @@
     },
     {
       "source": "corp_fr_optimization_run_pipeline",
-      "target": "webbrowser",
+      "target": "corp_fr_optimization_print_funnel",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1102",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_print_ranking",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9677,6 +9581,102 @@
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
       "source_location": "L1103",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_print_weights",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1104",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_print_overlay",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1105",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_print_refinitiv_instructions",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1106",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_build_html_report",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1108",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "os",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1109",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_export_universe_json",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1116",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "corp_fr_optimization_banner",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1117",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_run_pipeline",
+      "target": "webbrowser",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1121",
       "weight": 1.0
     },
     {
@@ -9688,7 +9688,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L644",
+      "source_location": "L658",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_selected_ratings",
+      "target": "corp_fr_optimization_rating_rank",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -9700,7 +9712,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L548",
+      "source_location": "L562",
       "weight": 1.0
     },
     {
@@ -9712,7 +9724,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L552",
+      "source_location": "L566",
       "weight": 1.0
     },
     {
@@ -9724,7 +9736,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L703",
+      "source_location": "L721",
       "weight": 1.0
     },
     {
@@ -9736,7 +9748,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L581",
+      "source_location": "L595",
       "weight": 1.0
     },
     {
@@ -9748,7 +9760,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L587",
+      "source_location": "L601",
       "weight": 1.0
     },
     {
@@ -9760,7 +9772,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L590",
+      "source_location": "L604",
       "weight": 1.0
     },
     {
@@ -9772,7 +9784,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L618",
+      "source_location": "L632",
       "weight": 1.0
     },
     {
@@ -9784,7 +9796,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L627",
+      "source_location": "L641",
       "weight": 1.0
     },
     {
@@ -9796,7 +9808,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L415",
+      "source_location": "L429",
       "weight": 1.0
     },
     {
@@ -9808,7 +9820,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L470",
+      "source_location": "L484",
       "weight": 1.0
     },
     {
@@ -9820,7 +9832,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L476",
+      "source_location": "L490",
       "weight": 1.0
     },
     {
@@ -9832,7 +9844,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L477",
+      "source_location": "L491",
       "weight": 1.0
     },
     {
@@ -9844,7 +9856,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L514",
+      "source_location": "L528",
       "weight": 1.0
     },
     {
@@ -9856,7 +9868,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L517",
+      "source_location": "L531",
       "weight": 1.0
     },
     {
@@ -9868,7 +9880,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L680",
+      "source_location": "L694",
       "weight": 1.0
     },
     {
@@ -9880,7 +9892,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L683",
+      "source_location": "L697",
       "weight": 1.0
     },
     {
@@ -9892,7 +9904,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L212",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
@@ -9904,7 +9916,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L216",
+      "source_location": "L218",
       "weight": 1.0
     },
     {
@@ -9916,7 +9928,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L259",
+      "source_location": "L273",
       "weight": 1.0
     },
     {
@@ -9928,7 +9940,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L264",
+      "source_location": "L278",
       "weight": 1.0
     },
     {
@@ -9940,7 +9952,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L236",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -9952,7 +9964,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L605",
+      "source_location": "L619",
       "weight": 1.0
     },
     {
@@ -14320,7 +14332,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L292",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -14884,7 +14896,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L144",
+      "source_location": "L146",
       "weight": 1.0
     },
     {
@@ -14896,7 +14908,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L145",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -14908,36 +14920,12 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L146",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization",
-      "target": "sys",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L147",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization",
-      "target": "time",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "Corp_FR_Optimization.py",
       "source_location": "L148",
       "weight": 1.0
     },
     {
       "source": "corp_fr_optimization",
-      "target": "webbrowser",
+      "target": "sys",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14961,31 +14949,31 @@
     },
     {
       "source": "corp_fr_optimization",
+      "target": "time",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization",
+      "target": "webbrowser",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization",
       "target": "numpy",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L155",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization",
-      "target": "pandas",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L156",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization",
-      "target": "plotly_graph_objects",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14997,6 +14985,30 @@
     },
     {
       "source": "corp_fr_optimization",
+      "target": "pandas",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L158",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization",
+      "target": "plotly_graph_objects",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization",
       "target": "pipeline_io",
       "relation": "imports",
       "_origin": "ast",
@@ -15004,7 +15016,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L161",
+      "source_location": "L163",
       "weight": 1.0
     },
     {
@@ -15016,7 +15028,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L162",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -15028,7 +15040,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L162",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -15040,7 +15052,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L163",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
@@ -16480,7 +16492,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L150",
+      "source_location": "L152",
       "weight": 1.0
     },
     {
@@ -16492,7 +16504,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L151",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -16504,7 +16516,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L152",
+      "source_location": "L154",
       "weight": 1.0
     },
     {
@@ -16516,7 +16528,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L153",
+      "source_location": "L155",
       "weight": 1.0
     },
     {
@@ -16528,7 +16540,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L158",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -16540,7 +16552,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L159",
+      "source_location": "L161",
       "weight": 1.0
     },
     {
@@ -16552,7 +16564,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L163",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
@@ -17200,7 +17212,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L991",
+      "source_location": "L1009",
       "weight": 1.0
     },
     {
@@ -17212,7 +17224,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L869",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -17224,7 +17236,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L869",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -17236,7 +17248,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L998",
+      "source_location": "L1016",
       "weight": 1.0
     },
     {
@@ -17248,7 +17260,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L863",
+      "source_location": "L881",
       "weight": 1.0
     },
     {
@@ -17260,7 +17272,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L314",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -17272,7 +17284,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L730",
+      "source_location": "L748",
       "weight": 1.0
     },
     {
@@ -17284,7 +17296,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L805",
+      "source_location": "L823",
       "weight": 1.0
     },
     {
@@ -17296,7 +17308,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L753",
+      "source_location": "L771",
       "weight": 1.0
     },
     {
@@ -17308,7 +17320,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L819",
+      "source_location": "L837",
       "weight": 1.0
     },
     {
@@ -17320,7 +17332,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L778",
+      "source_location": "L796",
       "weight": 1.0
     },
     {
@@ -17332,7 +17344,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L540",
+      "source_location": "L554",
       "weight": 1.0
     },
     {
@@ -17344,7 +17356,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L689",
+      "source_location": "L703",
       "weight": 1.0
     },
     {
@@ -17356,7 +17368,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L401",
+      "source_location": "L415",
       "weight": 1.0
     },
     {
@@ -17368,7 +17380,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L462",
+      "source_location": "L476",
       "weight": 1.0
     },
     {
@@ -17380,7 +17392,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L180",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -18268,7 +18280,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L869",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
@@ -18280,7 +18292,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L652",
+      "source_location": "L666",
       "weight": 1.0
     },
     {
@@ -18292,7 +18304,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L800",
+      "source_location": "L818",
       "weight": 1.0
     },
     {
@@ -18304,7 +18316,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L706",
+      "source_location": "L724",
       "weight": 1.0
     },
     {
@@ -18316,7 +18328,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L642",
+      "source_location": "L656",
       "weight": 1.0
     },
     {
@@ -18328,7 +18340,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L540",
+      "source_location": "L554",
       "weight": 1.0
     },
     {
@@ -18340,7 +18352,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L689",
+      "source_location": "L703",
       "weight": 1.0
     },
     {
@@ -18352,7 +18364,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L568",
+      "source_location": "L582",
       "weight": 1.0
     },
     {
@@ -18364,7 +18376,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L615",
+      "source_location": "L629",
       "weight": 1.0
     },
     {
@@ -18376,7 +18388,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L401",
+      "source_location": "L415",
       "weight": 1.0
     },
     {
@@ -18388,7 +18400,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L462",
+      "source_location": "L476",
       "weight": 1.0
     },
     {
@@ -18400,7 +18412,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L673",
+      "source_location": "L687",
       "weight": 1.0
     },
     {
@@ -18412,7 +18424,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L603",
+      "source_location": "L617",
       "weight": 1.0
     },
     {
@@ -18821,13 +18833,35 @@
     },
     {
       "source": "corp_fr_optimization",
+      "target": "corp_fr_optimization_abort_if_empty",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1009",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization",
+      "target": "corp_fr_optimization_export_universe_json",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1016",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization",
       "target": "corp_fr_optimization_run_pipeline",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L1029",
+      "source_location": "L1047",
       "weight": 1.0
     },
     {
@@ -18838,7 +18872,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L180",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -18849,7 +18883,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L190",
+      "source_location": "L192",
       "weight": 1.0
     },
     {
@@ -18860,7 +18894,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L195",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -18871,7 +18905,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L205",
+      "source_location": "L207",
       "weight": 1.0
     },
     {
@@ -18882,7 +18916,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L210",
+      "source_location": "L212",
       "weight": 1.0
     },
     {
@@ -18893,7 +18927,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L220",
+      "source_location": "L222",
       "weight": 1.0
     },
     {
@@ -18904,7 +18938,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L228",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -18915,7 +18949,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L234",
+      "source_location": "L248",
       "weight": 1.0
     },
     {
@@ -18926,7 +18960,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L240",
+      "source_location": "L254",
       "weight": 1.0
     },
     {
@@ -18937,7 +18971,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L257",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -18948,7 +18982,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L275",
+      "source_location": "L289",
       "weight": 1.0
     },
     {
@@ -18959,7 +18993,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L328",
+      "source_location": "L342",
       "weight": 1.0
     },
     {
@@ -18970,7 +19004,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L371",
+      "source_location": "L385",
       "weight": 1.0
     },
     {
@@ -18981,7 +19015,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L401",
+      "source_location": "L415",
       "weight": 1.0
     },
     {
@@ -18992,7 +19026,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L455",
+      "source_location": "L469",
       "weight": 1.0
     },
     {
@@ -19003,7 +19037,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L462",
+      "source_location": "L476",
       "weight": 1.0
     },
     {
@@ -19014,7 +19048,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L525",
+      "source_location": "L539",
       "weight": 1.0
     },
     {
@@ -19025,7 +19059,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L540",
+      "source_location": "L554",
       "weight": 1.0
     },
     {
@@ -19036,7 +19070,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L568",
+      "source_location": "L582",
       "weight": 1.0
     },
     {
@@ -19047,7 +19081,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L603",
+      "source_location": "L617",
       "weight": 1.0
     },
     {
@@ -19058,7 +19092,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L615",
+      "source_location": "L629",
       "weight": 1.0
     },
     {
@@ -19069,7 +19103,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L642",
+      "source_location": "L656",
       "weight": 1.0
     },
     {
@@ -19080,7 +19114,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L652",
+      "source_location": "L666",
       "weight": 1.0
     },
     {
@@ -19091,7 +19125,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L673",
+      "source_location": "L687",
       "weight": 1.0
     },
     {
@@ -19102,7 +19136,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L689",
+      "source_location": "L703",
       "weight": 1.0
     },
     {
@@ -19113,7 +19147,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L706",
+      "source_location": "L724",
       "weight": 1.0
     },
     {
@@ -19124,7 +19158,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L730",
+      "source_location": "L748",
       "weight": 1.0
     },
     {
@@ -19135,7 +19169,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L745",
+      "source_location": "L763",
       "weight": 1.0
     },
     {
@@ -19146,7 +19180,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L753",
+      "source_location": "L771",
       "weight": 1.0
     },
     {
@@ -19157,7 +19191,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L778",
+      "source_location": "L796",
       "weight": 1.0
     },
     {
@@ -19168,7 +19202,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L800",
+      "source_location": "L818",
       "weight": 1.0
     },
     {
@@ -19179,7 +19213,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L805",
+      "source_location": "L823",
       "weight": 1.0
     },
     {
@@ -19190,7 +19224,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L819",
+      "source_location": "L837",
       "weight": 1.0
     },
     {
@@ -19201,7 +19235,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L863",
+      "source_location": "L881",
       "weight": 1.0
     },
     {
@@ -19212,34 +19246,12 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L869",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
       "source": "corp_fr_optimization",
       "target": "corp_fr_optimization_check_keys",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L980",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization",
-      "target": "corp_fr_optimization_abort_if_empty",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L991",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization",
-      "target": "corp_fr_optimization_export_universe_json",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21005,7 +21017,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L275",
+      "source_location": "L289",
       "weight": 1.0
     },
     {
@@ -21126,7 +21138,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L278",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -21137,7 +21149,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L283",
+      "source_location": "L297",
       "weight": 1.0
     },
     {
@@ -21148,7 +21160,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L292",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -21159,7 +21171,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L314",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -21170,7 +21182,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L341",
+      "source_location": "L355",
       "weight": 1.0
     },
     {
@@ -21181,7 +21193,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L357",
+      "source_location": "L371",
       "weight": 1.0
     },
     {
@@ -21192,7 +21204,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L362",
+      "source_location": "L376",
       "weight": 1.0
     },
     {
@@ -21203,7 +21215,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L367",
+      "source_location": "L381",
       "weight": 1.0
     },
     {
@@ -23891,124 +23903,124 @@
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_181",
+      "source": "corp_fr_optimization_rationale_1017",
+      "target": "corp_fr_optimization_export_universe_json",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L1017",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_rationale_183",
       "target": "corp_fr_optimization_to_float",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L181",
+      "source_location": "L183",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_206",
+      "source": "corp_fr_optimization_rationale_208",
       "target": "corp_fr_optimization_rating_rank",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L206",
+      "source_location": "L208",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_211",
+      "source": "corp_fr_optimization_rationale_213",
       "target": "corp_fr_optimization_synthetic_rating",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L211",
+      "source_location": "L213",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_221",
+      "source": "corp_fr_optimization_rationale_223",
       "target": "corp_fr_optimization_rating_bucket",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L221",
+      "source_location": "L223",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_229",
+      "source": "corp_fr_optimization_rationale_231",
       "target": "corp_fr_optimization_selected_ratings",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L229",
+      "source_location": "L231",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_235",
+      "source": "corp_fr_optimization_rationale_249",
       "target": "corp_fr_optimization_worst_selected_rating",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L235",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_241",
+      "source": "corp_fr_optimization_rationale_255",
       "target": "corp_fr_optimization_effective_solvency_limits",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L241",
+      "source_location": "L255",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_258",
+      "source": "corp_fr_optimization_rationale_272",
       "target": "corp_fr_optimization_validate_rating_selection",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L258",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_276",
+      "source": "corp_fr_optimization_rationale_290",
       "target": "corp_fr_optimization_fmpclient",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L276",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_284",
+      "source": "corp_fr_optimization_rationale_298",
       "target": "corp_fr_optimization_fmpclient_norm_params",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L284",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_rationale_293",
-      "target": "corp_fr_optimization_fmpclient_get",
-      "relation": "rationale_for",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L293",
+      "source_location": "L298",
       "weight": 1.0
     },
     {
@@ -24023,19 +24035,19 @@
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_315",
-      "target": "corp_fr_optimization_fmpclient_get_records",
+      "source": "corp_fr_optimization_rationale_307",
+      "target": "corp_fr_optimization_fmpclient_get",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L315",
+      "source_location": "L307",
       "weight": 1.0
     },
     {
       "source": "corp_fr_optimization_rationale_329",
-      "target": "corp_fr_optimization_riskfreecurve",
+      "target": "corp_fr_optimization_fmpclient_get_records",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -24045,30 +24057,19 @@
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_358",
-      "target": "corp_fr_optimization_riskfreecurve_rate_pct",
+      "source": "corp_fr_optimization_rationale_343",
+      "target": "corp_fr_optimization_riskfreecurve",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L358",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_rationale_363",
-      "target": "corp_fr_optimization_riskfreecurve_rate",
-      "relation": "rationale_for",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L363",
+      "source_location": "L343",
       "weight": 1.0
     },
     {
       "source": "corp_fr_optimization_rationale_372",
-      "target": "corp_fr_optimization_build_risk_free_curve",
+      "target": "corp_fr_optimization_riskfreecurve_rate_pct",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -24078,190 +24079,201 @@
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_402",
+      "source": "corp_fr_optimization_rationale_377",
+      "target": "corp_fr_optimization_riskfreecurve_rate",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L377",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_rationale_386",
+      "target": "corp_fr_optimization_build_risk_free_curve",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Corp_FR_Optimization.py",
+      "source_location": "L386",
+      "weight": 1.0
+    },
+    {
+      "source": "corp_fr_optimization_rationale_416",
       "target": "corp_fr_optimization_stage_screener",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L402",
+      "source_location": "L416",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_456",
+      "source": "corp_fr_optimization_rationale_470",
       "target": "corp_fr_optimization_latest",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L456",
+      "source_location": "L470",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_463",
+      "source": "corp_fr_optimization_rationale_477",
       "target": "corp_fr_optimization_stage_solvency",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L463",
+      "source_location": "L477",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_526",
+      "source": "corp_fr_optimization_rationale_540",
       "target": "corp_fr_optimization_fcf_metrics",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L526",
+      "source_location": "L540",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_541",
+      "source": "corp_fr_optimization_rationale_555",
       "target": "corp_fr_optimization_stage_fcf",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L541",
+      "source_location": "L555",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_569",
+      "source": "corp_fr_optimization_rationale_583",
       "target": "corp_fr_optimization_stage_rating",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L569",
+      "source_location": "L583",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_604",
+      "source": "corp_fr_optimization_rationale_618",
       "target": "corp_fr_optimization_zscore",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L604",
+      "source_location": "L618",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_616",
+      "source": "corp_fr_optimization_rationale_630",
       "target": "corp_fr_optimization_stage_scoring",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L616",
+      "source_location": "L630",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_643",
+      "source": "corp_fr_optimization_rationale_657",
       "target": "corp_fr_optimization_select_ratings",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L643",
+      "source_location": "L657",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_653",
+      "source": "corp_fr_optimization_rationale_667",
       "target": "corp_fr_optimization_cap_weights",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L653",
+      "source_location": "L667",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_674",
+      "source": "corp_fr_optimization_rationale_688",
       "target": "corp_fr_optimization_stage_weights",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L674",
+      "source_location": "L688",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_690",
+      "source": "corp_fr_optimization_rationale_704",
       "target": "corp_fr_optimization_stage_overlay",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L690",
+      "source_location": "L704",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_707",
+      "source": "corp_fr_optimization_rationale_725",
       "target": "corp_fr_optimization_portfolio_summary",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L707",
+      "source_location": "L725",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_801",
+      "source": "corp_fr_optimization_rationale_819",
       "target": "corp_fr_optimization_overlay_pivot",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L801",
+      "source_location": "L819",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_864",
+      "source": "corp_fr_optimization_rationale_882",
       "target": "corp_fr_optimization_figure",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L864",
+      "source_location": "L882",
       "weight": 1.0
     },
     {
-      "source": "corp_fr_optimization_rationale_872",
+      "source": "corp_fr_optimization_rationale_890",
       "target": "corp_fr_optimization_build_html_report",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L872",
-      "weight": 1.0
-    },
-    {
-      "source": "corp_fr_optimization_rationale_999",
-      "target": "corp_fr_optimization_export_universe_json",
-      "relation": "rationale_for",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L999",
+      "source_location": "L890",
       "weight": 1.0
     },
     {
@@ -25252,7 +25264,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L923",
+      "source_location": "L941",
       "weight": 1.0
     },
     {
@@ -25264,7 +25276,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L811",
+      "source_location": "L829",
       "weight": 1.0
     },
     {
@@ -25276,7 +25288,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L763",
+      "source_location": "L781",
       "weight": 1.0
     },
     {
@@ -25288,7 +25300,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L795",
+      "source_location": "L813",
       "weight": 1.0
     },
     {
@@ -25300,7 +25312,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L596",
+      "source_location": "L610",
       "weight": 1.0
     },
     {
@@ -25312,7 +25324,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L631",
+      "source_location": "L645",
       "weight": 1.0
     },
     {
@@ -25324,7 +25336,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L237",
+      "source_location": "L251",
       "weight": 1.0
     },
     {
@@ -25431,7 +25443,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L300",
+      "source_location": "L314",
       "weight": 0.8
     },
     {
@@ -25442,7 +25454,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "Corp_FR_Optimization.py",
-      "source_location": "L304",
+      "source_location": "L318",
       "weight": 0.8
     },
     {
@@ -26496,5 +26508,5 @@
       "source_file": "README.md"
     }
   ],
-  "built_at_commit": "6fa76ac2e3ea4bd18725636e38d1dc38892ff22b"
+  "built_at_commit": "92c8b3e240de0c5b1d2cbe7b65a2c4c6fd4a43b6"
 }
