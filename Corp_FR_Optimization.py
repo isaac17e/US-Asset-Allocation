@@ -94,8 +94,8 @@ INVESTMENT_GRADE_RATINGS = {
 }
 MANUAL_RATING_OVERRIDES: dict[str, str] = {}  # ratings de agencia, ej. {"AAPL": "AA+"}
 RATING_SELECTION: Optional[list[str]] = None  # lista exacta, ej. ["A+", "A"]; si se define, ignora techo y piso
-RATING_CEILING: Optional[str] = "BBB"
-RATING_FLOOR: Optional[str] = "B+"
+RATING_CEILING: Optional[str] = "BBB" # este es el que debo cambiar
+RATING_FLOOR: Optional[str] = "B+" # Asi como este, en estas dos lineas es que el codigo recoge rangos
 
 # --- Rating sintético (peor entre cobertura y apalancamiento) ----------------
 SYNTHETIC_COVERAGE_TABLE = [     # EBIT/Intereses (Damodaran): (umbral mín., rating)
