@@ -27,6 +27,7 @@ from scipy.special import expit
 
 import pipeline_io
 import bs_pricing
+import price_cache
 from fmp_client import APIAuthorizationError, APIError, BaseHTTPClient
 from fmp_client import FMPClient as _FMPTransport
 from risk_estimators import (
@@ -749,32 +750,77 @@ class UniverseBuilder:
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 
 class MarketDataLoader:
-    def __init__(self, fmp: FMPClient, years: int, min_observations: int) -> None:
+    """Cierres ajustados (dividendos + splits) de cada ticker: caché por ticker, Yahoo primero y FMP de respaldo.
+
+    Sin ``cache`` (o con ``PriceCache(None)``) descarga toda la ventana cada vez, como antes. ``sources`` fija el
+    orden de fuentes; FMP solo se usa si hay un cliente con clave configurada.
+    """
+
+    def __init__(
+        self,
+        fmp: Optional[FMPClient],
+        years: int,
+        min_observations: int,
+        cache: Optional[price_cache.PriceCache] = None,
+        sources: Sequence[str] = ("fmp",),
+        yahoo_fetch: Callable[[str, date, date], pd.Series] = price_cache.fetch_yahoo_adjusted_close,
+    ) -> None:
         self.fmp = fmp
         self.years = years
         self.min_observations = min_observations
+        self.cache = cache if cache is not None else price_cache.PriceCache(None)
+        self.sources = tuple(sources)
+        self.yahoo_fetch = yahoo_fetch
         self.logger = logging.getLogger("Precios")
+        self.source_counts: Dict[str, int] = {}
+        self._auth_error: Optional[APIAuthorizationError] = None
+
+    def _fmp_fetch(self, ticker: str, start: date, end: date) -> pd.Series:
+        assert self.fmp is not None
+        try:
+            return self.fmp.historical_adjusted_close(ticker, start, end)
+        except APIAuthorizationError as exc:
+            self._auth_error = exc
+            raise
+
+    def _fetchers(self) -> List[Tuple[str, Callable[[str, date, date], pd.Series]]]:
+        fetchers: List[Tuple[str, Callable[[str, date, date], pd.Series]]] = []
+        for name in self.sources:
+            if name == "yahoo":
+                fetchers.append(("yahoo", self.yahoo_fetch))
+            elif name == "fmp" and self.fmp is not None and _is_configured_key(self.fmp.api_key):
+                fetchers.append(("fmp", self._fmp_fetch))
+        return fetchers
 
     def load(self, tickers: Sequence[str]) -> pd.DataFrame:
         end = date.today()
         start = end - timedelta(days=int(365.25 * self.years) + 10)
+        fetchers = self._fetchers()
+        if not fetchers:
+            raise RuntimeError("Ninguna fuente de precios disponible (Yahoo no seleccionado y sin FMP_API_KEY).")
         collected: List[pd.Series] = []
         for index, ticker in enumerate(tickers, start=1):
-            try:
-                series = self.fmp.historical_adjusted_close(ticker, start, end)
-            except APIAuthorizationError:
-                raise
-            except APIError as exc:
-                self.logger.warning("Sin precios para %s: %s", ticker, exc)
+            self._auth_error = None
+            series, used = self.cache.get(ticker, start, end, fetchers)
+            if series.empty:
+                if self._auth_error is not None and "yahoo" not in self.sources:
+                    raise self._auth_error  # FMP era la única fuente y rechazó la clave/plan: se aborta como antes
+                self.logger.warning("Sin precios para %s", ticker)
                 continue
             if len(series) < self.min_observations:
                 self.logger.warning("%s descartado: %d observaciones (< %d)", ticker, len(series), self.min_observations)
                 continue
-            collected.append(series)
+            self.source_counts[used] = self.source_counts.get(used, 0) + 1
+            collected.append(series.rename(ticker))
             if index % 20 == 0:
                 self.logger.info("Precios descargados: %d/%d", index, len(tickers))
         if not collected:
             raise RuntimeError("No fue posible descargar series de precios para ningún ETF.")
+        stats = self.cache.stats
+        self.logger.info(
+            "Precios: %d series | fuentes %s | caché: %d incrementales, %d completas, %d reescaladas, %d desde caché sin red",
+            len(collected), self.source_counts, stats["incremental"], stats["full"], stats["rescaled"], stats["stale"],
+        )
         return pd.concat(collected, axis=1).sort_index().ffill(limit=3)
 
 
@@ -2168,7 +2214,10 @@ class PassiveETFAllocationPipeline:
         self.logger.info("FASE 0 · Construcción del universo híbrido")
         candidates = UniverseBuilder(self.fmp, MASTER_ETF_LIST).build_candidates()
         load_list = list(dict.fromkeys([BENCHMARK_TICKER] + [etf.ticker for etf in candidates]))
-        prices = MarketDataLoader(self.fmp, PRICE_HISTORY_YEARS, MIN_PRICE_OBSERVATIONS).load(load_list)
+        prices = MarketDataLoader(
+            self.fmp, PRICE_HISTORY_YEARS, MIN_PRICE_OBSERVATIONS,
+            cache=price_cache.PriceCache(price_cache.cache_dir_from_env()), sources=price_cache.resolve_price_sources(),
+        ).load(load_list)
         if BENCHMARK_TICKER not in prices.columns:
             raise RuntimeError(f"No se obtuvo historial para el benchmark {BENCHMARK_TICKER}.")
         returns = prices.pct_change(fill_method=None)

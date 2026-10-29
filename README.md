@@ -10,6 +10,7 @@ Python tools that build US investment portfolios from live market data. Two inde
 | [`Corp_FR_Optimization.py`](Corp_FR_Optimization.py) | **IG corporate bonds (USD)**: issuer screening, ranking and minimum required yield by tenor. |
 | [`risk_estimators.py`](risk_estimators.py) | Covariance (EWMA + Ledoit-Wolf), Q→P correction, portfolio moments, Cornish-Fisher. |
 | [`bs_pricing.py`](bs_pricing.py) | Black-Scholes and Bjerksund-Stensland (American) option pricing. |
+| [`price_cache.py`](price_cache.py) | Per-ticker price cache with incremental download; Yahoo Finance prices (FMP only as fallback). |
 | [`fmp_client.py`](fmp_client.py) | Shared FMP HTTP client (throttling, retries, cache, plan-error detection). |
 | [`pipeline_io.py`](pipeline_io.py) | Env/CLI parameter resolution and the JSON output contract. |
 | [`report_pdf.py`](report_pdf.py) | Optional HTML → PDF export. |
@@ -52,6 +53,8 @@ Profiles (`--risk-profile` or `RISK_PROFILE`):
 | `agresivo` (Momentum) | Growth + Momentum (λ=2) | 25% | ≥ 0.95 |
 
 Useful environment variables: `RISK_FREE_RATE` (default 0.040), `USAA_HORIZON_DAYS` / `USAA_HORIZON_MONTHS` (7–400 days, default 60).
+
+Prices: Yahoo Finance (`yfinance`) is the primary source and FMP is only a fallback when `FMP_API_KEY` is set. Each ticker's adjusted close is cached in `/workspace/pipeline/state/prices` and only the missing range is downloaded. `USAA_PRICE_CACHE_DIR` moves the cache, `USAA_PRICE_CACHE=off` disables it, and `USAA_PRICE_SOURCE` (`yahoo,fmp` default, `yahoo` or `fmp`) sets the source order.
 
 ## 2. IG corporate bonds (`Corp_FR_Optimization.py`)
 
