@@ -161,7 +161,7 @@ from fredapi import Fred
 from scipy.interpolate import CubicSpline, PchipInterpolator
 
 import pipeline_io
-from fmp_client import APIAuthorizationError, APIError
+from fmp_client import APIAuthorizationError, APIError, redact_secrets
 from fmp_client import FMPClient as _FMPTransport
 
 logging.basicConfig(
@@ -392,7 +392,7 @@ def build_risk_free_curve() -> RiskFreeCurve:
         try:
             obs = fred.get_series(sid, observation_start=start).dropna()
         except Exception as exc:  # fredapi lanza ValueError genéricos
-            log.warning("FRED %s: %s", sid, exc)
+            log.warning("FRED %s: %s", sid, redact_secrets(exc, FRED_API_KEY))
             obs = pd.Series(dtype=float)
         if obs.empty:
             log.warning("FRED %s sin dato válido en los últimos %d días; nodo omitido.",

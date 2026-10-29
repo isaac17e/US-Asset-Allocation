@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 import math
+import re
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -23,6 +24,24 @@ class APIError(Exception):
 
 class APIAuthorizationError(APIError):
     """Clave inválida o endpoint no incluido en el plan contratado."""
+
+
+# Parámetros de consulta que llevan credenciales (apikey de FMP, apiKey de Polygon/Massive, api_key de FRED).
+_SECRET_QUERY_RE = re.compile(r"(?i)(?P<prefix>(?:[?&;]|\b)(?:api[_-]?key))=(?P<value>[^&\s'\")>#]*)")
+REDACTED = "***"
+
+
+def redact_secrets(text: Any, *secrets: Optional[str]) -> str:
+    """Tapa apikey/apiKey/api_key=<valor> en cualquier texto con URLs (mensajes de error, logs).
+
+    Los valores literales de ``secrets`` también se tapan donde aparezcan (p. ej. la clave del cliente en el
+    texto de una excepción de ``requests``, que repite la URL con su query).
+    """
+    out = _SECRET_QUERY_RE.sub(lambda m: f"{m.group('prefix')}={REDACTED}", str(text))
+    for secret in secrets:
+        if secret and len(secret) >= 4:
+            out = out.replace(secret, REDACTED)
+    return out
 
 
 def _to_float(value: Any) -> float:
@@ -64,13 +83,14 @@ class BaseHTTPClient:
             try:
                 response = self.session.get(url, params=params, timeout=self.timeout)
             except requests.RequestException as exc:
-                last_error = exc
+                # requests repite la URL completa (con ?apikey=...) en el texto de la excepción.
+                last_error = redact_secrets(exc, self.api_key)
                 self._backoff(attempt, None)
                 continue
             status = response.status_code
             if status == 429 or status >= 500:
-                last_error = APIError(f"HTTP {status}")
-                self.logger.warning("%s %s: HTTP %s, reintento %d/%d", self.provider, endpoint, status, attempt, self.max_retries)
+                last_error = f"HTTP {status}"
+                self.logger.warning("%s %s: HTTP %s, reintento %d/%d", self.provider, redact_secrets(endpoint, self.api_key), status, attempt, self.max_retries)
                 self._backoff(attempt, response.headers.get("Retry-After"))
                 continue
             if status in (401, 402, 403):
@@ -83,7 +103,7 @@ class BaseHTTPClient:
                 return response.json()
             except ValueError as exc:
                 raise APIError(f"{self.provider} {endpoint}: respuesta no es JSON válido") from exc
-        raise APIError(f"{self.provider} {endpoint}: agotados {self.max_retries} reintentos ({last_error})")
+        raise APIError(redact_secrets(f"{self.provider} {endpoint}: agotados {self.max_retries} reintentos ({last_error})", self.api_key))
 
 
 class FMPClient(BaseHTTPClient):

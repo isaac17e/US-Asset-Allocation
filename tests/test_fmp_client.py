@@ -81,6 +81,57 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(fmp_client.FMPClient._as_records(None), [])
 
 
+class SecretRedactionTests(unittest.TestCase):
+    KEY = "SECRETKEY1234567890"
+
+    def setUp(self):
+        patcher = mock.patch.object(fmp_client.time, "sleep")
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_redact_secrets_covers_apikey_variants(self):
+        for name in ("apikey", "apiKey", "api_key", "APIKEY"):
+            text = f"GET https://h/stable/x?symbol=SPY&{name}={self.KEY}&limit=1 failed"
+            out = fmp_client.redact_secrets(text)
+            self.assertNotIn(self.KEY, out)
+            self.assertIn("symbol=SPY", out)
+            self.assertIn("limit=1", out)
+            self.assertIn(f"{name}=***", out)
+
+    def test_redact_secrets_masks_literal_secret_and_leaves_clean_text(self):
+        self.assertEqual(fmp_client.redact_secrets(f"token {self.KEY} here", self.KEY), "token *** here")
+        self.assertEqual(fmp_client.redact_secrets("sin credenciales ?symbol=SPY"), "sin credenciales ?symbol=SPY")
+
+    def test_network_error_after_retries_does_not_leak_key(self):
+        leaky = fmp_client.requests.ConnectionError(
+            f"HTTPSConnectionPool(host='h', port=443): Max retries exceeded with url: /stable/quote?symbol=SPY&apikey={self.KEY}"
+        )
+        client = fmp_client.FMPClient(self.KEY, "https://h/stable", 0.0, 5, 2)
+        client.session = mock.Mock()
+        client.session.get.side_effect = [leaky, leaky]
+        with self.assertRaises(fmp_client.APIError) as ctx:
+            client._get("quote", {"symbol": "SPY"})
+        self.assertNotIn(self.KEY, str(ctx.exception))
+        self.assertIn("symbol=SPY", str(ctx.exception))
+
+    def test_polygon_style_apikey_param_is_redacted(self):
+        leaky = fmp_client.requests.ConnectionError(f"boom https://api.massive.com/v3/x?limit=250&apiKey={self.KEY}")
+        client = fmp_client.BaseHTTPClient(self.KEY, "Polygon", 0.0, 5, 1)
+        client.session = mock.Mock()
+        client.session.get.side_effect = [leaky]
+        with self.assertRaises(fmp_client.APIError) as ctx:
+            client._request_json("https://api.massive.com/v3/x", {"apiKey": self.KEY}, "v3/x")
+        self.assertNotIn(self.KEY, str(ctx.exception))
+
+    def test_no_key_in_logged_messages(self):
+        client = fmp_client.FMPClient(self.KEY, "https://h/stable", 0.0, 5, 2)
+        client.session = mock.Mock()
+        client.session.get.side_effect = [FakeResponse(500), FakeResponse(500)]
+        with self.assertLogs("FMP", level="WARNING") as logs, self.assertRaises(fmp_client.APIError) as ctx:
+            client._get("quote", {"symbol": "SPY"})
+        self.assertNotIn(self.KEY, "\n".join(logs.output) + str(ctx.exception))
+
+
 class CorpTolerantClientTests(unittest.TestCase):
     def setUp(self):
         patcher = mock.patch.object(fmp_client.time, "sleep")
