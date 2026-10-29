@@ -2,7 +2,9 @@
 .venv/
 __pycache__/
 .DS_Store
-pipeline/
+/pipeline/
+.claude/
+.pytest_cache/
 
 # informes generados por los pipelines (se escriben en el directorio de trabajo)
 /reporte_portafolio_renta_fija.html

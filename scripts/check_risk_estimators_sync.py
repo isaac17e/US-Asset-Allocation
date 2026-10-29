@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parents[1] / "risk_estimators.py"
-DEFAULT_OTHER = Path.home() / "AM-PM-Architecture" / "risk_estimators.py"
+DEFAULT_OTHER = Path("/workspace/AM-PM-Architecture") / "risk_estimators.py"
 
 
 def definitions(path: Path) -> dict[str, str]:

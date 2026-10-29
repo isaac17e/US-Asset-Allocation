@@ -17,7 +17,6 @@ from typing import Any, Callable, Collection, Dict, List, Literal, Mapping, Opti
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-import requests
 from plotly.subplots import make_subplots
 from scipy import stats
 from scipy.stats import norm
@@ -172,8 +171,10 @@ OPTIONS_MIN_DAYS, OPTIONS_MAX_DAYS = pipeline_io.horizon_option_window(OPTIONS_T
 OPTIONS_REQUIRE_BRACKET: bool = False
 MIN_OTM_STRIKES_PER_SIDE: int = 4
 MAX_OPTION_PAGES: int = 8
-# Sin acceso a quotes (bid/ask) el precio es day.close, el último trade del contrato, que en
-# opciones OTM poco negociadas puede tener meses y contaminar la IV de las alas.
+# _parse_chain usa el punto medio de last_quote (midpoint, o (bid+ask)/2 si hay bid/ask válidos). Solo cuando
+# no hay quote utilizable cae a day.close, el último trade del contrato, y únicamente si day.last_updated no
+# tiene más de este número de días: en opciones OTM poco negociadas ese trade puede tener meses y contaminar
+# la IV de las alas.
 OPTIONS_MAX_PRICE_AGE_DAYS: int = 5
 BKM_SPLINE_POINTS: int = 200
 # Techo de sanidad de MFIK (curtosis total) por vencimiento; por encima, o si K < 1 + S², MFIS/MFIK se anulan.
@@ -2211,7 +2212,7 @@ class PassiveETFAllocationPipeline:
         inputs = self.prepare()
         tickers, universe_frame, dropped, raw_factors = inputs.tickers, inputs.universe_frame, inputs.dropped, inputs.raw_factors
         factor_matrix, moments, mu_table = inputs.factor_matrix, inputs.moments, inputs.mu_table
-        covariance, returns = inputs.covariance, inputs.returns
+        covariance = inputs.covariance
 
         self.logger.info("FASE 3 · Optimización cuadrática con restricciones factoriales")
         tail_model = ImpliedTailModel(moments.loc[tickers], covariance.loc[tickers, tickers])
