@@ -20,7 +20,7 @@ Python tools that build US investment portfolios from live market data. Two inde
 ```bash
 pip install -r requirements.txt -c constraints.txt   # Python 3.10+
 
-# .env next to the scripts (git-ignored)
+cp .env.example .env   # then add your own keys (.env is git-ignored)
 #   FMP_API_KEY=...       required (both scripts)
 #   FRED_API_KEY=...      required (Corp_FR_Optimization.py)
 #   POLYGON_API_KEY=...   optional: option chains; without it, historical moments are used
@@ -28,6 +28,18 @@ pip install -r requirements.txt -c constraints.txt   # Python 3.10+
 python "US Asset Manager.py" --risk-profile moderado   # → portfolio_dashboard.html
 python Corp_FR_Optimization.py                         # → reporte_portafolio_renta_fija.html
 ```
+
+### Bring your own API keys
+
+This repository ships **code only: no market data and no credentials**. To run the pipelines you need your own keys:
+
+| Provider | Used for | Needed by | Cost |
+|---|---|---|---|
+| [Financial Modeling Prep](https://site.financialmodelingprep.com/) | ETF universe, fundamentals, holdings | both scripts | Free tier available; some endpoints require a paid plan (the scripts detect this and fall back) |
+| [FRED](https://fred.stlouisfed.org/docs/api/api_key.html) | Treasury risk-free curve | `Corp_FR_Optimization.py` | Free |
+| [Polygon / Massive](https://massive.com/) | Option chains (implied moments) | `US Asset Manager.py` (optional) | Optional |
+
+Keys are read from environment variables or `.env`, and are masked in logs and error messages (`redact_secrets` in `fmp_client.py`). Data returned by these providers is subject to their terms of use: do not commit or redistribute it (the `.gitignore` already excludes the generated reports and the `pipeline/` folder).
 
 Parameters (profile, solver, thresholds, weights) live in the configuration block at the top of each script. Some FMP endpoints depend on your plan; if one is unavailable the script disables it and uses neutral or fallback values.
 
@@ -92,4 +104,6 @@ Browser report checks need `requirements-dev.txt` and `playwright install chromi
 
 ## Disclaimer
 
-For academic and research purposes only; not investment advice. Synthetic ratings are a quantitative proxy and do not replace S&P, Moody's or Fitch ratings.
+This project is for **educational and research purposes only** and is **not investment advice**, an offer, or a solicitation to buy or sell any security. Model outputs depend on third-party data that may be incomplete or delayed, and on assumptions that may not hold. Past performance does not guarantee future results. You are solely responsible for any investment decision; consult a licensed financial professional first. The software is provided "as is", without warranty of any kind.
+
+Synthetic ratings are a quantitative proxy and do not replace S&P, Moody's or Fitch ratings. Third-party data providers are not affiliated with or endorsing this project.
