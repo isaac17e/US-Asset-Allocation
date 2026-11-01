@@ -100,10 +100,14 @@ python scripts/check_risk_estimators_sync.py  # diff risk_estimators.py against 
 
 Browser report checks need `requirements-dev.txt` and `playwright install chromium` (set `SKIP_BROWSER_TESTS=1` to skip). Set `REPORT_PDF=1` to also export the reports as PDF.
 
-`risk_estimators.py` is a hand-synced copy of the AM-PM repository module.
+`risk_estimators.py` is a hand-synced copy of the author's own AM-PM repository module.
 
 ## Disclaimer
 
 This project is for **educational and research purposes only** and is **not investment advice**, an offer, or a solicitation to buy or sell any security. Model outputs depend on third-party data that may be incomplete or delayed, and on assumptions that may not hold. Past performance does not guarantee future results. You are solely responsible for any investment decision; consult a licensed financial professional first. The software is provided "as is", without warranty of any kind.
 
 Synthetic ratings are a quantitative proxy and do not replace S&P, Moody's or Fitch ratings. Third-party data providers are not affiliated with or endorsing this project.
+
+## License
+
+[MIT](LICENSE) © 2026 Isaac Echeverri. The license covers this code only; data from third-party providers remains subject to their own terms.
