@@ -93,7 +93,7 @@ INVESTMENT_GRADE_RATINGS = {
     "AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-",
 }
 MANUAL_RATING_OVERRIDES: dict[str, str] = {}  # ratings de agencia, ej. {"AAPL": "AA+"}
-RATING_SELECTION: Optional[list[str]] = None  # lista exacta, ej. ["A+", "A"]; si se define, ignora techo y piso
+RATING_SELECTION: Optional[list[str]] = ["B+", "B", "B-"]  # lista exacta, ej. ["A+", "A"]; si se define, ignora techo y piso, none para no filtrar
 RATING_CEILING: Optional[str] = "BBB" # este es el que debo cambiar
 RATING_FLOOR: Optional[str] = "B+" # Asi como este, en estas dos lineas es que el codigo recoge rangos
 
